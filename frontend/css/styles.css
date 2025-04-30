@@ -818,3 +818,28 @@ body {
     font-size: 0.7rem;
     font-weight: bold;
 }
+
+.menu-item-animated {
+    transition: all 0.3s ease;
+    position: relative;
+}
+
+.menu-item-animated:hover {
+    padding-left: 10px;
+    color: #f8a100;
+}
+
+.menu-item-animated::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    width: 0;
+    height: 2px;
+    background-color: #f8a100;
+    transition: width 0.3s ease;
+}
+
+.menu-item-animated:hover::after {
+    width: 100%;
+}
