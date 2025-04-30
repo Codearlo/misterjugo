@@ -131,19 +131,7 @@ body {
     display: block; /* Para que el centrado funcione mejor */
 }
 
-/* Botón toggle para el menú de navegación en móviles */
-.main-nav-toggle {
-    display: none;
-    background: none;
-    border: none;
-    color: var(--text-light);
-    font-size: 1.5rem;
-    cursor: pointer;
-    padding: 5px;
-    margin-left: 10px;
-}
-
-/* Animación específica para "nosotros" con subraya desde el centro */
+/* Animación de subrayado desde el centro */
 .main-nav li a::before {
     content: '';
     position: absolute;
@@ -167,6 +155,18 @@ body {
     left: 0;
 }
 
+/* Botón toggle para el menú de navegación en móviles */
+.main-nav-toggle {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-light);
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    margin-left: 10px;
+}
+
 /* Botones y acciones - ahora cuadrangulares con esquinas redondeadas */
 .actions {
     display: flex;
@@ -181,7 +181,7 @@ body {
     padding: 12px 25px;
     border-radius: 8px;
     cursor: pointer;
-    font-weight: 600;
+    font-weight: 700; /* Cambiado a negrita (700) */
     font-size: 1rem;
     transition: all var(--transition-normal);
     text-transform: uppercase;
@@ -569,8 +569,14 @@ body {
         justify-content: space-between;
     }
     
+    /* Ocultar el nombre de la compañía en móvil */
     .company-name {
-        font-size: 1.5rem;
+        display: none;
+    }
+    
+    /* Hacer el logo más grande en móvil */
+    .logo {
+        height: 45px;
     }
     
     /* Mostrar menú hamburguesa para la navegación */
@@ -609,6 +615,11 @@ body {
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 8px;
     }
+    
+    /* Hacer visible el botón de navegación */
+    .main-nav-toggle {
+        display: block;
+    }
 }
 
 @media (max-width: 768px) {
@@ -618,12 +629,14 @@ body {
     }
     
     .btn-order, .btn-register {
-        padding: 10px 15px;
-        font-size: 0.9rem;
+        padding: 10px 20px;
+        font-size: 0.95rem;
+        min-width: 110px;
     }
     
+    /* Logo más grande en móvil */
     .logo {
-        height: 40px;
+        height: 48px;
     }
     
     .actions {
@@ -634,42 +647,41 @@ body {
     .header .container {
         padding: 0 15px;
     }
+    
+    /* Hacer el botón user-icon del mismo tamaño que ordenar */
+    .user-icon {
+        width: 45px;
+        height: 45px;
+    }
 }
 
 @media (max-width: 480px) {
-    .company-name {
-        font-size: 1.2rem;
-    }
+    /* Nombre de compañía ya está oculto en @media 992px */
     
     .btn-order, .btn-register {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-        min-width: 90px;
+        padding: 10px 15px;
+        font-size: 0.9rem;
+        min-width: 100px;
     }
     
+    /* Logo aún más grande en móviles pequeños */
     .logo {
-        height: 35px;
+        height: 45px;
     }
     
     /* Ajustes para el botón de cuenta y ordenar */
     .user-icon {
-        width: 38px;
-        height: 38px;
+        width: 42px;
+        height: 42px;
     }
     
     .actions {
         gap: 12px;
     }
     
-    /* Añadir menu hamburguesa para mostrar la navegación */
+    /* Estilos para el menú hamburguesa */
     .main-nav-toggle {
-        display: block;
-        margin-left: 10px;
-        color: var(--text-light);
-        background: none;
-        border: none;
         font-size: 1.3rem;
-        cursor: pointer;
         padding: 5px;
     }
 }

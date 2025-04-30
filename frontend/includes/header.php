@@ -1,11 +1,11 @@
-<!-- /includes/header.php -->
+<!-- Este archivo debe estar en /includes/header.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css"> <!-- Solo el CSS global -->
+    <link rel="stylesheet" href="./css/styles.css">
     <!-- Font Awesome para íconos del menú móvil -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -17,17 +17,16 @@
                     <img src="images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
                 </a>
                 <h1 class="company-name"><a href="https://misterjugo.codearlo.com">MISTER JUGO</a></h1>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="./nosotros.php">Nosotros</a></li>
+                    </ul>
+                </nav>
                 
                 <!-- Botón menú hamburguesa para móviles -->
                 <button class="main-nav-toggle" id="main-nav-toggle" aria-label="Menú de navegación">
                     <i class="fas fa-bars"></i>
                 </button>
-                
-                <nav class="main-nav" id="main-nav">
-                    <ul>
-                        <li><a href="./nosotros.php">Nosotros</a></li>
-                    </ul>
-                </nav>
             </div>
 
             <div class="actions">
