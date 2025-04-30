@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger y sanitizar los datos del formulario
     $email = isset($_POST['email']) ? trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL)) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
-    // Ignoramos completamente la variable recordar para evitar que cause problemas
+    $recordar = isset($_POST['recordar']) ? true : false;
     
     // Validar datos básicos
     if (empty($email) || empty($password)) {
@@ -39,28 +39,29 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['user_email'] = $usuario['email'];
             $_SESSION['is_admin'] = $usuario['is_admin'];
             
-            // Establecer cookie para todos los usuarios, sin importar si marcaron "recordar"
-            // Esto resuelve el problema eliminando la condicionalidad
-            $token = bin2hex(random_bytes(32)); // Generar token seguro
-            $expira = time() + (30 * 24 * 60 * 60); // 30 días
+            // Si se marcó "recordar", establecer una cookie
+            if ($recordar) {
+                $token = bin2hex(random_bytes(32)); // Generar token seguro
+                $expira = time() + (30 * 24 * 60 * 60); // 30 días
+                
+                // Guardar token en la base de datos
+                $stmt_token = $conn->prepare("UPDATE usuarios SET remember_token = ? WHERE id = ?");
+                $stmt_token->bind_param("si", $token, $usuario['id']);
+                $stmt_token->execute();
+                $stmt_token->close();
+                
+                // Establecer cookie con parámetros simplificados
+                setcookie('remember_token', $token, $expira, '/');
+            }
             
-            // Guardar token en la base de datos
-            $stmt_token = $conn->prepare("UPDATE usuarios SET remember_token = ? WHERE id = ?");
-            $stmt_token->bind_param("si", $token, $usuario['id']);
-            $stmt_token->execute();
-            $stmt_token->close();
-            
-            // Establecer cookie con parámetros simplificados
-            setcookie('remember_token', $token, $expira, '/');
-            
-            // Redirigir al usuario basado en su rol
-            // Usar siempre la misma URL para cada tipo de usuario
+            // Redirigir al usuario según su tipo
             if ($usuario['is_admin']) {
+                // Redirección para administradores
                 header("Location: /backend/admin.php");
                 exit;
             } else {
-                // Para usuarios normales, usar redirección absoluta como último recurso
-                header("Location: https://misterjugo.codearlo.com/");
+                // Redirección para usuarios regulares
+                header("Location: /");
                 exit;
             }
         } else {

@@ -1,14 +1,14 @@
-<!-- backend/conexion.php -->
 <?php
 $host = "localhost";
-$user = "u347334547_admin_mrjugo"; // Reemplaza con tu usuario de Hostinger
-$password = "CH7322a#"; // Contraseña de tu BD
-$dbname = "u347334547_mrjugo"; // Nombre de tu BD
+$user = "u347334547_admin_mrjugo"; 
+$password = "CH7322a#"; 
+$dbname = "u347334547_mrjugo"; 
 
 $conn = new mysqli($host, $user, $password, $dbname);
 
 if ($conn->connect_error) {
     die("Conexión fallida: " . $conn->connect_error);
 }
-echo "Conexión exitosa a la base de datos.";
+
+// Eliminado el mensaje de "Conexión exitosa" que estaba causando problemas
 ?>
