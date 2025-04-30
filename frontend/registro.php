@@ -14,39 +14,15 @@ header("Expires: 0"); // Proxies.
     <link rel="stylesheet" href="css/styles.css">
     <link rel="stylesheet" href="css/form-styles.css">
 </head>
-<body>
-    <!-- Header -->
-    <header class="header">
-        <div class="container">
-            <div class="logo-container">
-                <a href="index.php" class="logo">
-                    <img src="images/logo.png" alt="MisterJuco Logo">
-                </a>
-                <h1 class="company-name"><a href="index.php">MisterJuco</a></h1>
-            </div>
-            
-            <nav class="main-nav">
-                <ul>
-                    <li><a href="index.php">Inicio</a></li>
-                    <li><a href="productos.php">Productos</a></li>
-                    <li><a href="contacto.php">Contacto</a></li>
-                </ul>
-            </nav>
-            
-            <div class="actions">
-                <a href="pedido.php" class="btn-order">Ordenar Ahora</a>
-                <a href="login.php" class="btn-login">Iniciar Sesión</a>
-            </div>
-        </div>
-    </header>
-
+<body class="auth-page">
     <!-- Contenido Principal -->
     <main class="main-content">
         <div class="auth-container fade-in">
             <div class="auth-card slide-up">
                 <div class="auth-header">
+                    <!-- El logo se agrega vía CSS ::before -->
                     <h2 class="auth-title">Crear Cuenta</h2>
-                    <p class="auth-subtitle">Únete a nuestra comunidad y disfruta de beneficios exclusivos</p>
+                    <p class="auth-subtitle">Únete a MisterJuco y disfruta de beneficios exclusivos</p>
                 </div>
                 
                 <form id="registroForm" action="backend/procesar_registro.php" method="POST" class="auth-form">
@@ -103,48 +79,28 @@ header("Expires: 0"); // Proxies.
                 <div class="auth-footer">
                     <p>¿Ya tienes cuenta? <a href="login.php">Inicia Sesión</a></p>
                 </div>
+                
+                <div class="brand-footer">
+                    <a href="index.php" class="logo-link">
+                        <img src="images/logo.png" alt="MisterJuco Logo" class="logo-small">
+                        <span>MisterJuco</span>
+                    </a>
+                    <p class="copyright">&copy; 2025 MisterJuco. Todos los derechos reservados.</p>
+                </div>
+            </div>
+            
+            <!-- Enlaces de navegación simplificados -->
+            <div class="auth-navigation">
+                <a href="index.php">Inicio</a>
+                <span class="nav-divider">•</span>
+                <a href="productos.php">Productos</a>
+                <span class="nav-divider">•</span>
+                <a href="contacto.php">Contacto</a>
+                <span class="nav-divider">•</span>
+                <a href="terminos.php">Términos</a>
             </div>
         </div>
     </main>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">
-                    <img src="images/logo.png" alt="MisterJuco Logo" class="logo">
-                    <h3>MisterJuco</h3>
-                </div>
-                <div class="footer-links">
-                    <h4>Enlaces rápidos</h4>
-                    <ul>
-                        <li><a href="index.php">Inicio</a></li>
-                        <li><a href="productos.php">Productos</a></li>
-                        <li><a href="contacto.php">Contacto</a></li>
-                        <li><a href="terminos.php">Términos y condiciones</a></li>
-                    </ul>
-                </div>
-                <div class="footer-contact">
-                    <h4>Contacto</h4>
-                    <p><i class="fas fa-envelope"></i> info@misterjuco.com</p>
-                    <p><i class="fas fa-phone"></i> +123 456 7890</p>
-                    <div class="social-icons">
-                        <a href="#" class="social-icon"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-instagram"></i></a>
-                        <a href="#" class="social-icon"><i class="fab fa-twitter"></i></a>
-                    </div>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <p>&copy; 2025 MisterJuco. Todos los derechos reservados.</p>
-            </div>
-        </div>
-    </footer>
-
-    <!-- Botón de volver arriba -->
-    <div class="scroll-top">
-        <i class="fas fa-arrow-up"></i>
-    </div>
 
     <!-- Scripts -->
     <script src="js/auth.js"></script>
