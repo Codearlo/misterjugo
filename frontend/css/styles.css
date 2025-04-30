@@ -15,59 +15,114 @@ body {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* Header */
 .header {
-    background-color: #f69a47; /* Color principal */
+    background-color: #f69a47; /* Color principal corregido */
     padding: 15px 0;
+    position: relative;
+}
+
+.logo-container {
     display: flex;
-    justify-content: space-between;
     align-items: center;
+    gap: 10px;
 }
 
 .logo {
     height: 50px;
 }
 
-.menu ul {
-    list-style: none;
-    display: flex;
-    gap: 25px;
+.company-name {
+    font-size: 1.5rem;
+    color: #fff;
+    margin-left: 10px;
 }
 
-.menu li a {
+.company-name a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.main-nav ul {
+    display: inline-flex;
+    list-style: none;
+    margin-left: 20px;
+}
+
+.main-nav li a {
     color: #fff;
     text-decoration: none;
     font-weight: bold;
 }
 
-.actions button {
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.btn-order {
     background-color: #fff;
     color: #f69a47;
     border: none;
     padding: 10px 20px;
     border-radius: 5px;
     cursor: pointer;
-    margin-left: 10px;
+    font-weight: bold;
 }
 
-.profile-icon {
+.user-icon img {
     width: 30px;
     height: 30px;
-    margin-left: 10px;
+    cursor: pointer;
 }
 
-/* Footer */
-.footer {
-    background-color: #f69a47;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
+/* Menú lateral de usuario */
+.side-menu {
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    width: 250px;
+    background-color: #fff;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.2);
+    transform: translateX(100%);
+    transition: transform 0.3s ease;
+    z-index: 1000;
+    padding: 20px;
 }
 
-.footer a {
-    color: #fff;
+.side-menu.active {
+    transform: translateX(0);
+}
+
+.side-menu ul {
+    list-style: none;
+    margin-top: 40px;
+}
+
+.side-menu ul li {
+    margin-bottom: 20px;
+}
+
+.side-menu ul li a {
     text-decoration: none;
-    margin: 0 5px;
+    color: #333;
+    font-size: 1.1rem;
+}
+
+.close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    font-size: 1.5rem;
+    background: none;
+    border: none;
+    color: #333;
+    cursor: pointer;
 }

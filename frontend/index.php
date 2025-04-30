@@ -1,6 +1,20 @@
 <?php include 'includes/header.php'; ?>
 <link rel="stylesheet" href="./css/index.css"> <!-- Estilo solo para esta página -->
 
+<script>
+    const userIcon = document.getElementById('user-menu-toggle');
+    const sideMenu = document.getElementById('side-menu');
+    const closeBtn = document.getElementById('close-menu-btn');
+
+    userIcon.addEventListener('click', () => {
+        sideMenu.classList.add('active');
+    });
+
+    closeBtn.addEventListener('click', () => {
+        sideMenu.classList.remove('active');
+    });
+</script>
+
 <main class="hero-section">
     <div class="container">
         <div class="hero-content">

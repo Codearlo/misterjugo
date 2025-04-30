@@ -5,25 +5,37 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css"> <!-- Solo el CSS global -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Solo el CSS global -->
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <img src="./images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
-            <nav class="menu">
-                <ul>
-                    <li><a href="#">Our Food</a></li>
-                    <li><a href="#">Our Values</a></li>
-                    <li><a href="#">Our Shop</a></li>
-                    <li><a href="#">Our Rewards</a></li>
-                    <li><a href="#">Join Our Family</a></li>
-                </ul>
-            </nav>
-            <div class="actions">
-                <button class="btn-find">Find Your Jugo</button>
-                <button class="btn-order">Order Now</button>
-                <img src="./images/profile-icon.png" alt="Profile Icon" class="profile-icon">
+            <div class="logo-container">
+                <img src="images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
+                <h1 class="company-name"><a href="index.php">MISTER JUGO</a></h1>
+                <nav class="main-nav">
+                    <ul>
+                        <li><a href="nosotros.php">Nosotros</a></li>
+                    </ul>
+                </nav>
             </div>
+
+            <div class="actions">
+                <button class="btn-order">Ordenar</button>
+
+                <!-- Icono de cuenta -->
+                <div class="user-icon" id="user-menu-toggle">
+                    <img src="images/profile-icon.png" alt="Cuenta">
+                </div>
+            </div>
+        </div>
+
+        <!-- Menú lateral que aparece al hacer clic en el icono de cuenta -->
+        <div class="side-menu" id="side-menu">
+            <ul>
+                <li><a href="login.php">Iniciar sesión</a></li>
+                <li><a href="registro.php">Registrarse</a></li>
+            </ul>
+            <button class="close-btn" id="close-menu-btn">&times;</button>
         </div>
     </header>
