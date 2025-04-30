@@ -5,14 +5,12 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/styles.css"> <!-- Solo el CSS global -->
 </head>
 <body>
     <header class="header">
         <div class="container">
-            <div class="logo">
-                <img src="./images/logo_mrjugo.png" alt="Logo MisterJugo">
-            </div>
+            <img src="./images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
             <nav class="menu">
                 <ul>
                     <li><a href="#">Our Food</a></li>
@@ -25,7 +23,7 @@
             <div class="actions">
                 <button class="btn-find">Find Your Jugo</button>
                 <button class="btn-order">Order Now</button>
-                <img src="images/icon-profile.png" alt="Profile Icon" class="profile-icon">
+                <img src="./images/profile-icon.png" alt="Profile Icon" class="profile-icon">
             </div>
         </div>
     </header>
