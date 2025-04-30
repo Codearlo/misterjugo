@@ -6,22 +6,18 @@ session_start();
 require_once __DIR__ . '/../google-api/src/Client.php';
 require_once __DIR__ . '/../google-api/src/Http/Request.php';
 require_once __DIR__ . '/../google-api/src/Http/Curl.php';
-require_once __DIR__ . '/../google-api/src/Config.php';
 require_once __DIR__ . '/../google-api/src/Service/Resource.php';
 require_once __DIR__ . '/../google-api/src/Service/ServiceResource.php';
 require_once __DIR__ . '/../google-api/src/Service/Oauth2.php';
 
-// Incluir archivo de conexión a la base de datos
+// Incluir conexión a la base de datos
 require_once __DIR__ . '/conexion.php';
-
-// Iniciar conexión a la base de datos
-$conn = conectarDB();
 
 // Configuración de Google
 $client = new Google_Client();
-$client->setClientId('TU_CLIENT_ID_AQUÍ'); // Reemplaza con tu Client ID
-$client->setClientSecret('TU_CLIENT_SECRET_AQUÍ'); // Reemplaza con tu Client Secret
-$client->setRedirectUri('https://misterjuco.com/backend/google_callback.php');
+$client->setClientId('TU_CLIENT_ID_AQUÍ');
+$client->setClientSecret('TU_CLIENT_SECRET_AQUÍ');
+$client->setRedirectUri('https://misterjugo.codearlo.com/backend/google_callback.php');
 $client->addScope("email");
 $client->addScope("profile");
 
@@ -34,11 +30,14 @@ if (isset($_GET['code'])) {
     $oauth = new Google_Service_Oauth2($client);
     $userInfo = $oauth->userinfo->get();
 
-    // Guardar en sesión
+    // Guardar info básica en sesión
     $_SESSION['nombre'] = $userInfo->name;
     $_SESSION['email'] = $userInfo->email;
 
-    // Verificar si el usuario ya existe en la BD
+    // Conectar a la base de datos
+    $conn = conectarDB();
+
+    // Verificar si el usuario ya existe
     $sql = "SELECT * FROM usuarios WHERE email = ?";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("s", $userInfo->email);
@@ -67,6 +66,7 @@ if (isset($_GET['code'])) {
 
     // Cerrar conexiones
     $stmt->close();
+    $conn->close();
 
     // Redirigir al inicio
     header('Location: ../frontend/index.php');
