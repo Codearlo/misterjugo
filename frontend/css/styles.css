@@ -8,7 +8,7 @@
     --primary-dark: #ff7f00; /* Naranja oscuro más saturado */
     --primary-light: #ffad5a; /* Naranja claro más saturado */
     --secondary-color: #3a3a3a;
-    --accent-color: #47c1f6;
+    --accent-color: #ff7f00; /* Cambiado a naranja oscuro en lugar de azul */
     --text-light: #ffffff;
     --text-dark: #333333;
     --background-light: #f9f9f9;
@@ -96,22 +96,9 @@ body {
     display: inline-block;
 }
 
-.company-name a::after {
-    content: '';
-    position: absolute;
-    bottom: -5px;
-    left: 0;
-    width: 0;
-    height: 2px;
-    background-color: var(--text-light);
-    transition: width var(--transition-normal);
-}
+/* Quitada la animación de "misterjugo" - se eliminó el ::after de company-name */
 
-.company-name a:hover::after {
-    width: 100%;
-}
-
-/* Navegación principal - sin animaciones para "misterjugo" */
+/* Navegación principal - ahora "nosotros" tiene la animación */
 .main-nav {
     margin-left: 20px;
 }
@@ -136,7 +123,14 @@ body {
     transition: all var(--transition-normal);
 }
 
-/* Mantener la animación solo para "nosotros" */
+/* Animación específica para "nosotros" */
+.main-nav li.nosotros a {
+    font-weight: 700; /* Negrita para nosotros */
+    text-align: center; /* Más centrado */
+    display: block; /* Para que el centrado funcione mejor */
+}
+
+/* Aplicada la animación a "nosotros" */
 .main-nav li.nosotros a::before,
 .main-nav li.active a::before {
     content: '';
@@ -172,12 +166,12 @@ body {
     gap: 20px;
 }
 
-.btn-order {
+.btn-order, .btn-register {
     background-color: var(--text-light);
     color: var(--primary-color);
     border: none;
     padding: 12px 25px;
-    border-radius: 8px; /* Cambiado de 50px a 8px para hacerlo cuadrangular con esquinas redondeadas */
+    border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
     font-size: 1rem;
@@ -188,43 +182,53 @@ body {
     position: relative;
     overflow: hidden;
     z-index: 1;
+    text-decoration: none; /* Para cuando se usa como enlace */
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
-.btn-order::before {
+.btn-order::before, .btn-register::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 0;
     height: 100%;
-    background-color: var(--accent-color);
+    background-color: var(--primary-dark); /* Cambiado a naranja oscuro */
     transition: width var(--transition-normal);
     z-index: -1;
 }
 
-.btn-order:hover {
+.btn-order:hover, .btn-register:hover {
     color: var(--text-light);
     transform: translateY(-3px);
     box-shadow: var(--shadow-medium);
 }
 
-.btn-order:hover::before {
+.btn-order:hover::before, .btn-register:hover::before {
     width: 100%;
 }
 
-.btn-order:active {
+.btn-order:active, .btn-register:active {
     transform: translateY(0);
     box-shadow: var(--shadow-small);
 }
 
+/* Icono de usuario agrandado */
 .user-icon {
     position: relative;
     cursor: pointer;
+    width: 45px; /* Agrandado */
+    height: 45px; /* Agrandado */
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .user-icon img {
-    width: 35px;
-    height: 35px;
+    width: 100%;
+    height: 100%;
     border-radius: 50%;
     transition: all var(--transition-normal);
     border: 2px solid transparent;
@@ -484,7 +488,7 @@ body {
     height: 50px;
     background-color: var(--primary-color);
     color: var(--text-light);
-    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -524,7 +528,7 @@ body {
     position: relative;
     width: 60px;
     height: 30px;
-    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
+    border-radius: 8px;
     background-color: var(--text-dark);
     cursor: pointer;
     transition: all var(--transition-normal);
@@ -537,7 +541,7 @@ body {
     left: 5px;
     width: 20px;
     height: 20px;
-    border-radius: 4px; /* Cambiado a cuadrangular con esquinas redondeadas */
+    border-radius: 4px;
     background-color: var(--text-light);
     transition: all var(--transition-normal);
 }
@@ -580,7 +584,7 @@ body {
         max-width: 300px;
     }
     
-    .btn-order {
+    .btn-order, .btn-register {
         padding: 10px 15px;
         font-size: 0.9rem;
     }
@@ -599,7 +603,7 @@ body {
         font-size: 1.2rem;
     }
     
-    .btn-order {
+    .btn-order, .btn-register {
         padding: 8px 12px;
         font-size: 0.8rem;
     }
@@ -641,7 +645,7 @@ body {
 /* Efectos para tarjetas de productos (si es una tienda) */
 .product-card {
     transition: all var(--transition-normal);
-    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
+    border-radius: 8px;
     overflow: hidden;
     box-shadow: var(--shadow-small);
 }
@@ -676,7 +680,7 @@ body {
 .social-icon {
     width: 40px;
     height: 40px;
-    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
+    border-radius: 8px;
     display: flex;
     align-items: center;
     justify-content: center;
