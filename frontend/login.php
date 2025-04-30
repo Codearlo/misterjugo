@@ -33,6 +33,8 @@ unset($_SESSION['email']); // Limpiar después de usar
                 <p class="auth-subtitle">Inicia sesión para hacer tu pedido</p>
             </div>
             
+            <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+            
             <?php if ($registro_exitoso): ?>
                 <div class="notification success">
                     <i class="fas fa-check-circle"></i>

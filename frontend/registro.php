@@ -39,6 +39,8 @@ unset($_SESSION['datos_form']);
                 <p class="auth-subtitle">Regístrate y disfruta de los mejores jugos naturales</p>
             </div>
             
+            <a href="javascript:history.back()" class="btn-back"><i class="fas fa-arrow-left"></i> Volver</a>
+            
             <?php if (!empty($errores)): ?>
                 <div class="notification error">
                     <i class="fas fa-exclamation-circle"></i>

@@ -229,6 +229,32 @@
     color: #888;
 }
 
+/* Botón de volver */
+.btn-back {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all var(--transition-normal);
+    padding: 5px 10px;
+    border-radius: 6px;
+}
+
+.btn-back:hover {
+    background-color: rgba(255, 153, 51, 0.1);
+    transform: translateX(-3px);
+}
+
+.btn-back:active {
+    transform: translateX(0);
+}
+
 /* Notificaciones de error y éxito */
 .notification {
     padding: 15px;
