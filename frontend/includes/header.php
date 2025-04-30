@@ -11,7 +11,7 @@
     <header class="header">
         <div class="container">
             <div class="logo">
-                <img src="./images/logo-mrjugo.png" alt="Logo MisterJugo">
+                <img src="./images/logo_mrjugo.png" alt="Logo MisterJugo">
             </div>
             <nav class="menu">
                 <ul>
