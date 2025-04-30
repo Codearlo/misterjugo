@@ -54,12 +54,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 setcookie('remember_token', $token, $expira, '/', '', false, true);
             }
             
-            // Redirigir al usuario a la página principal o al panel de control
-            if ($usuario['is_admin']) {
-                header("Location: /backend/admin.php");
-            } else {
-                header("Location: https://misterjugo.codearlo.com/");
-            }
+            // Determinar la URL de redirección basada en el tipo de usuario
+            $redirect_url = $usuario['is_admin'] ? "/backend/admin.php" : "/";
+            
+            // Redirigir al usuario usando una redirección relativa
+            // Esto asegura que siempre se dirija a la misma URL sin importar la opción "recordar"
+            header("Location: " . $redirect_url);
             exit;
         } else {
             // Contraseña incorrecta
