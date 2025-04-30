@@ -9,53 +9,40 @@ header("Expires: 0"); // Proxies.
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión - MisterJuco</title>
     <link rel="stylesheet" href="css/login.css">
-    <style>
-        .form-container {
-            max-width: 400px;
-            margin: 50px auto;
-            padding: 20px;
-            background-color: #fff;
-            border-radius: 8px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-        }
-        .form-group {
-            margin-bottom: 15px;
-        }
-        input[type="email"], input[type="password"] {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #3498db;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-    </style>
 </head>
-<body>
-
-<div class="form-container">
-    <h2>Iniciar Sesión</h2>
-    <form action="backend/iniciar_sesion.php" method="POST">
-        <div class="form-group">
-            <input type="email" name="email" placeholder="Correo electrónico" required>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-card fade-in">
+            <div class="auth-logo">
+                <span class="logo-text">MisterJuco</span>
+                <p class="auth-subtitle">Inicia sesión para continuar</p>
+            </div>
+            
+            <form class="auth-form" action="backend/iniciar_sesion.php" method="POST">
+                <div class="form-group input-with-icon">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" name="email" placeholder="Correo electrónico" required>
+                </div>
+                
+                <div class="form-group input-with-icon">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" name="password" placeholder="Contraseña" required>
+                </div>
+                
+                <button type="submit" class="btn-submit">Entrar</button>
+            </form>
+            
+            <div class="auth-footer">
+                <p>¿No tienes cuenta? <a href="registro">Regístrate</a></p>
+            </div>
         </div>
-        <div class="form-group">
-            <input type="password" name="password" placeholder="Contraseña" required>
+        
+        <div class="copyright">
+            &copy; 2024 MisterJuco. Todos los derechos reservados.
         </div>
-        <button type="submit">Entrar</button>
-    </form>
-    <p>¿No tienes cuenta? <a href="registro">Regístrate</a></p>
-
-</div>
-
+    </div>
 </body>
 </html>

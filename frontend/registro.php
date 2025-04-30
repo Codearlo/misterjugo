@@ -55,7 +55,7 @@ header("Expires: 0"); // Proxies.
                 <button type="submit" class="btn-submit">Registrarse</button>
                 
                 <div class="auth-footer">
-                    <p>¿Ya tienes cuenta? <a href="login.php">Inicia Sesión</a></p>
+                    <p>¿Ya tienes cuenta? <a href="login">Inicia Sesión</a></p>
                 </div>
             </form>
             
