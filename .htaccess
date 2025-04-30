@@ -1,3 +1,8 @@
 RewriteEngine On
 # Solo redirigir la página principal
 RewriteRule ^$ frontend/index.php [L]
+
+# Redireccionar recursos estáticos
+RewriteRule ^css/(.*)$ frontend/css/$1 [L]
+RewriteRule ^js/(.*)$ frontend/js/$1 [L]
+RewriteRule ^images/(.*)$ frontend/images/$1 [L]
