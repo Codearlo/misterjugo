@@ -11,7 +11,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Recoger y sanitizar los datos del formulario
     $email = isset($_POST['email']) ? trim(filter_var($_POST['email'], FILTER_SANITIZE_EMAIL)) : '';
     $password = isset($_POST['password']) ? $_POST['password'] : '';
-    $recordar = isset($_POST['recordar']) ? true : false;
+    // Recordar siempre activado por defecto
     
     // Validar datos básicos
     if (empty($email) || empty($password)) {
@@ -20,27 +20,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
     
-    // Buscar el usuario en la base de datos
-    $stmt = $conn->prepare("SELECT id, nombre, email, password, is_admin FROM usuarios WHERE email = ?");
-    $stmt->bind_param("s", $email);
-    $stmt->execute();
-    $resultado = $stmt->get_result();
-    
-    if ($resultado->num_rows === 1) {
-        // Usuario encontrado, verificar la contraseña
-        $usuario = $resultado->fetch_assoc();
+    try {
+        // Buscar el usuario en la base de datos
+        $stmt = $conn->prepare("SELECT id, nombre, email, password, is_admin FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $resultado = $stmt->get_result();
         
-        if (password_verify($password, $usuario['password'])) {
-            // Contraseña correcta, iniciar sesión
+        if ($resultado->num_rows === 1) {
+            // Usuario encontrado, verificar la contraseña
+            $usuario = $resultado->fetch_assoc();
             
-            // Guardar datos del usuario en la sesión
-            $_SESSION['user_id'] = $usuario['id'];
-            $_SESSION['user_name'] = $usuario['nombre'];
-            $_SESSION['user_email'] = $usuario['email'];
-            $_SESSION['is_admin'] = $usuario['is_admin'];
-            
-            // Si se marcó "recordar", establecer una cookie
-            if ($recordar) {
+            if (password_verify($password, $usuario['password'])) {
+                // Contraseña correcta, iniciar sesión
+                
+                // Regenerar ID de sesión para seguridad
+                session_regenerate_id(true);
+                
+                // Guardar datos del usuario en la sesión
+                $_SESSION['user_id'] = $usuario['id'];
+                $_SESSION['user_name'] = $usuario['nombre'];
+                $_SESSION['user_email'] = $usuario['email'];
+                $_SESSION['is_admin'] = $usuario['is_admin'];
+                
+                // Crear siempre un token de recordatorio (sin importar la opción)
                 $token = bin2hex(random_bytes(32)); // Generar token seguro
                 $expira = time() + (30 * 24 * 60 * 60); // 30 días
                 
@@ -50,32 +53,34 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                 $stmt_token->execute();
                 $stmt_token->close();
                 
-                // Establecer cookie con parámetros simplificados
+                // Establecer cookie con parámetros básicos
                 setcookie('remember_token', $token, $expira, '/');
-            }
-            
-            // Redirigir al usuario según su tipo
-            if ($usuario['is_admin']) {
-                // Redirección para administradores
-                header("Location: /backend/admin.php");
-                exit;
+                
+                // Redirección basada en tipo de usuario
+                if ($usuario['is_admin'] == 1) {
+                    header("Location: /backend/admin.php");
+                } else {
+                    header("Location: /");
+                }
+                exit; // Importante: detener la ejecución del script
+                
             } else {
-                // Redirección para usuarios regulares
-                header("Location: /");
-                exit;
+                // Contraseña incorrecta
+                $_SESSION['error_login'] = "Correo electrónico o contraseña incorrectos.";
             }
         } else {
-            // Contraseña incorrecta
+            // Usuario no encontrado
             $_SESSION['error_login'] = "Correo electrónico o contraseña incorrectos.";
         }
-    } else {
-        // Usuario no encontrado
-        $_SESSION['error_login'] = "Correo electrónico o contraseña incorrectos.";
+        
+        $stmt->close();
+        
+    } catch (Exception $e) {
+        // Error en el proceso
+        $_SESSION['error_login'] = "Ocurrió un error al procesar tu solicitud. Por favor, intenta nuevamente.";
     }
     
-    $stmt->close();
-    
-    // Redirigir de vuelta al formulario de login con el error
+    // Si llegamos aquí, hubo algún error en la autenticación
     header("Location: /login");
     exit;
 } else {
