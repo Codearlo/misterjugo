@@ -5,7 +5,7 @@ require_once '../backend/conexion.php';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $nombre = trim($_POST['nombre']);
     $email = trim($_POST['email']);
-    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT); // ✅ Encriptado seguro
 
     // Verificar si el email ya existe
     $stmt = $conn->prepare("SELECT * FROM usuarios WHERE email = ?");
