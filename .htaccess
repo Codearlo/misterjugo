@@ -2,69 +2,41 @@
 RewriteEngine On
 
 # Establecer el directorio base para las reglas de reescritura
-# Ajustado para el subdirectorio misterjugo
-RewriteBase /misterjugo/
+RewriteBase /
 
 # No aplicar reglas a archivos o directorios existentes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Redireccionar todas las peticiones a la raíz del subdominio a /frontend/index.php
+# Redirigir la página principal a frontend/index.php
 RewriteRule ^$ frontend/index.php [L]
 
-# Redireccionar solicitudes a /frontend a /frontend/index.php
-RewriteRule ^frontend/?$ frontend/index.php [L]
+# Redirigir solicitudes a páginas específicas sin mostrar /frontend/
+RewriteRule ^nosotros$ frontend/nosotros.php [L]
+RewriteRule ^login$ frontend/login.php [L]
+RewriteRule ^registro$ frontend/registro.php [L]
+RewriteRule ^pedidos$ frontend/pedidos.php [L]
+RewriteRule ^perfil$ frontend/perfil.php [L]
+RewriteRule ^checkout$ frontend/checkout.php [L]
+RewriteRule ^cart$ frontend/cart.php [L]
+RewriteRule ^carrito$ frontend/cart.php [L]
+RewriteRule ^productos$ frontend/productos.php [L]
 
-# Redireccionar páginas específicas en la raíz a sus equivalentes en /frontend
-RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
-RewriteRule ^login/?$ frontend/login.php [L]
-RewriteRule ^registro/?$ frontend/registro.php [L]
-RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
-RewriteRule ^perfil/?$ frontend/perfil.php [L]
-RewriteRule ^checkout/?$ frontend/checkout.php [L]
-RewriteRule ^carrito/?$ frontend/cart.php [L]
-RewriteRule ^productos/?$ frontend/productos.php [L]
-RewriteRule ^contacto/?$ frontend/contacto.php [L]
+# Permitir URLs con o sin barra final
+RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos)/$ frontend/$1.php [L]
 
-# Para las solicitudes de archivos css, js, imágenes, etc. que no existen en la raíz
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(css|js|images|fonts)/(.*)$ frontend/$1/$2 [L]
-
-# Redireccionar cualquier otra URL que no se haya capturado
-RewriteCond %{REQUEST_FILENAME} !-f
-RewriteCond %{REQUEST_FILENAME} !-d
-RewriteRule ^(.*)$ frontend/$1 [L]
-
-# Forzar HTTPS (opcional pero recomendado)
-RewriteCond %{HTTPS} off
-RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+# Redireccionar recursos estáticos (css, js, imágenes)
+RewriteRule ^css/(.*)$ frontend/css/$1 [L]
+RewriteRule ^js/(.*)$ frontend/js/$1 [L]
+RewriteRule ^images/(.*)$ frontend/images/$1 [L]
 
 # Prevenir listado de directorios
 Options -Indexes
 
-# Configurar página de errores personalizada (opcional)
-ErrorDocument 404 /misterjugo/frontend/404.php
+# Configurar página de errores personalizada
+ErrorDocument 404 /frontend/404.php
 
 # Comprimir archivos para mejorar el rendimiento (opcional)
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
-</IfModule>
-
-# Cache de navegador para archivos estáticos (opcional)
-<IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/jpg "access plus 1 year"
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/gif "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/pdf "access plus 1 month"
-  ExpiresByType text/x-javascript "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType application/x-javascript "access plus 1 month"
-  ExpiresByType application/x-shockwave-flash "access plus 1 month"
-  ExpiresByType image/x-icon "access plus 1 year"
-  ExpiresDefault "access plus 2 days"
 </IfModule>

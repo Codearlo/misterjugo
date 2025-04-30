@@ -26,9 +26,9 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
             <!-- Navegación siempre visible (no desplegable) -->
             <nav class="main-nav" id="main-nav">
                 <ul>
-                    <li><a href="/nosotros.php">Nosotros</a></li>
+                    <li><a href="/nosotros">Nosotros</a></li>
                     <?php if ($isLoggedIn): ?>
-                    <li><a href="/pedidos.php">Pedidos</a></li>
+                    <li><a href="/pedidos">Pedidos</a></li>
                     <?php endif; ?>
                 </ul>
             </nav>
@@ -43,7 +43,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                         <div class="user-avatar"><?php echo substr($userName, 0, 1); ?></div>
                     <?php else: ?>
                         <!-- Si no está logueado mostrar icono genérico -->
-                        <img src="./images/profile-icon.png" alt="Cuenta">
+                        <img src="/images/profile-icon.png" alt="Cuenta">
                     <?php endif; ?>
                 </div>
             </div>
@@ -55,13 +55,13 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                 <?php if ($isLoggedIn): ?>
                     <!-- Menú para usuarios logueados -->
                     <li class="user-welcome">Hola, <?php echo $userName; ?></li>
-                    <li><a href="./perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                    <li><a href="./pedidos.php"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
-                    <li><a href="./logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                    <li><a href="/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li><a href="/pedidos"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
+                    <li><a href="/logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                 <?php else: ?>
                     <!-- Menú para usuarios no logueados -->
-                    <li><a href="./login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
-                    <li><a href="./registro.php"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
+                    <li><a href="/registro"><i class="fas fa-user-plus"></i> Registrarse</a></li>
                 <?php endif; ?>
             </ul>
             <button class="close-btn" id="close-menu-btn">&times;</button>
