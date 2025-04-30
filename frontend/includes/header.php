@@ -1,11 +1,11 @@
-<!-- Este archivo debe estar en /includes/header.php -->
+<!-- /includes/header.php -->
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="./css/styles.css"> <!-- Solo el CSS global -->
     <!-- Font Awesome para íconos del menú móvil -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -22,13 +22,13 @@
                 <button class="main-nav-toggle" id="main-nav-toggle" aria-label="Menú de navegación">
                     <i class="fas fa-bars"></i>
                 </button>
+                
+                <nav class="main-nav" id="main-nav">
+                    <ul>
+                        <li><a href="./nosotros.php">Nosotros</a></li>
+                    </ul>
+                </nav>
             </div>
-
-            <nav class="main-nav" id="main-nav">
-                <ul>
-                    <li><a href="./nosotros.php">Nosotros</a></li>
-                </ul>
-            </nav>
 
             <div class="actions">
                 <button class="btn-order">Ordenar</button>
