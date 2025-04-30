@@ -1,25 +1,4 @@
-/* Definición de variables */
-:root {
-    --primary-color: #3498db;
-    --primary-dark: #2980b9;
-    --primary-light: #e8f0fe;
-    --secondary-color: #7f8c8d;
-    --text-dark: #2c3e50;
-    --shadow-large: 0 15px 30px rgba(0, 0, 0, 0.1);
-    --transition-normal: 0.3s ease;
-}
-
-/* Reset básico */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-}
-
-html {
-    scroll-behavior: smooth;
-}
+/* Estilos para la página de login de MisterJugo */
 
 /* Estilos para la página de autenticación */
 .auth-page {
@@ -47,8 +26,6 @@ html {
     position: relative;
     overflow: hidden;
     transition: all var(--transition-normal);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .auth-card:hover {
@@ -62,6 +39,13 @@ html {
     margin-bottom: 30px;
 }
 
+.auth-logo .logo {
+    height: 80px;
+    width: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
 .logo-text {
     font-size: 1.8rem;
     font-weight: 700;
@@ -73,7 +57,6 @@ html {
     color: var(--secondary-color);
     font-size: 0.95rem;
     margin: 10px 0 20px;
-    text-align: center;
 }
 
 /* Formulario */
@@ -83,7 +66,6 @@ html {
 
 .form-group {
     margin-bottom: 20px;
-    position: relative;
 }
 
 .input-with-icon {
@@ -116,12 +98,92 @@ html {
     outline: none;
     border-color: var(--primary-color);
     background-color: #ffffff;
-    box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.1);
+    box-shadow: 0 0 0 4px rgba(255, 153, 51, 0.1);
 }
 
 .input-with-icon input::placeholder {
     color: #aaa;
     font-weight: 300;
+}
+
+/* Botón para mostrar/ocultar contraseña */
+.toggle-password {
+    position: absolute;
+    right: 15px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--secondary-color);
+    font-size: 1.1rem;
+    transition: all var(--transition-normal);
+    padding: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.toggle-password:hover {
+    color: var(--primary-color);
+}
+
+/* Grupo de recordar contraseña */
+.remember-group {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: -5px;
+}
+
+.remember-group label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    color: var(--text-dark);
+}
+
+.remember-group input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 18px;
+    height: 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 4px;
+    cursor: pointer;
+    position: relative;
+    transition: all var(--transition-normal);
+    background-color: #f9f9f9;
+}
+
+.remember-group input[type="checkbox"]:checked {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+}
+
+.remember-group input[type="checkbox"]:checked::before {
+    content: '✓';
+    position: absolute;
+    color: white;
+    font-size: 0.8rem;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.forgot-password {
+    color: var(--primary-color);
+    text-decoration: none;
+    font-size: 0.9rem;
+    transition: all var(--transition-normal);
+}
+
+.forgot-password:hover {
+    text-decoration: underline;
 }
 
 /* Botón de envío */
@@ -141,6 +203,7 @@ html {
     position: relative;
     overflow: hidden;
     font-family: 'Poppins', sans-serif;
+    margin-top: 10px;
 }
 
 .btn-submit::before {
@@ -157,7 +220,7 @@ html {
 
 .btn-submit:hover {
     transform: translateY(-3px);
-    box-shadow: 0 10px 20px rgba(52, 152, 219, 0.3);
+    box-shadow: 0 10px 20px rgba(255, 153, 51, 0.3);
 }
 
 .btn-submit:hover::before {
@@ -200,14 +263,62 @@ html {
     color: #888;
 }
 
+/* Notificaciones de error y éxito */
+.notification {
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 0.95rem;
+    display: flex;
+    align-items: flex-start;
+    gap: 15px;
+    animation: slideDown 0.3s ease forwards;
+}
+
+.notification i {
+    font-size: 1.2rem;
+    margin-top: 3px;
+}
+
+.notification.success {
+    background-color: rgba(40, 167, 69, 0.1);
+    color: #28a745;
+    border-left: 4px solid #28a745;
+}
+
+.notification.error {
+    background-color: rgba(220, 53, 69, 0.1);
+    color: #dc3545;
+    border-left: 4px solid #dc3545;
+}
+
+.notification p {
+    margin: 5px 0;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Animaciones */
 .fade-in {
     animation: fadeIn 0.5s ease forwards;
 }
 
 @keyframes fadeIn {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
 }
 
 .slide-up {
@@ -226,10 +337,13 @@ html {
 }
 
 /* Responsive */
-@media (max-width: 768px) {
+@media (max-width: 480px) {
     .auth-card {
-        padding: 25px;
-        border-radius: 10px;
+        padding: 20px;
+    }
+    
+    .auth-logo .logo {
+        height: 60px;
     }
     
     .logo-text {
@@ -237,31 +351,15 @@ html {
     }
     
     .input-with-icon input {
-        font-size: 0.95rem;
-    }
-    
-    .btn-submit {
-        padding: 12px;
-    }
-}
-
-@media (max-width: 480px) {
-    .auth-card {
-        padding: 20px;
-        width: 95%;
-    }
-    
-    .logo-text {
-        font-size: 1.3rem;
-    }
-    
-    .input-with-icon input {
         padding: 12px 15px 12px 40px;
-        font-size: 0.9rem;
     }
     
     .btn-submit {
         padding: 12px;
-        font-size: 0.95rem;
+    }
+    
+    .remember-group {
+        flex-direction: column;
+        align-items: flex-start;
     }
 }

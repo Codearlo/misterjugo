@@ -2,6 +2,22 @@
 header("Cache-Control: no-cache, no-store, must-revalidate"); // HTTP 1.1.
 header("Pragma: no-cache"); // HTTP 1.0.
 header("Expires: 0"); // Proxies.
+
+// Iniciar sesión para recuperar mensajes de error o datos de formulario
+session_start();
+
+// Recuperar errores si existen
+$errores = isset($_SESSION['errores_registro']) ? $_SESSION['errores_registro'] : [];
+
+// Recuperar datos previos del formulario si existen
+$datos_form = isset($_SESSION['datos_form']) ? $_SESSION['datos_form'] : [
+    'nombre' => '',
+    'email' => ''
+];
+
+// Limpiar datos de sesión para que no persistan
+unset($_SESSION['errores_registro']);
+unset($_SESSION['datos_form']);
 ?>
 
 <!DOCTYPE html>
@@ -23,18 +39,29 @@ header("Expires: 0"); // Proxies.
                 <p class="auth-subtitle">Regístrate y disfruta de los mejores jugos naturales</p>
             </div>
             
+            <?php if (!empty($errores)): ?>
+                <div class="notification error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <?php foreach($errores as $error): ?>
+                            <p><?php echo $error; ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
             <form id="registroForm" action="backend/procesar_registro.php" method="POST" class="auth-form">
                 <div class="form-group">
                     <div class="input-with-icon">
                         <i class="fas fa-user"></i>
-                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required minlength="3" maxlength="100">
+                        <input type="text" id="nombre" name="nombre" placeholder="Nombre completo" required minlength="3" maxlength="100" value="<?php echo htmlspecialchars($datos_form['nombre']); ?>">
                     </div>
                 </div>
                 
                 <div class="form-group">
                     <div class="input-with-icon">
                         <i class="fas fa-envelope"></i>
-                        <input type="email" id="email" name="email" placeholder="Correo electrónico" required maxlength="100">
+                        <input type="email" id="email" name="email" placeholder="Correo electrónico" required maxlength="100" value="<?php echo htmlspecialchars($datos_form['email']); ?>">
                     </div>
                 </div>
                 
@@ -55,7 +82,7 @@ header("Expires: 0"); // Proxies.
                 <button type="submit" class="btn-submit">Registrarse</button>
                 
                 <div class="auth-footer">
-                    <p>¿Ya tienes cuenta? <a href="login">Inicia Sesión</a></p>
+                    <p>¿Ya tienes cuenta? <a href="login.php">Inicia Sesión</a></p>
                 </div>
             </form>
             
