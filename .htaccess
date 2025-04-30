@@ -2,14 +2,14 @@
 RewriteEngine On
 
 # Establecer el directorio base para las reglas de reescritura
-# Ajusta esto si tu sitio no está en la raíz del dominio
-RewriteBase /
+# Ajustado para el subdirectorio misterjugo
+RewriteBase /misterjugo/
 
 # No aplicar reglas a archivos o directorios existentes
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 
-# Redireccionar todas las peticiones a la raíz del dominio a /frontend/index.php
+# Redireccionar todas las peticiones a la raíz del subdominio a /frontend/index.php
 RewriteRule ^$ frontend/index.php [L]
 
 # Redireccionar solicitudes a /frontend a /frontend/index.php
@@ -26,15 +26,15 @@ RewriteRule ^carrito/?$ frontend/cart.php [L]
 RewriteRule ^productos/?$ frontend/productos.php [L]
 RewriteRule ^contacto/?$ frontend/contacto.php [L]
 
+# Para las solicitudes de archivos css, js, imágenes, etc. que no existen en la raíz
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(css|js|images|fonts)/(.*)$ frontend/$1/$2 [L]
+
 # Redireccionar cualquier otra URL que no se haya capturado
-# Esto captura URLs como misterjugo.codearlo.com/cualquier-cosa
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteRule ^(.*)$ frontend/$1 [L]
-
-# Redireccionar www a no-www (opcional)
-RewriteCond %{HTTP_HOST} ^www\.misterjugo\.codearlo\.com [NC]
-RewriteRule ^(.*)$ https://misterjugo.codearlo.com/$1 [L,R=301]
 
 # Forzar HTTPS (opcional pero recomendado)
 RewriteCond %{HTTPS} off
@@ -44,7 +44,7 @@ RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 Options -Indexes
 
 # Configurar página de errores personalizada (opcional)
-ErrorDocument 404 /frontend/404.php
+ErrorDocument 404 /misterjugo/frontend/404.php
 
 # Comprimir archivos para mejorar el rendimiento (opcional)
 <IfModule mod_deflate.c>
