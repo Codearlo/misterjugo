@@ -13,9 +13,10 @@ RewriteRule ^checkout$ frontend/checkout.php [L]
 RewriteRule ^cart$ frontend/cart.php [L]
 RewriteRule ^carrito$ frontend/cart.php [L]
 RewriteRule ^productos$ frontend/productos.php [L]
+RewriteRule ^direcciones$ frontend/direcciones.php [L]
 
 # Permitir URLs con o sin barra final
-RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos)/$ frontend/$1.php [L]
+RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones)/$ frontend/$1.php [L]
 
 # Redireccionar recursos estáticos
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
@@ -28,25 +29,32 @@ Options -Indexes
 # Configurar página de errores personalizada
 ErrorDocument 404 /frontend/404.php
 
+# Prevenir el almacenamiento en caché para páginas dinámicas
+<FilesMatch "\.(php)$">
+  Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+  Header set Pragma "no-cache"
+  Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+</FilesMatch>
+
 # Comprimir archivos para mejorar el rendimiento (opcional)
 <IfModule mod_deflate.c>
   AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
 </IfModule>
 
-# Cache de navegador para archivos estáticos (opcional)
+# Cache de navegador para archivos estáticos (permitir caché solo para recursos)
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType image/jpg "access plus 1 year"
-  ExpiresByType image/jpeg "access plus 1 year"
-  ExpiresByType image/gif "access plus 1 year"
-  ExpiresByType image/png "access plus 1 year"
-  ExpiresByType image/svg+xml "access plus 1 year"
-  ExpiresByType text/css "access plus 1 month"
-  ExpiresByType application/pdf "access plus 1 month"
-  ExpiresByType text/x-javascript "access plus 1 month"
-  ExpiresByType application/javascript "access plus 1 month"
-  ExpiresByType application/x-javascript "access plus 1 month"
-  ExpiresByType application/x-shockwave-flash "access plus 1 month"
-  ExpiresByType image/x-icon "access plus 1 year"
-  ExpiresDefault "access plus 2 days"
+  ExpiresByType image/jpg "access plus 1 week"
+  ExpiresByType image/jpeg "access plus 1 week"
+  ExpiresByType image/gif "access plus 1 week"
+  ExpiresByType image/png "access plus 1 week"
+  ExpiresByType image/svg+xml "access plus 1 week"
+  ExpiresByType text/css "access plus 1 day"
+  ExpiresByType application/pdf "access plus 1 day"
+  ExpiresByType text/x-javascript "access plus 1 day"
+  ExpiresByType application/javascript "access plus 1 day"
+  ExpiresByType application/x-javascript "access plus 1 day"
+  ExpiresByType application/x-shockwave-flash "access plus 1 day"
+  ExpiresByType image/x-icon "access plus 1 week"
+  ExpiresDefault "access plus 0 seconds"
 </IfModule>

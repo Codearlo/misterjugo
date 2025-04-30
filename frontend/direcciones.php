@@ -2,7 +2,8 @@
 // Verificar si el usuario está logueado
 session_start();
 if (!isset($_SESSION['user_id'])) {
-    // Si no está logueado, redirigir al login
+    // Si no está logueado, redirigir al login con un mensaje
+    $_SESSION['error_login'] = "Debes iniciar sesión para acceder a tus direcciones";
     header("Location: /login");
     exit;
 }
@@ -13,6 +14,28 @@ require_once '../backend/conexion.php';
 // Obtener el ID del usuario actual
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'];
+
+// Verificar si hay mensajes de éxito o error
+$exito_direccion = isset($_SESSION['exito_direccion']) ? $_SESSION['exito_direccion'] : '';
+$error_direccion = isset($_SESSION['error_direccion']) ? $_SESSION['error_direccion'] : '';
+$errores_direccion = isset($_SESSION['errores_direccion']) ? $_SESSION['errores_direccion'] : [];
+
+// Limpiar mensajes de sesión
+unset($_SESSION['exito_direccion']);
+unset($_SESSION['error_direccion']);
+unset($_SESSION['errores_direccion']);
+
+// Obtener datos previos del formulario si existen
+$datos_direccion = isset($_SESSION['datos_direccion']) ? $_SESSION['datos_direccion'] : [
+    'calle' => '',
+    'ciudad' => '',
+    'estado' => '',
+    'codigo_postal' => '',
+    'telefono' => '',
+    'instrucciones' => '',
+    'es_predeterminada' => 0
+];
+unset($_SESSION['datos_direccion']);
 
 // Obtener direcciones del usuario
 $direcciones = [];
@@ -50,6 +73,35 @@ include 'includes/header.php';
             <h2 class="page-title">Mis Direcciones</h2>
             <p class="page-subtitle">Administra tus direcciones de entrega</p>
         </div>
+        
+        <?php if (!empty($exito_direccion)): ?>
+            <div class="notification success">
+                <i class="fas fa-check-circle"></i>
+                <div>
+                    <p><?php echo $exito_direccion; ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($error_direccion)): ?>
+            <div class="notification error">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <p><?php echo $error_direccion; ?></p>
+                </div>
+            </div>
+        <?php endif; ?>
+        
+        <?php if (!empty($errores_direccion)): ?>
+            <div class="notification error">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <?php foreach($errores_direccion as $error): ?>
+                        <p><?php echo $error; ?></p>
+                    <?php endforeach; ?>
+                </div>
+            </div>
+        <?php endif; ?>
         
         <div class="section-container">
             <?php if (count($direcciones) > 0): ?>
@@ -119,38 +171,38 @@ include 'includes/header.php';
             <button class="close-modal">&times;</button>
         </div>
         <div class="modal-body">
-            <form id="address-form" action="../backend/procesar_direccion.php" method="POST">
+            <form id="address-form" action="/backend/procesar_direccion.php" method="POST">
                 <input type="hidden" id="address_id" name="address_id" value="">
                 <div class="form-group">
                     <label for="calle">Dirección</label>
-                    <input type="text" id="calle" name="calle" placeholder="Calle, número, colonia" required>
+                    <input type="text" id="calle" name="calle" placeholder="Calle, número, colonia" required value="<?php echo htmlspecialchars($datos_direccion['calle']); ?>">
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="ciudad">Ciudad</label>
-                        <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" required>
+                        <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" required value="<?php echo htmlspecialchars($datos_direccion['ciudad']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="estado">Estado</label>
-                        <input type="text" id="estado" name="estado" placeholder="Estado" required>
+                        <input type="text" id="estado" name="estado" placeholder="Estado" required value="<?php echo htmlspecialchars($datos_direccion['estado']); ?>">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label for="codigo_postal">Código Postal</label>
-                        <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" required pattern="[0-9]{5}">
+                        <input type="text" id="codigo_postal" name="codigo_postal" placeholder="Código Postal" required pattern="[0-9]{5}" value="<?php echo htmlspecialchars($datos_direccion['codigo_postal']); ?>">
                     </div>
                     <div class="form-group">
                         <label for="telefono">Teléfono</label>
-                        <input type="tel" id="telefono" name="telefono" placeholder="Teléfono de contacto" required>
+                        <input type="tel" id="telefono" name="telefono" placeholder="Teléfono de contacto" required value="<?php echo htmlspecialchars($datos_direccion['telefono']); ?>">
                     </div>
                 </div>
                 <div class="form-group">
                     <label for="instrucciones">Instrucciones de entrega (opcional)</label>
-                    <textarea id="instrucciones" name="instrucciones" placeholder="Instrucciones para el repartidor"></textarea>
+                    <textarea id="instrucciones" name="instrucciones" placeholder="Instrucciones para el repartidor"><?php echo htmlspecialchars($datos_direccion['instrucciones']); ?></textarea>
                 </div>
                 <div class="form-group checkbox-group">
-                    <input type="checkbox" id="es_predeterminada" name="es_predeterminada" value="1">
+                    <input type="checkbox" id="es_predeterminada" name="es_predeterminada" value="1" <?php echo $datos_direccion['es_predeterminada'] ? 'checked' : ''; ?>>
                     <label for="es_predeterminada">Establecer como dirección predeterminada</label>
                 </div>
                 <div class="form-actions">
@@ -185,11 +237,22 @@ document.addEventListener('DOMContentLoaded', function() {
         if (addressId) {
             // Aquí iría una petición AJAX para obtener los datos
             // Por ahora simulamos que los obtenemos de los atributos data
-            const btnEdit = document.querySelector(`.btn-edit[data-id="${addressId}"]`);
-            if (btnEdit) {
-                const card = btnEdit.closest('.address-card');
-                // Aquí cargaríamos los datos reales del servidor
-            }
+            fetch(`/backend/obtener_direccion.php?id=${addressId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('calle').value = data.direccion.calle;
+                        document.getElementById('ciudad').value = data.direccion.ciudad;
+                        document.getElementById('estado').value = data.direccion.estado;
+                        document.getElementById('codigo_postal').value = data.direccion.codigo_postal;
+                        document.getElementById('telefono').value = data.direccion.telefono;
+                        document.getElementById('instrucciones').value = data.direccion.instrucciones;
+                        document.getElementById('es_predeterminada').checked = data.direccion.es_predeterminada == 1;
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                });
         } else {
             // Es un nuevo registro, limpiar el formulario
             addressForm.reset();
@@ -231,7 +294,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const addressId = this.getAttribute('data-id');
             if (confirm('¿Estás seguro de que deseas eliminar esta dirección?')) {
                 // Aquí iría el código para eliminar la dirección
-                window.location.href = `../backend/eliminar_direccion.php?id=${addressId}`;
+                window.location.href = `/backend/eliminar_direccion.php?id=${addressId}`;
             }
         });
     });
@@ -240,7 +303,7 @@ document.addEventListener('DOMContentLoaded', function() {
     btnDefaultAddresses.forEach(btn => {
         btn.addEventListener('click', function() {
             const addressId = this.getAttribute('data-id');
-            window.location.href = `../backend/predeterminar_direccion.php?id=${addressId}`;
+            window.location.href = `/backend/predeterminar_direccion.php?id=${addressId}`;
         });
     });
     
@@ -260,6 +323,19 @@ document.addEventListener('DOMContentLoaded', function() {
         // La validación básica la hace HTML5 con los atributos required y pattern
         // Podríamos agregar validación adicional aquí si fuera necesario
     });
+    
+    // Si hay notificaciones, ocultarlas después de un tiempo
+    const notifications = document.querySelectorAll('.notification');
+    if (notifications.length > 0) {
+        setTimeout(function() {
+            notifications.forEach(notification => {
+                notification.style.opacity = '0';
+                setTimeout(() => {
+                    notification.style.display = 'none';
+                }, 500);
+            });
+        }, 5000);
+    }
 });
 </script>
 
