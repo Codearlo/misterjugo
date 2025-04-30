@@ -1,3 +1,6 @@
+/* Importar fuente desde Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&display=swap');
+
 /* Reset básico */
 * {
     margin: 0;
@@ -6,7 +9,7 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
+    font-family: 'Montserrat', sans-serif;
     background-color: #fff;
     color: #333;
 }
@@ -22,7 +25,7 @@ body {
 
 /* Header */
 .header {
-    background-color: #f69a47; /* Color principal */
+    background-color: #d97706; /* Naranja más oscuro y saturado */
     padding: 15px 0;
     position: relative;
 }
@@ -34,14 +37,14 @@ body {
 }
 
 .logo {
-    height: 50px; /* Ajusta el tamaño del logo */
-    width: auto; /* Mantén la proporción */
+    height: 50px;
 }
 
 .company-name {
     font-size: 1.5rem;
     color: #fff;
     margin-left: 10px;
+    font-weight: 700;
 }
 
 .company-name a {
@@ -59,6 +62,14 @@ body {
     color: #fff;
     text-decoration: none;
     font-weight: bold;
+    transition: opacity 0.3s ease;
+    font-size: 1rem;
+    padding: 5px 10px;
+    border-radius: 4px;
+}
+
+.main-nav li a:hover {
+    background-color: rgba(255, 255, 255, 0.2);
 }
 
 .actions {
@@ -67,14 +78,37 @@ body {
     gap: 15px;
 }
 
-.btn-order {
-    background-color: #fff;
-    color: #f69a47;
-    border: none;
+.btn-order,
+.btn-secondary {
     padding: 10px 20px;
+    border: none;
     border-radius: 5px;
     cursor: pointer;
-    font-weight: bold;
+    font-weight: 700;
+    text-transform: uppercase;
+    transition: all 0.3s ease;
+}
+
+.btn-order {
+    background-color: #fff;
+    color: #d97706;
+}
+
+.btn-order:hover {
+    background-color: #d97706;
+    color: #fff;
+    transform: scale(1.05);
+}
+
+.btn-secondary {
+    background-color: transparent;
+    color: #fff;
+    border: 2px solid #fff;
+}
+
+.btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: scale(1.05);
 }
 
 .user-icon img {
