@@ -6,3 +6,11 @@ RewriteRule ^$ frontend/index.php [L]
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
+
+# Redirigir más páginas
+RewriteRule ^nosotros$ frontend/nosotros.php [L]
+RewriteRule ^login$ frontend/login.php [L]
+RewriteRule ^registro$ frontend/registro.php [L]
+RewriteRule ^pedidos$ frontend/pedidos.php [L]
+RewriteRule ^perfil$ frontend/perfil.php [L]
+# Añade más según necesites
