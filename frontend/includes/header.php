@@ -10,7 +10,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="/frontend/css/styles.css">
+    <link rel="stylesheet" href="../css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -18,23 +18,20 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
         <div class="container">
             <div class="logo-container">
                 <a href="https://misterjugo.codearlo.com">
-                    <img src="/frontend/images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
+                    <img src="../images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
                 </a>
                 <h1 class="company-name"><a href="https://misterjugo.codearlo.com">MISTER JUGO</a></h1>
-                <nav class="main-nav">
-                    <ul>
-                        <li><a href="/frontend/nosotros.php">Nosotros</a></li>
-                        <?php if ($isLoggedIn): ?>
-                        <li><a href="/frontend/pedidos.php">Mis Pedidos</a></li>
-                        <?php endif; ?>
-                    </ul>
-                </nav>
-                
-                <!-- Botón menú hamburguesa para móviles -->
-                <button class="main-nav-toggle" id="main-nav-toggle" aria-label="Menú de navegación">
-                    <i class="fas fa-bars"></i>
-                </button>
             </div>
+            
+            <!-- Navegación siempre visible (no desplegable) -->
+            <nav class="main-nav" id="main-nav">
+                <ul>
+                    <li><a href="./nosotros.php">Nosotros</a></li>
+                    <?php if ($isLoggedIn): ?>
+                    <li><a href="./pedidos.php">Pedidos</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
 
             <div class="actions">
                 <button class="btn-order">Ordenar</button>
@@ -46,7 +43,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                         <div class="user-avatar"><?php echo substr($userName, 0, 1); ?></div>
                     <?php else: ?>
                         <!-- Si no está logueado mostrar icono genérico -->
-                        <img src="/frontend/images/profile-icon.png" alt="Cuenta">
+                        <img src="../images/profile-icon.png" alt="Cuenta">
                     <?php endif; ?>
                 </div>
             </div>
@@ -58,13 +55,13 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                 <?php if ($isLoggedIn): ?>
                     <!-- Menú para usuarios logueados -->
                     <li class="user-welcome">Hola, <?php echo $userName; ?></li>
-                    <li><a href="/frontend/perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                    <li><a href="/frontend/pedidos.php"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
-                    <li><a href="/frontend/logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                    <li><a href="./perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li><a href="./pedidos.php"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
+                    <li><a href="./logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                 <?php else: ?>
                     <!-- Menú para usuarios no logueados -->
-                    <li><a href="/frontend/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
-                    <li><a href="/frontend/registro.php"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+                    <li><a href="./login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
+                    <li><a href="./registro.php"><i class="fas fa-user-plus"></i> Registrarse</a></li>
                 <?php endif; ?>
             </ul>
             <button class="close-btn" id="close-menu-btn">&times;</button>
@@ -86,16 +83,6 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                 
                 closeMenuBtn.addEventListener('click', function() {
                     sideMenu.classList.remove('active');
-                });
-            }
-            
-            // Manejo del menú de navegación en móviles
-            const mainNavToggle = document.getElementById('main-nav-toggle');
-            const mainNav = document.getElementById('main-nav');
-            
-            if (mainNavToggle && mainNav) {
-                mainNavToggle.addEventListener('click', function() {
-                    mainNav.classList.toggle('active');
                 });
             }
         });
