@@ -16,7 +16,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validar datos básicos
     if (empty($email) || empty($password)) {
         $_SESSION['error_login'] = "Por favor, completa todos los campos.";
-        header("Location: /login.php");
+        header("Location: /login");
         exit;
     }
     
@@ -58,7 +58,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             if ($usuario['is_admin']) {
                 header("Location: /backend/admin.php");
             } else {
-                header("Location: /index.php");
+                header("Location: https://misterjugo.codearlo.com/");
             }
             exit;
         } else {
@@ -73,11 +73,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $stmt->close();
     
     // Redirigir de vuelta al formulario de login con el error
-    header("Location: /login.php");
+    header("Location: /login");
     exit;
 } else {
     // Si alguien intenta acceder directamente a este script sin enviar el formulario
-    header("Location: /login.php");
+    header("Location: /login");
     exit;
 }
 
