@@ -3,6 +3,14 @@
 session_start();
 $isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
 $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+
+// Verificar si hay un mensaje de cierre de sesión
+$logoutMessage = '';
+if(isset($_COOKIE['logout_message'])) {
+    $logoutMessage = $_COOKIE['logout_message'];
+    // Eliminar la cookie inmediatamente después de leerla
+    setcookie('logout_message', '', time() - 3600, '/');
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -21,7 +29,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
         
         .menu-item-animated:hover {
             padding-left: 10px;
-            color: var(--primary-color); /* Usar la variable CSS para consistencia */
+            color: var(--primary-color);
             transform: translateX(5px);
         }
         
@@ -39,9 +47,54 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
         .menu-item-animated:hover::after {
             width: 100%;
         }
+        
+        /* Estilo para mensajes de notificación */
+        .notification-message {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+            z-index: 1000;
+            animation: slideDown 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+            text-align: center;
+            font-weight: 500;
+            min-width: 280px;
+        }
+        
+        @keyframes slideDown {
+            from {
+                top: -50px;
+                opacity: 0;
+            }
+            to {
+                top: 80px;
+                opacity: 1;
+            }
+        }
+        
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
     </style>
 </head>
 <body>
+    <?php if (!empty($logoutMessage)): ?>
+    <div class="notification-message" id="notification-message">
+        <?php echo htmlspecialchars($logoutMessage); ?>
+    </div>
+    <?php endif; ?>
+
     <header class="header">
         <div class="container">
             <div class="logo-container">
@@ -123,14 +176,34 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                 overlay.addEventListener('click', closeMenu);
             }
             
-            // Manejo del cierre de sesión - SOLUCIÓN DIRECTA
+            // Manejo del cierre de sesión - MEJORADO
             const logoutLink = document.getElementById('logout-link');
             if (logoutLink) {
                 logoutLink.addEventListener('click', function(e) {
-                    // Crear y activar un formulario para enviar POST a cerrar_sesion.php
+                    // Mostrar un indicador visual de carga
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fas fa-spinner fa-spin';
+                    }
+                    
+                    // Cerrar el menú lateral
+                    const sideMenu = document.getElementById('side-menu');
+                    const overlay = document.getElementById('overlay');
+                    if (sideMenu) sideMenu.classList.remove('active');
+                    if (overlay) overlay.classList.remove('active');
+                    
+                    // Cerrar sesión usando formulario
                     const form = document.createElement('form');
                     form.method = 'POST';
                     form.action = '/backend/cerrar_sesion.php';
+                    
+                    // Agregar un campo oculto para indicar que no es AJAX
+                    const isAjaxField = document.createElement('input');
+                    isAjaxField.type = 'hidden';
+                    isAjaxField.name = 'redirect';
+                    isAjaxField.value = 'true';
+                    form.appendChild(isAjaxField);
+                    
                     document.body.appendChild(form);
                     form.submit();
                 });
@@ -154,5 +227,13 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                     }
                 });
             });
+            
+            // Auto-ocultar notificaciones después de 5 segundos
+            const notification = document.getElementById('notification-message');
+            if (notification) {
+                setTimeout(function() {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
         });
     </script>

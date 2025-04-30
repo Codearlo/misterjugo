@@ -34,7 +34,20 @@ if (isset($_COOKIE['remember_token'])) {
 // Destruir la sesión
 session_destroy();
 
-// Responder con éxito (para la solicitud AJAX)
-header('Content-Type: application/json');
-echo json_encode(['success' => true]);
+// Comprobar si es una solicitud AJAX
+$isAjax = !empty($_SERVER['HTTP_X_REQUESTED_WITH']) && strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) == 'xmlhttprequest';
+
+if ($isAjax) {
+    // Responder con JSON para solicitudes AJAX
+    header('Content-Type: application/json');
+    echo json_encode(['success' => true]);
+} else {
+    // Para solicitudes normales, redirigir con un mensaje
+    // Guardar un mensaje en una cookie que expire rápidamente
+    setcookie('logout_message', 'Sesión cerrada correctamente', time() + 30, '/');
+    
+    // Redirigir a la página principal
+    header('Location: /');
+    exit;
+}
 ?>
