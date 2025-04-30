@@ -50,7 +50,7 @@
         </div>
         <button type="submit">Registrarse</button>
     </form>
-    <p>¿Ya tienes cuenta? <a href="login.php">Inicia Sesión</a></p>
+    <p>¿Ya tienes cuenta? <a href="login">Inicia Sesión</a></p>
 
     <!-- Botón para iniciar con Google -->
     
