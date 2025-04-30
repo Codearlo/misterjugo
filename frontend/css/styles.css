@@ -3,9 +3,10 @@
 
 /* Variables CSS para colores y transiciones */
 :root {
-    --primary-color: #f69a47;
-    --primary-dark: #e58937;
-    --primary-light: #ffb673;
+    /* Colores anaranjados más saturados */
+    --primary-color: #ff9933; /* Naranja más saturado */
+    --primary-dark: #ff7f00; /* Naranja oscuro más saturado */
+    --primary-light: #ffad5a; /* Naranja claro más saturado */
     --secondary-color: #3a3a3a;
     --accent-color: #47c1f6;
     --text-light: #ffffff;
@@ -110,7 +111,7 @@ body {
     width: 100%;
 }
 
-/* Navegación principal con efectos hover */
+/* Navegación principal - sin animaciones para "misterjugo" */
 .main-nav {
     margin-left: 20px;
 }
@@ -135,7 +136,9 @@ body {
     transition: all var(--transition-normal);
 }
 
-.main-nav li a::before {
+/* Mantener la animación solo para "nosotros" */
+.main-nav li.nosotros a::before,
+.main-nav li.active a::before {
     content: '';
     position: absolute;
     bottom: 0;
@@ -146,20 +149,23 @@ body {
     transition: width var(--transition-normal);
 }
 
-.main-nav li a:hover {
+.main-nav li.nosotros a:hover,
+.main-nav li.active a:hover {
     color: var(--text-light);
     transform: translateY(-2px);
 }
 
-.main-nav li a:hover::before {
+.main-nav li.nosotros a:hover::before,
+.main-nav li.active a:hover::before {
     width: 100%;
 }
 
-.main-nav li.active a::before {
-    width: 100%;
+/* Los demás enlaces sin animación de subrayado ni desplazamiento */
+.main-nav li:not(.nosotros):not(.active) a:hover {
+    color: var(--text-light);
 }
 
-/* Botones y acciones con efectos de hover y pulsación */
+/* Botones y acciones - ahora cuadrangulares con esquinas redondeadas */
 .actions {
     display: flex;
     align-items: center;
@@ -171,7 +177,7 @@ body {
     color: var(--primary-color);
     border: none;
     padding: 12px 25px;
-    border-radius: 50px;
+    border-radius: 8px; /* Cambiado de 50px a 8px para hacerlo cuadrangular con esquinas redondeadas */
     cursor: pointer;
     font-weight: 600;
     font-size: 1rem;
@@ -478,7 +484,7 @@ body {
     height: 50px;
     background-color: var(--primary-color);
     color: var(--text-light);
-    border-radius: 50%;
+    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -503,13 +509,13 @@ body {
 
 @keyframes pulse {
     0% {
-        box-shadow: 0 0 0 0 rgba(246, 154, 71, 0.7);
+        box-shadow: 0 0 0 0 rgba(255, 153, 51, 0.7);
     }
     70% {
-        box-shadow: 0 0 0 10px rgba(246, 154, 71, 0);
+        box-shadow: 0 0 0 10px rgba(255, 153, 51, 0);
     }
     100% {
-        box-shadow: 0 0 0 0 rgba(246, 154, 71, 0);
+        box-shadow: 0 0 0 0 rgba(255, 153, 51, 0);
     }
 }
 
@@ -518,7 +524,7 @@ body {
     position: relative;
     width: 60px;
     height: 30px;
-    border-radius: 15px;
+    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
     background-color: var(--text-dark);
     cursor: pointer;
     transition: all var(--transition-normal);
@@ -531,7 +537,7 @@ body {
     left: 5px;
     width: 20px;
     height: 20px;
-    border-radius: 50%;
+    border-radius: 4px; /* Cambiado a cuadrangular con esquinas redondeadas */
     background-color: var(--text-light);
     transition: all var(--transition-normal);
 }
@@ -635,7 +641,7 @@ body {
 /* Efectos para tarjetas de productos (si es una tienda) */
 .product-card {
     transition: all var(--transition-normal);
-    border-radius: 10px;
+    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
     overflow: hidden;
     box-shadow: var(--shadow-small);
 }
@@ -670,7 +676,7 @@ body {
 .social-icon {
     width: 40px;
     height: 40px;
-    border-radius: 50%;
+    border-radius: 8px; /* Cambiado a cuadrangular con esquinas redondeadas */
     display: flex;
     align-items: center;
     justify-content: center;
