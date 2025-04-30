@@ -22,7 +22,7 @@ body {
 
 /* Header */
 .header {
-    background-color: #f69a47; /* Color principal corregido */
+    background-color: #f69a47; /* Color principal */
     padding: 15px 0;
     position: relative;
 }
@@ -34,7 +34,8 @@ body {
 }
 
 .logo {
-    height: 50px;
+    height: 50px; /* Ajusta el tamaño del logo */
+    width: auto; /* Mantén la proporción */
 }
 
 .company-name {
@@ -125,4 +126,23 @@ body {
     border: none;
     color: #333;
     cursor: pointer;
+}
+
+/* Responsividad para pantallas pequeñas */
+@media (max-width: 768px) {
+    .logo {
+        height: 40px; /* Reduce el tamaño del logo en pantallas pequeñas */
+    }
+
+    .company-name {
+        font-size: 1.2rem;
+    }
+
+    .main-nav ul {
+        display: none; /* Oculta el menú "Nosotros" en pantallas pequeñas */
+    }
+
+    .actions {
+        gap: 10px;
+    }
 }

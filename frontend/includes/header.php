@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css"> <!-- Solo el CSS global -->
+    <link rel="stylesheet" href="css/styles.css"> <!-- Solo el CSS global -->
 </head>
 <body>
     <header class="header">
