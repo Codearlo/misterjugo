@@ -1,16 +1,18 @@
-<!-- frontend/index.php -->
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MisterJuco - Inicio</title>
-    <link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
-    <h1>Bienvenidos a MisterJuco 🍹</h1>
-    <p>Este es el archivo index.php</p>
+<?php include 'includes/header.php'; ?>
 
-    <script src="js/main.js"></script>
-</body>
-</html>
+<main class="hero-section">
+    <div class="container">
+        <div class="hero-content">
+            <div class="hero-image">
+                <img src="images/jugos-misterjugo.jpg" alt="Jugos MisterJugo">
+            </div>
+            <div class="hero-text">
+                <h1>Have you eaten yet?</h1>
+                <p>Descubre nuestros jugos frescos y nutritivos.</p>
+                <button class="btn-order-now">Order Now</button>
+            </div>
+        </div>
+    </div>
+</main>
+
+<?php include 'includes/footer.php'; ?>
