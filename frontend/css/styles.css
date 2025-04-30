@@ -306,6 +306,14 @@ body {
     animation-delay: 0.4s;
 }
 
+.side-menu.active ul li:nth-child(5) {
+    animation-delay: 0.5s;
+}
+
+.side-menu.active ul li:nth-child(6) {
+    animation-delay: 0.6s;
+}
+
 @keyframes fadeInRight {
     0% {
         opacity: 0;
@@ -819,14 +827,16 @@ body {
     font-weight: bold;
 }
 
+/* Estilos para las animaciones del menú lateral mejoradas */
 .menu-item-animated {
-    transition: all 0.3s ease;
+    transition: all var(--transition-normal);
     position: relative;
 }
 
 .menu-item-animated:hover {
     padding-left: 10px;
-    color: #f8a100;
+    color: var(--primary-color);
+    transform: translateX(5px);
 }
 
 .menu-item-animated::after {
@@ -836,10 +846,46 @@ body {
     left: 0;
     width: 0;
     height: 2px;
-    background-color: #f8a100;
-    transition: width 0.3s ease;
+    background-color: var(--primary-color);
+    transition: width var(--transition-normal);
 }
 
 .menu-item-animated:hover::after {
     width: 100%;
+}
+
+/* Animación de entrada para elementos del menú */
+.side-menu.active .menu-item-animated {
+    animation: fadeInRight 0.3s ease forwards;
+}
+
+/* Aplicar los delays de animación para mantener consistencia */
+.side-menu.active li:nth-child(1) a {
+    animation-delay: 0.1s;
+}
+
+.side-menu.active li:nth-child(2) a {
+    animation-delay: 0.2s;
+}
+
+.side-menu.active li:nth-child(3) a {
+    animation-delay: 0.3s;
+}
+
+.side-menu.active li:nth-child(4) a {
+    animation-delay: 0.4s;
+}
+
+.side-menu.active li:nth-child(5) a {
+    animation-delay: 0.5s;
+}
+
+.side-menu.active li:nth-child(6) a {
+    animation-delay: 0.6s;
+}
+
+/* Efecto de rebote sutil al hacer clic */
+.menu-item-animated:active {
+    transform: scale(0.95);
+    transition: transform 0.15s;
 }

@@ -13,30 +13,47 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
     <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Estilos para las animaciones */
+        /* Estilos para las animaciones del menú lateral */
         .menu-item-animated {
-            transition: all 0.3s ease;
+            transition: all var(--transition-normal);
             position: relative;
+            opacity: 0;
+            transform: translateX(20px);
+        }
+        
+        .side-menu.active .menu-item-animated {
+            animation: fadeInRight 0.3s ease forwards;
+        }
+        
+        /* Aplicar los delays de animación para mantener consistencia */
+        .side-menu.active li:nth-child(1) .menu-item-animated {
+            animation-delay: 0.1s;
+        }
+        
+        .side-menu.active li:nth-child(2) .menu-item-animated {
+            animation-delay: 0.2s;
+        }
+        
+        .side-menu.active li:nth-child(3) .menu-item-animated {
+            animation-delay: 0.3s;
+        }
+        
+        .side-menu.active li:nth-child(4) .menu-item-animated {
+            animation-delay: 0.4s;
+        }
+        
+        .side-menu.active li:nth-child(5) .menu-item-animated {
+            animation-delay: 0.5s;
+        }
+        
+        .side-menu.active li:nth-child(6) .menu-item-animated {
+            animation-delay: 0.6s;
         }
         
         .menu-item-animated:hover {
             padding-left: 10px;
-            color: #f8a100; /* Color naranja para hover */
-        }
-        
-        .menu-item-animated::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: #f8a100;
-            transition: width 0.3s ease;
-        }
-        
-        .menu-item-animated:hover::after {
-            width: 100%;
+            color: var(--primary-color); /* Usar la variable CSS para consistencia */
+            transform: translateX(5px);
         }
     </style>
 </head>
@@ -77,15 +94,15 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                 <?php if ($isLoggedIn): ?>
                     <!-- Menú para usuarios logueados -->
                     <li class="user-welcome">Hola, <?php echo $userName; ?></li>
-                    <li><a href="/perfil"><i class="fas fa-user"></i> Mi Perfil</a></li>
-                    <li><a href="/direcciones"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
-                    <li><a href="/pedidos"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
+                    <li><a href="/perfil" class="menu-item-animated"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li><a href="/direcciones" class="menu-item-animated"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
+                    <li><a href="/pedidos" class="menu-item-animated"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
                     <li><a href="/nosotros" class="menu-item-animated"><i class="fas fa-info-circle"></i> Nosotros</a></li>
                     <li><a href="#" id="logout-link" class="menu-item-animated"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                 <?php else: ?>
                     <!-- Menú para usuarios no logueados -->
-                    <li><a href="/login"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
-                    <li><a href="/registro"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+                    <li><a href="/login" class="menu-item-animated"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
+                    <li><a href="/registro" class="menu-item-animated"><i class="fas fa-user-plus"></i> Registrarse</a></li>
                     <li><a href="/nosotros" class="menu-item-animated"><i class="fas fa-info-circle"></i> Nosotros</a></li>
                 <?php endif; ?>
             </ul>
@@ -122,39 +139,62 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                 overlay.addEventListener('click', closeMenu);
             }
             
-            // Manejo del cierre de sesión - CORREGIDO para evitar errores en el cierre de sesión
+            // Manejo del cierre de sesión - CORREGIDO para funcionar con cerrar_sesion.php
             const logoutLink = document.getElementById('logout-link');
             if (logoutLink) {
                 logoutLink.addEventListener('click', function(e) {
                     e.preventDefault();
                     
+                    // Mostrar un indicador visual de carga (opcional)
+                    const icon = this.querySelector('i');
+                    if (icon) {
+                        icon.className = 'fas fa-spinner fa-spin';
+                    }
+                    
                     // Crear una solicitud para cerrar la sesión
                     fetch('/backend/cerrar_sesion.php', {
                         method: 'POST',
-                        credentials: 'include', // Asegura que las cookies se envíen con la solicitud
-                        headers: {
-                            'Content-Type': 'application/x-www-form-urlencoded',
-                        }
+                        credentials: 'same-origin' // Usa las cookies de la sesión actual
                     })
-                    .then(response => {
-                        if (response.ok) {
-                            // Redirigir a la página de inicio después de cerrar sesión exitosamente
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Éxito - redirigir a la página principal
                             window.location.href = '/';
                         } else {
-                            console.error('Error al cerrar sesión. Estado:', response.status);
+                            // Si hay un error, volver al icono original
+                            if (icon) {
+                                icon.className = 'fas fa-sign-out-alt';
+                            }
+                            console.error('Error al cerrar sesión');
                         }
                     })
                     .catch(error => {
+                        // Si hay un error, volver al icono original
+                        if (icon) {
+                            icon.className = 'fas fa-sign-out-alt';
+                        }
                         console.error('Error en la solicitud de cierre de sesión:', error);
                     });
                 });
             }
             
-            // Añadir animaciones a los enlaces del menú con clase "menu-item-animated"
-            const animatedMenuItems = document.querySelectorAll('.menu-item-animated');
-            animatedMenuItems.forEach(item => {
-                item.addEventListener('mouseenter', function() {
-                    this.style.transition = 'all 0.3s ease';
+            // Mejorar las animaciones para todos los elementos del menú lateral
+            const sideMenuLinks = document.querySelectorAll('.side-menu ul li a');
+            sideMenuLinks.forEach((link, index) => {
+                // Asegurarse de que todos los enlaces tengan la clase menu-item-animated
+                if (!link.classList.contains('menu-item-animated')) {
+                    link.classList.add('menu-item-animated');
+                }
+                
+                // Agregar un efecto de rebote sutil al hacer clic
+                link.addEventListener('click', function(e) {
+                    if (!this.id || this.id !== 'logout-link') { // No aplicar animación al cerrar sesión
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    }
                 });
             });
         });
