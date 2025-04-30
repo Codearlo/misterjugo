@@ -82,12 +82,12 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         ];
         
         // Redirigir de vuelta al formulario
-        header("Location: /registro.php");
+        header("Location: /registro");
         exit;
     }
 } else {
     // Si alguien intenta acceder directamente a este script sin enviar el formulario
-    header("Location: /registro.php");
+    header("Location: /registro");
     exit;
 }
 
