@@ -10,7 +10,7 @@ header("Expires: 0"); // Proxies.
 <head>
     <meta charset="UTF-8">
     <title>Iniciar Sesión - MisterJuco</title>
-    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
     <style>
         .form-container {
             max-width: 400px;
