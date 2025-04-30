@@ -63,7 +63,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['email'] = $email; // Guardamos el email para auto-rellenar el campo en login
             
             // Redirigir a la página de login con mensaje de éxito
-            header("Location: /login.php?registro=exitoso");
+            header("Location: /login?registro=exitoso");
             exit;
         } else {
             // Error al registrar
