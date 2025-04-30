@@ -1,24 +1,23 @@
-
 <?php
-ini_set('display_errors', 1); 
-ini_set('display_startup_errors', 1); 
-error_reporting(E_ALL);
 
 session_start();
 
+// Define la ruta base para evitar errores de inclusión
+$baseDir = $_SERVER['DOCUMENT_ROOT'] . '/misterjugo/backend';
+
 // Incluir manualmente las clases básicas de Google API
-require_once __DIR__ . '/google-api/src/Client.php';
-require_once __DIR__ . '/google-api/src/Http/Request.php';
-require_once __DIR__ . '/google-api/src/Http/Curl.php';
-require_once __DIR__ . '/google-api/src/Config.php';
-require_once __DIR__ . '/google-api/src/Service/Resource.php';
-require_once __DIR__ . '/google-api/src/Service/ServiceResource.php';
-require_once __DIR__ . '/google-api/src/Service/Oauth2.php';
+require_once $baseDir . '/google-api/src/Client.php';
+require_once $baseDir . '/google-api/src/Http/Request.php';
+require_once $baseDir . '/google-api/src/Http/Curl.php';
+require_once $baseDir . '/google-api/src/Config.php';
+require_once $baseDir . '/google-api/src/Service/Resource.php';
+require_once $baseDir . '/google-api/src/Service/ServiceResource.php';
+require_once $baseDir . '/google-api/src/Service/Oauth2.php';
 
 // Incluir conexión a la base de datos
-require_once __DIR__ . '/conexion.php';
+require_once $baseDir . '/conexion.php';
 
-// Configuración de Google
+// Continúa con tu lógica de Google Sign-In
 $client = new Google_Client();
 $client->setClientId('TU_CLIENT_ID_AQUÍ');
 $client->setClientSecret('TU_CLIENT_SECRET_AQUÍ');
@@ -74,7 +73,7 @@ if (isset($_GET['code'])) {
     $conn->close();
 
     // Redirigir al inicio
-    header('Location: ../frontend/index.php');
+    header('Location: ' . $_SERVER['DOCUMENT_ROOT'] . '/misterjugo/frontend/index.php');
     exit();
 }
 
@@ -82,4 +81,3 @@ if (isset($_GET['code'])) {
 $authUrl = $client->createAuthUrl();
 header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
 exit();
-?>
