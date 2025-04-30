@@ -47,15 +47,8 @@
         </div>
         <button type="submit">Entrar</button>
     </form>
-    <p>¿No tienes cuenta? <a href="registro.php">Regístrate</a></p>
+    <p>¿No tienes cuenta? <a href="registro">Regístrate</a></p>
 
-    <!-- Botón para iniciar con Google -->
-    <br><hr><br>
-    <a href="backend/google_callback.php">
-        <button type="button" style="background-color:#db4437; color:white;">
-            🔐 Iniciar con Google
-        </button>
-    </a>
 </div>
 
 </body>
