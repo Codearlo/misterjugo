@@ -2,7 +2,7 @@
 RewriteEngine On
 
 # Establecer el directorio base para las reglas de reescritura
-RewriteBase/
+RewriteBase/misterjugo/
 
 # No aplicar reglas a archivos o directorios existentes
 RewriteCond %{REQUEST_FILENAME} !-f
