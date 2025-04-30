@@ -1,0 +1,70 @@
+# Habilitar el motor de reescritura
+RewriteEngine On
+
+# Establecer el directorio base para las reglas de reescritura
+# Ajusta esto si tu sitio no está en la raíz del dominio
+RewriteBase /
+
+# No aplicar reglas a archivos o directorios existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Redireccionar todas las peticiones a la raíz del dominio a /frontend/index.php
+RewriteRule ^$ frontend/index.php [L]
+
+# Redireccionar solicitudes a /frontend a /frontend/index.php
+RewriteRule ^frontend/?$ frontend/index.php [L]
+
+# Redireccionar páginas específicas en la raíz a sus equivalentes en /frontend
+RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
+RewriteRule ^login/?$ frontend/login.php [L]
+RewriteRule ^registro/?$ frontend/registro.php [L]
+RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
+RewriteRule ^perfil/?$ frontend/perfil.php [L]
+RewriteRule ^checkout/?$ frontend/checkout.php [L]
+RewriteRule ^carrito/?$ frontend/cart.php [L]
+RewriteRule ^productos/?$ frontend/productos.php [L]
+RewriteRule ^contacto/?$ frontend/contacto.php [L]
+
+# Redireccionar cualquier otra URL que no se haya capturado
+# Esto captura URLs como misterjugo.codearlo.com/cualquier-cosa
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteRule ^(.*)$ frontend/$1 [L]
+
+# Redireccionar www a no-www (opcional)
+RewriteCond %{HTTP_HOST} ^www\.misterjugo\.codearlo\.com [NC]
+RewriteRule ^(.*)$ https://misterjugo.codearlo.com/$1 [L,R=301]
+
+# Forzar HTTPS (opcional pero recomendado)
+RewriteCond %{HTTPS} off
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# Prevenir listado de directorios
+Options -Indexes
+
+# Configurar página de errores personalizada (opcional)
+ErrorDocument 404 /frontend/404.php
+
+# Comprimir archivos para mejorar el rendimiento (opcional)
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
+</IfModule>
+
+# Cache de navegador para archivos estáticos (opcional)
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType text/x-javascript "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/x-javascript "access plus 1 month"
+  ExpiresByType application/x-shockwave-flash "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresDefault "access plus 2 days"
+</IfModule>

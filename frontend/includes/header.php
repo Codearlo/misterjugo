@@ -10,7 +10,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -18,7 +18,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
         <div class="container">
             <div class="logo-container">
                 <a href="https://misterjugo.codearlo.com">
-                    <img src="./images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
+                    <img src="/images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
                 </a>
                 <h1 class="company-name"><a href="https://misterjugo.codearlo.com">MISTER JUGO</a></h1>
             </div>
@@ -26,9 +26,9 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
             <!-- Navegación siempre visible (no desplegable) -->
             <nav class="main-nav" id="main-nav">
                 <ul>
-                    <li><a href="./nosotros.php">Nosotros</a></li>
+                    <li><a href="/nosotros.php">Nosotros</a></li>
                     <?php if ($isLoggedIn): ?>
-                    <li><a href="./pedidos.php">Pedidos</a></li>
+                    <li><a href="/pedidos.php">Pedidos</a></li>
                     <?php endif; ?>
                 </ul>
             </nav>
