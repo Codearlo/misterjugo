@@ -18,7 +18,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
         <div class="container">
             <div class="logo-container">
                 <a href="https://misterjugo.codearlo.com">
-                    <img src="../images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
+                    <img src="./images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
                 </a>
                 <h1 class="company-name"><a href="https://misterjugo.codearlo.com">MISTER JUGO</a></h1>
             </div>
@@ -43,7 +43,7 @@ $userName = $isLoggedIn ? $_SESSION['user_name'] : '';
                         <div class="user-avatar"><?php echo substr($userName, 0, 1); ?></div>
                     <?php else: ?>
                         <!-- Si no está logueado mostrar icono genérico -->
-                        <img src="../images/profile-icon.png" alt="Cuenta">
+                        <img src="./images/profile-icon.png" alt="Cuenta">
                     <?php endif; ?>
                 </div>
             </div>
