@@ -18,6 +18,9 @@
     --shadow-small: 0 2px 5px rgba(0, 0, 0, 0.1);
     --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
     --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.2);
+    
+    /* Color más oscuro para el botón ordenar */
+    --primary-hover: #e35f00; /* Naranja más oscuro para hover */
 }
 
 /* Reset mejorado */
@@ -96,8 +99,6 @@ body {
     display: inline-block;
 }
 
-/* Quitada la animación de "misterjugo" - se eliminó el ::after de company-name */
-
 /* Navegación principal - ahora "nosotros" tiene la animación */
 .main-nav {
     margin-left: 20px;
@@ -121,42 +122,32 @@ body {
     padding: 8px 0;
     position: relative;
     transition: all var(--transition-normal);
-}
-
-/* Animación específica para "nosotros" */
-.main-nav li.nosotros a {
-    font-weight: 700; /* Negrita para nosotros */
-    text-align: center; /* Más centrado */
+    text-align: center; /* Más centrado para todos los enlaces */
     display: block; /* Para que el centrado funcione mejor */
 }
 
-/* Aplicada la animación a "nosotros" */
-.main-nav li.nosotros a::before,
-.main-nav li.active a::before {
+/* Animación específica para "nosotros" con subraya desde el centro */
+.main-nav li a::before {
     content: '';
     position: absolute;
     bottom: 0;
-    left: 0;
+    left: 50%;
     width: 0;
     height: 2px;
     background-color: var(--text-light);
-    transition: width var(--transition-normal);
+    transition: width var(--transition-normal), left var(--transition-normal);
 }
 
-.main-nav li.nosotros a:hover,
+.main-nav li a:hover,
 .main-nav li.active a:hover {
     color: var(--text-light);
     transform: translateY(-2px);
 }
 
-.main-nav li.nosotros a:hover::before,
+.main-nav li a:hover::before,
 .main-nav li.active a:hover::before {
     width: 100%;
-}
-
-/* Los demás enlaces sin animación de subrayado ni desplazamiento */
-.main-nav li:not(.nosotros):not(.active) a:hover {
-    color: var(--text-light);
+    left: 0;
 }
 
 /* Botones y acciones - ahora cuadrangulares con esquinas redondeadas */
@@ -195,7 +186,7 @@ body {
     left: 0;
     width: 0;
     height: 100%;
-    background-color: var(--primary-dark); /* Cambiado a naranja oscuro */
+    background-color: var(--primary-hover); /* Color más oscuro para el hover */
     transition: width var(--transition-normal);
     z-index: -1;
 }
@@ -203,7 +194,7 @@ body {
 .btn-order:hover, .btn-register:hover {
     color: var(--text-light);
     transform: translateY(-3px);
-    box-shadow: var(--shadow-medium);
+    box-shadow: var(--shadow-medium), 0 0 15px rgba(255, 255, 255, 0.4); /* Sombra blanca desenfocada */
 }
 
 .btn-order:hover::before, .btn-register:hover::before {

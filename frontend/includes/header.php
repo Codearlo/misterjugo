@@ -39,3 +39,25 @@
             <button class="close-btn" id="close-menu-btn">&times;</button>
         </div>
     </header>
+    
+    <!-- Script para activar las funcionalidades -->
+    <script>
+        // Script para mostrar/ocultar el menú lateral
+        document.addEventListener('DOMContentLoaded', function() {
+            const userMenuToggle = document.getElementById('user-menu-toggle');
+            const sideMenu = document.getElementById('side-menu');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            
+            if (userMenuToggle && sideMenu && closeMenuBtn) {
+                userMenuToggle.addEventListener('click', function() {
+                    sideMenu.classList.add('active');
+                });
+                
+                closeMenuBtn.addEventListener('click', function() {
+                    sideMenu.classList.remove('active');
+                });
+            }
+        });
+    </script>
+</body>
+</html>
