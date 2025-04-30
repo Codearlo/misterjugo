@@ -1,12 +1,16 @@
-<!-- Este archivo debe estar en /includes/header.php -->
+<?php
+// Comprobar si el usuario está logueado
+session_start();
+$isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+$userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="./css/styles.css">
-    <!-- Font Awesome para íconos del menú móvil -->
+    <link rel="stylesheet" href="/frontend/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -14,12 +18,15 @@
         <div class="container">
             <div class="logo-container">
                 <a href="https://misterjugo.codearlo.com">
-                    <img src="images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
+                    <img src="/frontend/images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
                 </a>
                 <h1 class="company-name"><a href="https://misterjugo.codearlo.com">MISTER JUGO</a></h1>
                 <nav class="main-nav">
                     <ul>
-                        <li><a href="./nosotros.php">Nosotros</a></li>
+                        <li><a href="/frontend/nosotros.php">Nosotros</a></li>
+                        <?php if ($isLoggedIn): ?>
+                        <li><a href="/frontend/pedidos.php">Mis Pedidos</a></li>
+                        <?php endif; ?>
                     </ul>
                 </nav>
                 
@@ -32,9 +39,15 @@
             <div class="actions">
                 <button class="btn-order">Ordenar</button>
 
-                <!-- Icono de cuenta -->
+                <!-- Icono de cuenta con diferentes opciones según el estado de inicio de sesión -->
                 <div class="user-icon" id="user-menu-toggle">
-                    <img src="images/profile-icon.png" alt="Cuenta">
+                    <?php if ($isLoggedIn): ?>
+                        <!-- Si está logueado mostrar avatar o inicial -->
+                        <div class="user-avatar"><?php echo substr($userName, 0, 1); ?></div>
+                    <?php else: ?>
+                        <!-- Si no está logueado mostrar icono genérico -->
+                        <img src="/frontend/images/profile-icon.png" alt="Cuenta">
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -42,8 +55,17 @@
         <!-- Menú lateral que aparece al hacer clic en el icono de cuenta -->
         <div class="side-menu" id="side-menu">
             <ul>
-                <li><a href="login.php">Iniciar sesión</a></li>
-                <li><a href="registro.php">Registrarse</a></li>
+                <?php if ($isLoggedIn): ?>
+                    <!-- Menú para usuarios logueados -->
+                    <li class="user-welcome">Hola, <?php echo $userName; ?></li>
+                    <li><a href="/frontend/perfil.php"><i class="fas fa-user"></i> Mi Perfil</a></li>
+                    <li><a href="/frontend/pedidos.php"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
+                    <li><a href="/frontend/logout.php"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                <?php else: ?>
+                    <!-- Menú para usuarios no logueados -->
+                    <li><a href="/frontend/login.php"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
+                    <li><a href="/frontend/registro.php"><i class="fas fa-user-plus"></i> Registrarse</a></li>
+                <?php endif; ?>
             </ul>
             <button class="close-btn" id="close-menu-btn">&times;</button>
         </div>
@@ -78,5 +100,3 @@
             }
         });
     </script>
-</body>
-</html>
