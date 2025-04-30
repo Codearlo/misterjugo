@@ -1,14 +1,19 @@
+ini_set('display_errors', 1); 
+ini_set('display_startup_errors', 1); 
+error_reporting(E_ALL);
+
 <?php
 
 session_start();
 
 // Incluir manualmente las clases básicas de Google API
-require_once __DIR__ . '/../google-api/src/Client.php';
-require_once __DIR__ . '/../google-api/src/Http/Request.php';
-require_once __DIR__ . '/../google-api/src/Http/Curl.php';
-require_once __DIR__ . '/../google-api/src/Service/Resource.php';
-require_once __DIR__ . '/../google-api/src/Service/ServiceResource.php';
-require_once __DIR__ . '/../google-api/src/Service/Oauth2.php';
+require_once __DIR__ . '/google-api/src/Client.php';
+require_once __DIR__ . '/google-api/src/Http/Request.php';
+require_once __DIR__ . '/google-api/src/Http/Curl.php';
+require_once __DIR__ . '/google-api/src/Config.php';
+require_once __DIR__ . '/google-api/src/Service/Resource.php';
+require_once __DIR__ . '/google-api/src/Service/ServiceResource.php';
+require_once __DIR__ . '/google-api/src/Service/Oauth2.php';
 
 // Incluir conexión a la base de datos
 require_once __DIR__ . '/conexion.php';
@@ -77,3 +82,4 @@ if (isset($_GET['code'])) {
 $authUrl = $client->createAuthUrl();
 header('Location: ' . filter_var($authUrl, FILTER_SANITIZE_URL));
 exit();
+?>

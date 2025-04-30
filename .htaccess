@@ -1,4 +1,5 @@
 RewriteEngine On
+
 # Solo redirigir la página principal
 RewriteRule ^$ frontend/index.php [L]
 
@@ -13,4 +14,3 @@ RewriteRule ^login$ frontend/login.php [L]
 RewriteRule ^registro$ frontend/registro.php [L]
 RewriteRule ^pedidos$ frontend/pedidos.php [L]
 RewriteRule ^perfil$ frontend/perfil.php [L]
-# Añade más según necesites
