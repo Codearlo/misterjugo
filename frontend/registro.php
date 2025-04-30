@@ -12,7 +12,7 @@ header("Expires: 0"); // Proxies.
     <title>Registro - MisterJuco</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <link rel="stylesheet" href="css/form-styles.css">
+    <link rel="stylesheet" href="css/form_styles.css">
 </head>
 <body class="auth-page">
     <!-- Contenido Principal -->
