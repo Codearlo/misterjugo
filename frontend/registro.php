@@ -51,6 +51,14 @@
         <button type="submit">Registrarse</button>
     </form>
     <p>¿Ya tienes cuenta? <a href="login.php">Inicia Sesión</a></p>
+
+    <!-- Botón para iniciar con Google -->
+    <br><hr><br>
+    <a href="backend/google_callback.php">
+        <button type="button" style="background-color:#db4437; color:white;">
+            🔐 Iniciar con Google
+        </button>
+    </a>
 </div>
 
 <script src="js/auth.js"></script>
