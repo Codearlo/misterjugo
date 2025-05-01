@@ -69,42 +69,42 @@ include 'includes/header.php';
 
 <!-- Inicio de la página de direcciones con la clase específica -->
 <div class="direcciones-page">
-    <!-- Notificaciones fijas que no afectan el layout -->
-    <?php if (!empty($exito_direccion)): ?>
-        <div class="notification success">
-            <i class="fas fa-check-circle"></i>
-            <div>
-                <p><?php echo $exito_direccion; ?></p>
-            </div>
-        </div>
-    <?php endif; ?>
-    
-    <?php if (!empty($error_direccion)): ?>
-        <div class="notification error">
-            <i class="fas fa-exclamation-circle"></i>
-            <div>
-                <p><?php echo $error_direccion; ?></p>
-            </div>
-        </div>
-    <?php endif; ?>
-    
-    <?php if (!empty($errores_direccion)): ?>
-        <div class="notification error">
-            <i class="fas fa-exclamation-circle"></i>
-            <div>
-                <?php foreach($errores_direccion as $error): ?>
-                    <p><?php echo $error; ?></p>
-                <?php endforeach; ?>
-            </div>
-        </div>
-    <?php endif; ?>
-
     <div class="main-content">
         <div class="container">
             <div class="page-header">
                 <h2 class="page-title">Mis Direcciones</h2>
                 <p class="page-subtitle">Administra tus direcciones de entrega</p>
             </div>
+            
+            <!-- Notificaciones debajo del título -->
+            <?php if (!empty($exito_direccion)): ?>
+                <div class="notification success">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <p><?php echo $exito_direccion; ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($error_direccion)): ?>
+                <div class="notification error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <p><?php echo $error_direccion; ?></p>
+                    </div>
+                </div>
+            <?php endif; ?>
+            
+            <?php if (!empty($errores_direccion)): ?>
+                <div class="notification error">
+                    <i class="fas fa-exclamation-circle"></i>
+                    <div>
+                        <?php foreach($errores_direccion as $error): ?>
+                            <p><?php echo $error; ?></p>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+            <?php endif; ?>
             
             <div class="section-container">
                 <?php if (count($direcciones) > 0): ?>
@@ -130,7 +130,7 @@ include 'includes/header.php';
                                         <i class="fas fa-edit"></i> Editar
                                     </button>
                                     <?php if (count($direcciones) > 1 && !$direccion['es_predeterminada']): ?>
-                                        <button class="btn-delete" data-id="<?php echo $direccion['id']; ?>">
+                                        <button class="btn-delete" data-id="<?php echo $direccion['id']; ?>" data-address="<?php echo htmlspecialchars($direccion['calle']); ?>">
                                             <i class="fas fa-trash"></i> Eliminar
                                         </button>
                                     <?php endif; ?>
@@ -216,6 +216,24 @@ include 'includes/header.php';
             </div>
         </div>
     </div>
+    
+    <!-- Modal de confirmación para eliminar dirección -->
+    <div class="confirmation-modal" id="delete-confirmation-modal">
+        <div class="confirmation-content">
+            <div class="confirmation-header">
+                <h3>Eliminar Dirección</h3>
+                <button class="confirmation-close">&times;</button>
+            </div>
+            <div class="confirmation-body">
+                <p>¿Estás seguro de que deseas eliminar esta dirección?</p>
+                <p id="address-to-delete"></p>
+            </div>
+            <div class="confirmation-actions">
+                <button type="button" class="btn-cancel-delete">Cancelar</button>
+                <button type="button" class="btn-confirm-delete">Eliminar</button>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- Fin de la página de direcciones -->
 
@@ -228,10 +246,18 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnAddAddress = document.getElementById('btn-add-address');
     const btnAddFirstAddress = document.getElementById('btn-add-first-address');
     const addressModal = document.getElementById('address-modal');
+    const deleteConfirmationModal = document.getElementById('delete-confirmation-modal');
     const closeModal = document.querySelector('.close-modal');
+    const closeConfirmation = document.querySelector('.confirmation-close');
     const btnCancel = document.querySelector('.btn-cancel');
+    const btnCancelDelete = document.querySelector('.btn-cancel-delete');
+    const btnConfirmDelete = document.querySelector('.btn-confirm-delete');
     const modalTitle = document.getElementById('modal-title');
     const addressForm = document.getElementById('address-form');
+    const addressToDeleteText = document.getElementById('address-to-delete');
+    
+    // Variable para almacenar el ID de la dirección a eliminar
+    let addressIdToDelete = null;
     
     // Detectar si es móvil y añadir clase
     if (window.innerWidth <= 480) {
@@ -246,7 +272,6 @@ document.addEventListener('DOMContentLoaded', function() {
         // Si hay un ID, cargar los datos para edición
         if (addressId) {
             // Aquí iría una petición AJAX para obtener los datos
-            // Por ahora simulamos que los obtenemos de los atributos data
             fetch(`/backend/obtener_direccion.php?id=${addressId}`)
                 .then(response => response.json())
                 .then(data => {
@@ -272,10 +297,25 @@ document.addEventListener('DOMContentLoaded', function() {
         document.body.style.overflow = 'hidden'; // Evitar scroll
     }
     
+    // Función para abrir el modal de confirmación de eliminación
+    function openDeleteConfirmationModal(addressId, addressText) {
+        addressIdToDelete = addressId;
+        addressToDeleteText.textContent = addressText;
+        deleteConfirmationModal.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Evitar scroll
+    }
+    
     // Función para cerrar el modal
     function closeModalFunction() {
         addressModal.classList.remove('active');
         document.body.style.overflow = ''; // Restaurar scroll
+    }
+    
+    // Función para cerrar el modal de confirmación
+    function closeConfirmationModal() {
+        deleteConfirmationModal.classList.remove('active');
+        document.body.style.overflow = ''; // Restaurar scroll
+        addressIdToDelete = null;
     }
     
     // Eventos para abrir modal
@@ -298,15 +338,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
     
-    // Eventos para eliminar dirección
+    // Eventos para mostrar confirmación de eliminación
     btnDeleteAddresses.forEach(btn => {
         btn.addEventListener('click', function() {
             const addressId = this.getAttribute('data-id');
-            if (confirm('¿Estás seguro de que deseas eliminar esta dirección?')) {
-                // Aquí iría el código para eliminar la dirección
-                window.location.href = `/backend/eliminar_direccion.php?id=${addressId}`;
-            }
+            const addressText = this.getAttribute('data-address');
+            openDeleteConfirmationModal(addressId, addressText);
         });
+    });
+    
+    // Evento para confirmar eliminación
+    btnConfirmDelete.addEventListener('click', function() {
+        if (addressIdToDelete) {
+            window.location.href = `/backend/eliminar_direccion.php?id=${addressIdToDelete}`;
+        }
     });
     
     // Eventos para establecer dirección predeterminada
@@ -317,14 +362,22 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
     
-    // Eventos para cerrar modal
+    // Eventos para cerrar modales
     closeModal.addEventListener('click', closeModalFunction);
     btnCancel.addEventListener('click', closeModalFunction);
+    closeConfirmation.addEventListener('click', closeConfirmationModal);
+    btnCancelDelete.addEventListener('click', closeConfirmationModal);
     
     // Cerrar modal haciendo clic fuera del contenido
     addressModal.addEventListener('click', function(e) {
         if (e.target === addressModal) {
             closeModalFunction();
+        }
+    });
+    
+    deleteConfirmationModal.addEventListener('click', function(e) {
+        if (e.target === deleteConfirmationModal) {
+            closeConfirmationModal();
         }
     });
     
@@ -334,7 +387,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Podríamos agregar validación adicional aquí si fuera necesario
     });
     
-    // Si hay notificaciones, ocultarlas después de un tiempo
+    // Si hay notificaciones, mostrarlas y ocultarlas después de un tiempo
     const notifications = document.querySelectorAll('.notification');
     if (notifications.length > 0) {
         // Mostrar después de un pequeño retraso para evitar problemas de layout

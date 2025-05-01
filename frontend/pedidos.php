@@ -1,14 +1,14 @@
 <?php
 session_start();
 
-// Verificar si el usuario está autenticado
+// Verificar si el usuario está autenticado (ajusta según tu sistema de sesión)
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: login");
+    header("Location: ../login.php"); // Ajusta la ruta según tu estructura
     exit();
 }
 
 // Incluir conexión a la base de datos
-require_once 'config.php';
+require_once '../backend/conexion.php'; // Ruta corregida
 
 // Manejar actualización de estado
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['actualizar_estado'])) {
@@ -39,6 +39,7 @@ $result = mysqli_query($conn, $sql);
     <meta charset="UTF-8">
     <title>Pedidos - Restaurante</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="css/pedidos.css">
 </head>
 <body>
     <div class="container mt-5">

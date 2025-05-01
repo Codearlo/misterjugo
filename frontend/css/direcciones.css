@@ -92,14 +92,13 @@
   gap: 15px;
   transition: opacity 0.5s ease;
   box-shadow: var(--dir-shadow-sm);
-  position: fixed;
-  top: 20px;
-  left: 50%;
-  transform: translateX(-50%);
-  z-index: 2000;
-  width: 90%;
-  max-width: 600px;
+  width: 100%;
   opacity: 0;
+  background-color: var(--dir-white);
+  border-left: 4px solid transparent;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .direcciones-page .notification i {
@@ -108,13 +107,13 @@
 
 .direcciones-page .notification.success {
   background-color: rgba(76, 175, 80, 0.15);
-  border-left: 4px solid var(--dir-secondary);
+  border-left-color: var(--dir-secondary);
   color: var(--dir-secondary-dark);
 }
 
 .direcciones-page .notification.error {
   background-color: rgba(244, 67, 54, 0.15);
-  border-left: 4px solid #F44336;
+  border-left-color: #F44336;
   color: #D32F2F;
 }
 
@@ -555,6 +554,124 @@
   background-color: var(--dir-primary-dark);
 }
 
+/* Estilos para el modal de confirmación de eliminación */
+.direcciones-page .confirmation-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  justify-content: center;
+  align-items: center;
+}
+
+.direcciones-page .confirmation-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+.direcciones-page .confirmation-content {
+  background: var(--dir-white);
+  border-radius: var(--dir-radius);
+  max-width: 400px;
+  width: 90%;
+  padding: 25px;
+  box-shadow: var(--dir-shadow-md);
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.direcciones-page .confirmation-modal.active .confirmation-content {
+  transform: translateY(0);
+}
+
+.direcciones-page .confirmation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.direcciones-page .confirmation-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--dir-text-dark);
+  margin: 0;
+}
+
+.direcciones-page .confirmation-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--dir-text-light);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+
+.direcciones-page .confirmation-body {
+  margin-bottom: 20px;
+  color: var(--dir-text-medium);
+}
+
+.direcciones-page .confirmation-body p {
+  margin-bottom: 8px;
+}
+
+.direcciones-page .confirmation-body #address-to-delete {
+  font-weight: 500;
+  color: var(--dir-text-dark);
+  padding: 8px 12px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.direcciones-page .confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.direcciones-page .btn-cancel-delete {
+  background-color: #F5F5F5;
+  color: var(--dir-text-medium);
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.direcciones-page .btn-confirm-delete {
+  background-color: #E53935;
+  color: var(--dir-white);
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.direcciones-page .btn-cancel-delete:hover {
+  background-color: #EBEBEB;
+}
+
+.direcciones-page .btn-confirm-delete:hover {
+  background-color: #D32F2F;
+}
+
 /* Media queries */
 @media (max-width: 768px) {
   .direcciones-page .form-row {
@@ -567,12 +684,15 @@
   
   .direcciones-page .btn-primary,
   .direcciones-page .btn-save,
-  .direcciones-page .btn-cancel {
+  .direcciones-page .btn-cancel,
+  .direcciones-page .btn-confirm-delete,
+  .direcciones-page .btn-cancel-delete {
     width: 100%;
     justify-content: center;
   }
   
-  .direcciones-page .form-actions {
+  .direcciones-page .form-actions,
+  .direcciones-page .confirmation-actions {
     flex-direction: column;
   }
   
@@ -599,7 +719,8 @@
     justify-content: center;
   }
   
-  .direcciones-page .modal-content {
+  .direcciones-page .modal-content,
+  .direcciones-page .confirmation-content {
     padding: 20px;
     width: 95%;
   }
