@@ -131,8 +131,8 @@ include 'includes/header.php';
                             <i class="fas fa-shopping-basket"></i>
                             <h3>No tienes pedidos</h3>
                             <p>Aquí aparecerán los pedidos que realices</p>
-                            <a href="/productos" class="btn-primary">
-                                <i class="fas fa-shopping-cart"></i> Ir a la tienda
+                            <a href="/productos" class="btn-order-now">
+                                <i class="fas fa-shopping-cart"></i> Ordena ahora
                             </a>
                         </div>
                     </div>
