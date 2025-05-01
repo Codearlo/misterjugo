@@ -57,7 +57,7 @@ function getEstadoFormateado($estado) {
 include 'includes/header.php';
 ?>
 
-<link rel="stylesheet" href="css/pedidos.css">
+<link rel="stylesheet" href="/css/pedidos.css">
 
 <!-- Inicio de la página de pedidos con la clase específica -->
 <div class="pedidos-page">
@@ -65,6 +65,7 @@ include 'includes/header.php';
         <div class="container">
             <div class="page-header">
                 <h2 class="page-title">Mis Pedidos</h2>
+                <div class="title-underline"></div>
                 <p class="page-subtitle">Historial de tus pedidos y su estado</p>
             </div>
             
@@ -331,7 +332,8 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Eventos para abrir modal de detalles
     btnViewDetails.forEach(btn => {
-        btn.addEventListener('click', function() {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation();
             const orderId = this.getAttribute('data-id');
             openDetailsModal(orderId);
         });
