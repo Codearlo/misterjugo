@@ -165,3 +165,728 @@
     justify-content: space-between;
     background-color: rgba(255, 122, 0, 0.03);
   }
+  
+  .pedidos-page .order-title {
+    font-size: 1.15rem;
+    font-weight: 600;
+    color: var(--ped-text-dark);
+    margin: 0;
+  }
+  
+  .pedidos-page .order-date {
+    font-size: 0.85rem;
+    color: var(--ped-text-medium);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  
+  .pedidos-page .order-date i {
+    color: var(--ped-primary);
+  }
+  
+  /* Contenido del pedido */
+  .pedidos-page .order-content {
+    padding: 15px 20px;
+  }
+  
+  .pedidos-page .order-info {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  
+  .pedidos-page .order-status,
+  .pedidos-page .order-total {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .pedidos-page .info-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--ped-text-medium);
+  }
+  
+  .pedidos-page .total-amount {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--ped-primary);
+  }
+  
+  /* Badges de estado */
+  .pedidos-page .status-badge {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: white;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+  }
+  
+  .pedidos-page .status-badge.pending {
+    background-color: var(--ped-pending);
+  }
+  
+  .pedidos-page .status-badge.processing {
+    background-color: var(--ped-processing);
+  }
+  
+  .pedidos-page .status-badge.completed {
+    background-color: var(--ped-completed);
+  }
+  
+  .pedidos-page .status-badge.cancelled {
+    background-color: var(--ped-cancelled);
+  }
+  
+  /* Acciones del pedido */
+  .pedidos-page .order-actions {
+    padding: 15px 20px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    border-top: 1px solid rgba(0,0,0,0.05);
+    background-color: rgba(255, 122, 0, 0.01);
+    justify-content: center;
+  }
+  
+  .pedidos-page .btn-view-details,
+  .pedidos-page .btn-cancel-order {
+    padding: 8px 16px;
+    border-radius: 6px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    border: none;
+    cursor: pointer;
+  }
+  
+  .pedidos-page .btn-view-details {
+    background-color: var(--ped-primary);
+    color: var(--ped-white);
+  }
+  
+  .pedidos-page .btn-view-details:hover {
+    background-color: var(--ped-primary-dark);
+  }
+  
+  .pedidos-page .btn-cancel-order {
+    background-color: #F5F5F5;
+    color: #E53935;
+    border: 1px solid rgba(229, 57, 53, 0.2);
+  }
+  
+  .pedidos-page .btn-cancel-order:hover {
+    background-color: rgba(229, 57, 53, 0.1);
+  }
+  
+  /* Estado vacío */
+  .pedidos-page .no-orders {
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    max-width: 500px;
+  }
+  
+  .pedidos-page .empty-state {
+    padding: 50px 30px;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+    background: #FFFFFF;
+    text-align: center;
+    width: 100%;
+  }
+  
+  .pedidos-page .empty-state i {
+    font-size: 3rem;
+    color: #FF8C00;
+    margin-bottom: 20px;
+    opacity: 0.9;
+  }
+  
+  .pedidos-page .empty-state h3 {
+    font-size: 1.5rem;
+    margin-bottom: 10px;
+    color: #333333;
+    font-weight: 600;
+  }
+  
+  .pedidos-page .empty-state p {
+    color: #666666;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+  }
+  
+  /* Botón de Ordena ahora */
+  .pedidos-page .btn-order-now {
+    background-color: #FF8C00;
+    color: #FFFFFF;
+    padding: 10px 16px;
+    border-radius: 4px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    box-shadow: none;
+    text-transform: lowercase;
+  }
+  
+  /* Estilo específico para el icono de carrito */
+  .pedidos-page .cart-icon {
+    width: 20px;
+    height: 20px;
+    color: #FFFFFF;
+  }
+  
+  /* Hover estado */
+  .pedidos-page .btn-order-now:hover {
+    background-color: #FF7B00;
+    transform: none;
+    box-shadow: none;
+  }
+  
+  .pedidos-page .btn-primary {
+    background-color: var(--ped-primary);
+    color: var(--ped-white);
+    padding: 14px 30px;
+    border-radius: 6px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    transition: all 0.2s ease;
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    text-decoration: none;
+  }
+  
+  .pedidos-page .btn-primary:hover {
+    background-color: var(--ped-primary-dark);
+    transform: translateY(-2px);
+    box-shadow: var(--ped-shadow-sm);
+  }
+  
+  /* Estilos del modal */
+  .pedidos-page .modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .pedidos-page .modal.active {
+    display: flex;
+    opacity: 1;
+  }
+  
+  .pedidos-page .modal-content {
+    background: var(--ped-white);
+    border-radius: var(--ped-radius);
+    max-width: 650px;
+    width: 90%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--ped-shadow-md);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .pedidos-page .modal.active .modal-content {
+    transform: translateY(0);
+  }
+  
+  .pedidos-page .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 30px;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+    position: sticky;
+    top: 0;
+    background: var(--ped-white);
+    z-index: 10;
+  }
+  
+  .pedidos-page .modal-header h3 {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--ped-text-dark);
+    margin: 0;
+  }
+  
+  .pedidos-page .modal-body {
+    padding: 25px 30px 30px;
+    overflow-y: auto;
+  }
+  
+  .pedidos-page .close-modal {
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    color: var(--ped-text-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .pedidos-page .close-modal:hover {
+    color: var(--ped-text-dark);
+  }
+  
+  /* Estilos para el contenido del modal de detalles */
+  .pedidos-page .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: var(--ped-text-medium);
+  }
+  
+  .pedidos-page .loading i {
+    font-size: 2rem;
+    color: var(--ped-primary);
+    margin-bottom: 15px;
+  }
+  
+  .pedidos-page .error-message {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+    color: #D32F2F;
+  }
+  
+  .pedidos-page .error-message i {
+    font-size: 2rem;
+    margin-bottom: 15px;
+  }
+  
+  /* Estilos para el resumen del pedido */
+  .pedidos-page .order-summary {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 25px;
+  }
+  
+  .pedidos-page .order-info-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  
+  .pedidos-page .info-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  
+  .pedidos-page .info-value {
+    font-weight: 500;
+    color: var(--ped-text-dark);
+  }
+  
+  .pedidos-page .status-text {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: white;
+  }
+  
+  .pedidos-page .status-text.pendiente {
+    background-color: var(--ped-pending);
+  }
+  
+  .pedidos-page .status-text.procesando {
+    background-color: var(--ped-processing);
+  }
+  
+  .pedidos-page .status-text.completado {
+    background-color: var(--ped-completed);
+  }
+  
+  .pedidos-page .status-text.cancelado {
+    background-color: var(--ped-cancelled);
+  }
+  
+  /* Estilos para la lista de productos */
+  .pedidos-page .order-items {
+    margin-bottom: 25px;
+  }
+  
+  .pedidos-page .order-items h4 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--ped-text-dark);
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  
+  .pedidos-page .items-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+  }
+  
+  .pedidos-page .order-item {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    border-radius: 8px;
+    background-color: #f8f8f8;
+    position: relative;
+  }
+  
+  .pedidos-page .item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 6px;
+    overflow: hidden;
+    margin-right: 15px;
+    background-color: var(--ped-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid rgba(0,0,0,0.06);
+  }
+  
+  .pedidos-page .item-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  
+  .pedidos-page .item-details {
+    flex: 1;
+  }
+  
+  .pedidos-page .item-name {
+    font-weight: 600;
+    margin: 0 0 5px 0;
+    font-size: 1rem;
+    color: var(--ped-text-dark);
+  }
+  
+  .pedidos-page .item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    font-size: 0.85rem;
+    color: var(--ped-text-medium);
+  }
+  
+  .pedidos-page .item-total {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: var(--ped-primary);
+    margin-left: 10px;
+  }
+  
+  /* Estilos para los totales */
+  .pedidos-page .order-totals {
+    background-color: #f8f8f8;
+    border-radius: 8px;
+    padding: 20px;
+  }
+  
+  .pedidos-page .total-line {
+    display: flex;
+    justify-content: space-between;
+    padding: 8px 0;
+    font-size: 0.95rem;
+  }
+  
+  .pedidos-page .total-label {
+    color: var(--ped-text-medium);
+  }
+  
+  .pedidos-page .total-value {
+    font-weight: 500;
+    color: var(--ped-text-dark);
+  }
+  
+  .pedidos-page .total-line.grand-total {
+    margin-top: 10px;
+    padding-top: 15px;
+    border-top: 2px dashed rgba(0,0,0,0.1);
+    font-size: 1.2rem;
+  }
+  
+  .pedidos-page .total-line.grand-total .total-label {
+    font-weight: 600;
+    color: var(--ped-text-dark);
+  }
+  
+  .pedidos-page .total-line.grand-total .total-value {
+    font-weight: 700;
+    color: var(--ped-primary);
+  }
+  
+  /* Estilos para el modal de confirmación de cancelación */
+  .pedidos-page .confirmation-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  .pedidos-page .confirmation-modal.active {
+    display: flex;
+    opacity: 1;
+  }
+  
+  .pedidos-page .confirmation-content {
+    background: var(--ped-white);
+    border-radius: var(--ped-radius);
+    max-width: 400px;
+    width: 90%;
+    padding: 25px;
+    box-shadow: var(--ped-shadow-md);
+    position: relative;
+    transform: translateY(20px);
+    transition: transform 0.3s ease;
+  }
+  
+  .pedidos-page .confirmation-modal.active .confirmation-content {
+    transform: translateY(0);
+  }
+  
+  .pedidos-page .confirmation-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 15px;
+  }
+  
+  .pedidos-page .confirmation-header h3 {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: var(--ped-text-dark);
+    margin: 0;
+  }
+  
+  .pedidos-page .confirmation-close {
+    background: none;
+    border: none;
+    font-size: 1.2rem;
+    color: var(--ped-text-light);
+    cursor: pointer;
+    transition: color 0.2s ease;
+    padding: 0;
+    line-height: 1;
+  }
+  
+  .pedidos-page .confirmation-body {
+    margin-bottom: 20px;
+    color: var(--ped-text-medium);
+  }
+  
+  .pedidos-page .confirmation-body p {
+    margin-bottom: 8px;
+  }
+  
+  .pedidos-page .confirmation-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+  }
+  
+  .pedidos-page .btn-cancel-modal {
+    background-color: #F5F5F5;
+    color: var(--ped-text-medium);
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .pedidos-page .btn-confirm-cancel {
+    background-color: #E53935;
+    color: var(--ped-white);
+    padding: 10px 20px;
+    border-radius: 6px;
+    border: none;
+    font-weight: 500;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    cursor: pointer;
+  }
+  
+  .pedidos-page .btn-cancel-modal:hover {
+    background-color: #EBEBEB;
+  }
+  
+  .pedidos-page .btn-confirm-cancel:hover {
+    background-color: #D32F2F;
+  }
+  
+  /* Media queries */
+  @media (max-width: 768px) {
+    .pedidos-page .empty-state {
+      padding: 40px 20px;
+    }
+    
+    .pedidos-page .empty-state h3 {
+      font-size: 1.6rem;
+    }
+    
+    .pedidos-page .empty-state p {
+      font-size: 1rem;
+    }
+    
+    .pedidos-page .btn-order-now,
+    .pedidos-page .btn-primary,
+    .pedidos-page .btn-view-details,
+    .pedidos-page .btn-cancel-order,
+    .pedidos-page .btn-confirm-cancel,
+    .pedidos-page .btn-cancel-modal {
+      width: 100%;
+      justify-content: center;
+    }
+    
+    .pedidos-page .btn-order-now {
+      font-size: 0.9rem;
+      padding: 8px 16px;
+    }
+    
+    .pedidos-page .confirmation-actions {
+      flex-direction: column;
+    }
+    
+    .pedidos-page .order-card {
+      width: 100%;
+    }
+    
+    .pedidos-page .order-actions {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+    
+    .pedidos-page .order-info {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+    
+    .pedidos-page .item-meta {
+      flex-direction: column;
+      gap: 5px;
+    }
+    
+    .pedidos-page .page-title {
+      font-size: 2.2rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .pedidos-page .main-content {
+      padding: 40px 0;
+    }
+    
+    .pedidos-page .modal-content,
+    .pedidos-page .confirmation-content {
+      padding: 15px;
+      width: 95%;
+    }
+    
+    .pedidos-page .modal-header {
+      padding: 15px;
+    }
+    
+    .pedidos-page .modal-body {
+      padding: 15px;
+    }
+    
+    .pedidos-page .page-title {
+      font-size: 1.8rem;
+    }
+    
+    .pedidos-page .page-subtitle {
+      font-size: 1rem;
+    }
+    
+    .pedidos-page .notification {
+      width: 95%;
+      padding: 12px 15px;
+    }
+    
+    .pedidos-page .order-item {
+      flex-direction: column;
+      align-items: flex-start;
+    }
+    
+    .pedidos-page .item-image {
+      margin-bottom: 10px;
+      margin-right: 0;
+    }
+    
+    .pedidos-page .item-total {
+      margin-left: 0;
+      margin-top: 10px;
+      align-self: flex-end;
+    }
+    
+    .pedidos-page .empty-state {
+      padding: 30px 20px;
+    }
+    
+    .pedidos-page .empty-state i {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+    
+    .pedidos-page .empty-state h3 {
+      font-size: 1.4rem;
+    }
+    
+    .pedidos-page .btn-order-now {
+      padding: 8px 16px;
+      font-size: 0.85rem;
+    }
+  }
