@@ -110,7 +110,7 @@ if(isset($_COOKIE['logout_message'])) {
             </nav>
 
             <div class="actions">
-                <a href="/ordenar" class="btn-order">Ordenar</a>
+                <a href="/productos" class="btn-order">Ordenar</a>
 
                 <!-- Icono de cuenta con diferentes opciones según el estado de inicio de sesión -->
                 <div class="user-icon" id="user-menu-toggle">
