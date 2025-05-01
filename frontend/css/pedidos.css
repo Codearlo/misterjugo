@@ -1,227 +1,634 @@
-/* pedidos.css - Estilos para la página de pedidos */
+/* Estilos para la página de pedidos - MisterJugo 
+ * CSS mejorado con estilo coherente para restaurante de jugos
+ * Con encapsulamiento específico para evitar conflictos
+ */
+/* Para usar este CSS, añade la clase "pedidos-page" al elemento body o al div principal */
 
-/* Estilos generales */
 .pedidos-page {
-    background-color: #f8f9fa;
-    padding-bottom: 2rem;
+  /* Variables locales */
+  --ped-primary: #FF7A00;           /* Naranja vibrante (jugo) */
+  --ped-primary-dark: #E56D00;      /* Naranja oscuro */
+  --ped-primary-light: #FFA649;     /* Naranja claro */
+  --ped-secondary: #4CAF50;         /* Verde lima (naturaleza) */
+  --ped-secondary-dark: #388E3C;    /* Verde oscuro */
+  --ped-secondary-light: #81C784;   /* Verde claro */
+  --ped-bg-light: #F9F7F2;          /* Beige claro (orgánico) */
+  --ped-text-dark: #2D2A26;         /* Marrón oscuro */
+  --ped-text-medium: #5F5B57;       /* Marrón medio */
+  --ped-text-light: #ADA79E;        /* Marrón claro */
+  --ped-white: #FFFFFF;
+  --ped-shadow-sm: 0 2px 6px rgba(0,0,0,0.1);
+  --ped-shadow-md: 0 4px 10px rgba(0,0,0,0.12);
+  --ped-radius: 12px;
+  --ped-transition: 0.3s ease;
+  color: var(--ped-text-dark);
 }
 
-.pedidos-page.mobile-view {
-    padding: 1rem;
+/* Contenedor principal */
+.pedidos-page .main-content {
+  padding: 40px 0;
+  min-height: calc(100vh - 80px);
+  background-color: var(--ped-bg-light);
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(255, 165, 0, 0.03) 0%, transparent 30%),
+    radial-gradient(circle at 90% 90%, rgba(76, 175, 80, 0.03) 0%, transparent 30%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-/* Tarjetas de pedido */
-.order-card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
-    padding: 1.5rem;
-    margin-bottom: 1.5rem;
-    transition: transform 0.3s ease;
+/* Container */
+.pedidos-page .container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+  margin: 0 auto;
 }
 
-.order-card:hover {
-    transform: translateY(-5px);
+/* Encabezado de página */
+.pedidos-page .page-header {
+  margin-bottom: 30px;
+  text-align: center;
+  position: relative;
+}
+.pedidos-page .page-title {
+  font-family: inherit;
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: var(--ped-text-dark);
+  margin-bottom: 8px;
+  position: relative;
+  display: inline-block;
+}
+.pedidos-page .page-title::after {
+  content: '';
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 3px;
+  background: var(--ped-primary);
+  border-radius: 3px;
+}
+.pedidos-page .page-subtitle {
+  color: var(--ped-text-medium);
+  font-size: 1.1rem;
+  font-weight: 400;
+}
+
+/* Notificaciones */
+.pedidos-page .notification {
+  padding: 15px 20px;
+  border-radius: var(--ped-radius);
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: opacity 0.5s ease;
+  box-shadow: var(--ped-shadow-sm);
+  width: 100%;
+  opacity: 0;
+  background-color: var(--ped-white);
+  border-left: 4px solid transparent;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+.pedidos-page .notification i {
+  font-size: 1.2rem;
+}
+.pedidos-page .notification.success {
+  background-color: rgba(76, 175, 80, 0.15);
+  border-left-color: var(--ped-secondary);
+  color: var(--ped-secondary-dark);
+}
+.pedidos-page .notification.error {
+  background-color: rgba(244, 67, 54, 0.15);
+  border-left-color: #F44336;
+  color: #D32F2F;
+}
+.pedidos-page .notification p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Contenedor de sección */
+.pedidos-page .section-container {
+  width: 100%;
+}
+
+/* Lista de pedidos */
+.pedidos-page .order-list {
+  display: flex;
+  flex-direction: column;
+  gap: 25px;
+  margin-top: 20px;
+  width: 100%;
+}
+
+/* Tarjeta de pedido */
+.pedidos-page .order-card {
+  background: var(--ped-white);
+  border-radius: var(--ped-radius);
+  overflow: hidden;
+  transition: all var(--ped-transition);
+  box-shadow: var(--ped-shadow-sm);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+.pedidos-page .order-card:hover {
+  box-shadow: var(--ped-shadow-md);
+  transform: translateY(-3px);
 }
 
 /* Encabezado del pedido */
-.order-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
+.pedidos-page .order-header {
+  padding: 15px 20px;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: rgba(255, 122, 0, 0.03);
+  flex-wrap: wrap;
 }
-
-.order-id {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #2c3e50;
+.pedidos-page .order-id {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--ped-text-dark);
+  display: flex;
+  align-items: center;
 }
-
-.order-id span {
-    color: #7f8c8d;
-    margin-right: 0.5rem;
+.pedidos-page .order-id span {
+  color: var(--ped-primary);
+  margin-right: 5px;
 }
-
-.order-date {
-    color: #34495e;
-    margin-right: 1rem;
+.pedidos-page .order-date {
+  color: var(--ped-text-medium);
+  margin-right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-
-.order-status {
-    font-weight: 500;
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-    font-size: 0.9rem;
-    display: inline-block;
-    text-align: center;
-    min-width: 120px;
+.pedidos-page .order-status {
+  font-weight: 500;
+  padding: 5px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  background-color: var(--ped-primary);
+  color: var(--ped-white);
+  text-align: center;
+  min-width: 120px;
+  margin-top: 8px;
 }
-
-.status-pendiente { background-color: #ffeaa7; color: #d35400; }
-.status-en preparación { background-color: #fab1a0; color: #c0392b; }
-.status-listo para entregar { background-color: #74b9ff; color: #2980b9; }
-.status-entregado { background-color: #55efc4; color: #27ae60; }
+.pedidos-page .order-status.status-pendiente {
+  background: linear-gradient(135deg, var(--ped-primary), var(--ped-primary-dark));
+}
+.pedidos-page .order-status.status-en-preparacion {
+  background: linear-gradient(135deg, #FFA726, #FB8C00);
+}
+.pedidos-page .order-status.status-listo {
+  background: linear-gradient(135deg, var(--ped-secondary-light), var(--ped-secondary));
+}
+.pedidos-page .order-status.status-entregado {
+  background: linear-gradient(135deg, #26A69A, #00796B);
+}
 
 /* Resumen del pedido */
-.order-summary {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 1rem;
-    flex-wrap: wrap;
+.pedidos-page .order-summary {
+  padding: 15px 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  margin: 10px 20px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
 }
-
-.item-count {
-    color: #7f8c8d;
-    font-size: 0.95rem;
+.pedidos-page .item-count {
+  color: var(--ped-text-medium);
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-
-.order-total {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: #2c3e50;
+.pedidos-page .order-total {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: var(--ped-text-dark);
+  display: flex;
+  align-items: center;
+  gap: 5px;
 }
-
-.order-total span {
-    color: #28a745;
+.pedidos-page .order-total span {
+  color: var(--ped-secondary);
 }
 
 /* Acciones del pedido */
-.order-actions {
-    display: flex;
-    gap: 1rem;
-    justify-content: flex-end;
-    flex-wrap: wrap;
+.pedidos-page .order-actions {
+  padding: 15px 20px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-top: 1px solid rgba(0,0,0,0.05);
+  background-color: rgba(255, 122, 0, 0.01);
+  justify-content: center;
 }
-
-.btn-view-details, .btn-cancel {
-    padding: 0.4rem 1rem;
-    font-size: 0.9rem;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 0.5rem;
+.pedidos-page .btn-view-details,
+.pedidos-page .btn-cancel {
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
 }
-
-.btn-view-details {
-    background-color: #3498db;
-    color: white;
-    border: none;
+.pedidos-page .btn-view-details {
+  background-color: var(--ped-primary);
+  color: var(--ped-white);
 }
-
-.btn-view-details:hover {
-    background-color: #2980b9;
+.pedidos-page .btn-view-details:hover {
+  background-color: var(--ped-primary-dark);
 }
-
-.btn-cancel {
-    background-color: #e74c3c;
-    color: white;
-    border: none;
+.pedidos-page .btn-cancel {
+  background-color: #F5F5F5;
+  color: #E53935;
+  border: 1px solid rgba(229, 57, 53, 0.2);
 }
-
-.btn-cancel:hover {
-    background-color: #c0392b;
+.pedidos-page .btn-cancel:hover {
+  background-color: rgba(229, 57, 53, 0.1);
 }
 
 /* Estado vacío */
-.no-orders .empty-state {
-    text-align: center;
-    padding: 3rem 1rem;
-    border: 2px dashed #e0e0e0;
-    border-radius: 10px;
-    background-color: #fafafa;
+.pedidos-page .no-orders {
+  padding: 40px 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.pedidos-page .empty-state {
+  padding: 40px;
+  border-radius: var(--ped-radius);
+  box-shadow: var(--ped-shadow-sm);
+  background: var(--ped-white);
+  text-align: center;
+  max-width: 450px;
+  width: 100%;
+}
+.pedidos-page .empty-state i {
+  font-size: 3rem;
+  color: var(--ped-primary);
+  margin-bottom: 20px;
+  opacity: 0.9;
+}
+.pedidos-page .empty-state h3 {
+  font-size: 1.5rem;
+  margin-bottom: 10px;
+  color: var(--ped-text-dark);
+  font-weight: 600;
+}
+.pedidos-page .empty-state p {
+  color: var(--ped-text-medium);
+  margin-bottom: 25px;
+  font-size: 0.95rem;
+}
+.pedidos-page .btn-primary {
+  background-color: var(--ped-primary);
+  color: var(--ped-white);
+  padding: 10px 24px;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+.pedidos-page .btn-primary:hover {
+  background-color: var(--ped-primary-dark);
 }
 
-.no-orders .empty-state i {
-    font-size: 4rem;
-    color: #ccc;
-    margin-bottom: 1rem;
+/* Estilos del modal */
+.pedidos-page .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  justify-content: center;
+  align-items: center;
+}
+.pedidos-page .modal.active {
+  display: flex;
+  opacity: 1;
+}
+.pedidos-page .modal-content {
+  background: var(--ped-white);
+  border-radius: var(--ped-radius);
+  max-width: 700px;
+  width: 90%;
+  padding: 30px;
+  box-shadow: var(--ped-shadow-md);
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+}
+.pedidos-page .modal.active .modal-content {
+  transform: translateY(0);
+}
+.pedidos-page .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+}
+.pedidos-page .modal-header h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--ped-text-dark);
+  margin: 0;
+}
+.pedidos-page .modal-body {
+  overflow-y: auto;
+  padding-right: 10px;
+  flex-grow: 1;
+}
+.pedidos-page .close-modal {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--ped-text-light);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.pedidos-page .close-modal:hover {
+  color: var(--ped-text-dark);
 }
 
-.no-orders h3 {
-    color: #34495e;
-    margin-bottom: 1rem;
+/* Información del pedido en modal */
+.pedidos-page .order-info {
+  margin-bottom: 20px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 15px;
+}
+.pedidos-page .order-info div {
+  padding: 12px;
+  background-color: #f8f8f8;
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+.pedidos-page .order-info strong {
+  color: var(--ped-text-medium);
+  margin-right: 5px;
 }
 
-.no-orders p {
-    color: #7f8c8d;
-    margin-bottom: 2rem;
+/* Tabla de items */
+.pedidos-page .items-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+.pedidos-page .items-table thead {
+  background-color: rgba(255, 122, 0, 0.05);
+}
+.pedidos-page .items-table th,
+.pedidos-page .items-table td {
+  padding: 12px 15px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  text-align: left;
+}
+.pedidos-page .items-table th {
+  font-weight: 600;
+  color: var(--ped-text-dark);
+  font-size: 0.95rem;
+  text-transform: uppercase;
+}
+.pedidos-page .items-table td {
+  font-size: 0.95rem;
 }
 
-/* Modal de detalles del pedido */
-.order-info {
+/* Acciones del modal */
+.pedidos-page .modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+.pedidos-page .modal-actions button {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.pedidos-page .modal-actions .btn-cancel {
+  background-color: #F5F5F5;
+  color: var(--ped-text-medium);
+}
+.pedidos-page .modal-actions .btn-cancel:hover {
+  background-color: #EBEBEB;
+}
+
+/* Modal de confirmación */
+.pedidos-page .confirmation-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  justify-content: center;
+  align-items: center;
+}
+.pedidos-page .confirmation-modal.active {
+  display: flex;
+  opacity: 1;
+}
+.pedidos-page .confirmation-content {
+  background: var(--ped-white);
+  border-radius: var(--ped-radius);
+  max-width: 400px;
+  width: 90%;
+  padding: 25px;
+  box-shadow: var(--ped-shadow-md);
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+.pedidos-page .confirmation-modal.active .confirmation-content {
+  transform: translateY(0);
+}
+.pedidos-page .confirmation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+.pedidos-page .confirmation-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--ped-text-dark);
+  margin: 0;
+}
+.pedidos-page .confirmation-close {
+  background: none;
+  border: none;
+  font-size: 1.2rem;
+  color: var(--ped-text-light);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+}
+.pedidos-page .confirmation-body {
+  margin-bottom: 20px;
+  color: var(--ped-text-medium);
+}
+.pedidos-page .confirmation-body p {
+  margin-bottom: 8px;
+}
+.pedidos-page .confirmation-body #order-to-cancel {
+  font-weight: 500;
+  color: var(--ped-text-dark);
+  padding: 8px 12px;
+  background-color: #f8f8f8;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+.pedidos-page .confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+.pedidos-page .btn-cancel-cancel {
+  background-color: #F5F5F5;
+  color: var(--ped-text-medium);
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.pedidos-page .btn-confirm-cancel {
+  background-color: #E53935;
+  color: var(--ped-white);
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.pedidos-page .btn-cancel-cancel:hover {
+  background-color: #EBEBEB;
+}
+.pedidos-page .btn-confirm-cancel:hover {
+  background-color: #D32F2F;
+}
+
+/* Media queries */
+@media (max-width: 992px) {
+  .pedidos-page .order-info {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .pedidos-page .order-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+  .pedidos-page .order-summary {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .pedidos-page .items-table thead {
+    display: none;
+  }
+  .pedidos-page .items-table tr {
+    display: block;
+    margin-bottom: 15px;
+    border: 1px solid rgba(0,0,0,0.08);
+    border-radius: 6px;
+    padding: 10px;
+  }
+  .pedidos-page .items-table td {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 1.5rem;
-    flex-wrap: wrap;
-    gap: 1rem;
-}
-
-.order-info div {
-    flex: 1 1 30%;
-}
-
-.order-info strong {
-    color: #7f8c8d;
-    margin-right: 0.5rem;
-}
-
-.status-tag {
-    padding: 0.3rem 0.8rem;
-    border-radius: 5px;
-    font-weight: 500;
-    display: inline-block;
-    min-width: 100px;
-    text-align: center;
-}
-
-.items-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin-bottom: 1.5rem;
-}
-
-.items-table thead {
-    background-color: #f1f1f1;
-}
-
-.items-table th,
-.items-table td {
-    padding: 0.75rem;
-    text-align: left;
-    border-bottom: 1px solid #dee2e6;
-}
-
-.items-table th {
+    padding: 8px 0;
+    border-bottom: none;
+  }
+  .pedidos-page .items-table td:last-child {
+    padding-bottom: 0;
+  }
+  .pedidos-page .items-table td::before {
+    content: attr(data-label);
     font-weight: 600;
-    color: #2c3e50;
+    color: var(--ped-text-medium);
+    margin-right: 10px;
+  }
+  .pedidos-page .order-actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+  .pedidos-page .btn-view-details,
+  .pedidos-page .btn-cancel {
+    width: 100%;
+    justify-content: center;
+  }
 }
 
-/* Responsive */
-@media (max-width: 768px) {
-    .order-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .order-summary {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 0.5rem;
-    }
-    
-    .order-actions {
-        justify-content: flex-start;
-    }
-    
-    .order-info {
-        flex-direction: column;
-        gap: 1rem;
-    }
+@media (max-width: 480px) {
+  .pedidos-page .order-info {
+    grid-template-columns: 1fr;
+  }
+  .pedidos-page .modal-content {
+    padding: 20px;
+    width: 95%;
+  }
+  .pedidos-page .page-title {
+    font-size: 1.8rem;
+  }
+  .pedidos-page .page-subtitle {
+    font-size: 1rem;
+  }
+  .pedidos-page .notification {
+    width: 95%;
+    padding: 12px 15px;
+  }
 }

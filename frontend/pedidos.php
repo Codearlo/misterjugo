@@ -3,7 +3,7 @@
 session_start();
 if (!isset($_SESSION['user_id'])) {
     // Si no está logueado, redirigir al login con un mensaje
-    $_SESSION['error_pedido'] = "Debes iniciar sesión para ver tus pedidos";
+    $_SESSION['error_login'] = "Debes iniciar sesión para acceder a tus pedidos";
     header("Location: /login");
     exit;
 }
@@ -26,44 +26,49 @@ unset($_SESSION['error_pedido']);
 // Obtener pedidos del usuario
 $pedidos = [];
 
-$stmt = $conn->prepare("SELECT * FROM pedidos WHERE USUARIO_ID = ? ORDER BY FECHA_PEDIDO DESC");
+$stmt = $conn->prepare("SELECT * FROM pedidos WHERE usuario_id = ? ORDER BY fecha_pedido DESC");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
 
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
-        // Obtener detalles del pedido
-        $detalles = [];
-        $stmt_detalles = $conn->prepare("SELECT pd.*, p.NOMBRE FROM pedido_detalle pd JOIN productos p ON pd.PRODUCTO_ID = p.ID WHERE pd.PEDIDO_ID = ?");
-        $stmt_detalles->bind_param("i", $row['ID']);
-        $stmt_detalles->execute();
-        $result_detalles = $stmt_detalles->get_result();
-        
-        while ($detalle = $result_detalles->fetch_assoc()) {
-            $detalles[] = $detalle;
-        }
-        
-        $row['detalles'] = $detalles;
         $pedidos[] = $row;
+    }
+}
+
+// Función para obtener estado formateado
+function getEstadoFormateado($estado) {
+    switch ($estado) {
+        case 'pendiente':
+            return '<span class="status-badge pending">Pendiente</span>';
+        case 'procesando':
+            return '<span class="status-badge processing">Procesando</span>';
+        case 'completado':
+            return '<span class="status-badge completed">Completado</span>';
+        case 'cancelado':
+            return '<span class="status-badge cancelled">Cancelado</span>';
+        default:
+            return '<span class="status-badge">' . ucfirst($estado) . '</span>';
     }
 }
 
 // Incluir el archivo header
 include 'includes/header.php';
 ?>
-<link rel="stylesheet" href="/css/pedidos.css">
 
-<!-- Inicio de la página de pedidos -->
+<link rel="stylesheet" href="css/pedidos.css">
+
+<!-- Inicio de la página de pedidos con la clase específica -->
 <div class="pedidos-page">
     <div class="main-content">
         <div class="container">
             <div class="page-header">
                 <h2 class="page-title">Mis Pedidos</h2>
-                <p class="page-subtitle">Revisa el historial y estado de tus pedidos</p>
+                <p class="page-subtitle">Historial de tus pedidos y su estado</p>
             </div>
             
-            <!-- Notificaciones -->
+            <!-- Notificaciones debajo del título -->
             <?php if (!empty($exito_pedido)): ?>
                 <div class="notification success">
                     <i class="fas fa-check-circle"></i>
@@ -84,37 +89,34 @@ include 'includes/header.php';
             
             <div class="section-container">
                 <?php if (count($pedidos) > 0): ?>
-                    <div class="order-list">
+                    <div class="card-list">
                         <?php foreach ($pedidos as $pedido): ?>
-                            <div class="order-card">
+                            <div class="order-card" data-id="<?php echo $pedido['id']; ?>">
                                 <div class="order-header">
-                                    <div class="order-id">
-                                        <span>ID:</span> #<?php echo str_pad($pedido['ID'], 6, "0", STR_PAD_LEFT); ?>
-                                    </div>
+                                    <h3 class="order-title">Pedido #<?php echo $pedido['id']; ?></h3>
                                     <div class="order-date">
-                                        <i class="fas fa-calendar-alt"></i> <?php echo date('d/m/Y', strtotime($pedido['FECHA_PEDIDO'])); ?>
-                                    </div>
-                                    <div class="order-status status-<?php echo strtolower($pedido['ESTADO']); ?>">
-                                        <?php echo $pedido['ESTADO']; ?>
+                                        <i class="fas fa-calendar-alt"></i>
+                                        <?php echo date('d/m/Y', strtotime($pedido['fecha_pedido'])); ?>
                                     </div>
                                 </div>
-                                
-                                <div class="order-summary">
-                                    <div class="item-count">
-                                        <?php echo count($pedido['detalles']); ?> ítem<?php echo count($pedido['detalles']) != 1 ? 's' : ''; ?>
-                                    </div>
-                                    <div class="order-total">
-                                        Total: <span>$<?php echo number_format($pedido['TOTAL'], 2); ?></span>
+                                <div class="order-content">
+                                    <div class="order-info">
+                                        <div class="order-status">
+                                            <span class="info-label">Estado:</span>
+                                            <?php echo getEstadoFormateado($pedido['estado']); ?>
+                                        </div>
+                                        <div class="order-total">
+                                            <span class="info-label">Total:</span>
+                                            <span class="total-amount">$<?php echo number_format($pedido['total'], 2); ?></span>
+                                        </div>
                                     </div>
                                 </div>
-                                
                                 <div class="order-actions">
-                                    <button class="btn-view-details" data-order="<?php echo $pedido['ID']; ?>">
+                                    <button class="btn-view-details" data-id="<?php echo $pedido['id']; ?>">
                                         <i class="fas fa-eye"></i> Ver detalles
                                     </button>
-                                    
-                                    <?php if ($pedido['ESTADO'] == 'Pendiente'): ?>
-                                        <button class="btn-cancel" data-order="<?php echo $pedido['ID']; ?>">
+                                    <?php if ($pedido['estado'] == 'pendiente'): ?>
+                                        <button class="btn-cancel-order" data-id="<?php echo $pedido['id']; ?>">
                                             <i class="fas fa-times"></i> Cancelar pedido
                                         </button>
                                     <?php endif; ?>
@@ -125,11 +127,11 @@ include 'includes/header.php';
                 <?php else: ?>
                     <div class="no-orders">
                         <div class="empty-state">
-                            <i class="fas fa-shopping-cart"></i>
-                            <h3>No tienes pedidos registrados</h3>
-                            <p>Realiza tu primer pedido y aparecerá aquí</p>
-                            <a href="/menu" class="btn-primary">
-                                <i class="fas fa-shopping-basket"></i> Ir al menú
+                            <i class="fas fa-shopping-basket"></i>
+                            <h3>No tienes pedidos</h3>
+                            <p>Aquí aparecerán los pedidos que realices</p>
+                            <a href="/productos" class="btn-primary">
+                                <i class="fas fa-shopping-cart"></i> Ir a la tienda
                             </a>
                         </div>
                     </div>
@@ -137,43 +139,21 @@ include 'includes/header.php';
             </div>
         </div>
     </div>
-    
+
     <!-- Modal para ver detalles del pedido -->
     <div class="modal" id="order-details-modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 id="modal-order-title">Detalles del Pedido</h3>
+                <h3 id="modal-title">Detalles del Pedido</h3>
                 <button class="close-modal">&times;</button>
             </div>
             <div class="modal-body">
-                <div class="order-info">
-                    <div class="order-date">
-                        <strong>Fecha:</strong> <span id="order-date"></span>
+                <div id="order-details-content">
+                    <!-- Aquí se cargarán los detalles del pedido mediante AJAX -->
+                    <div class="loading">
+                        <i class="fas fa-spinner fa-spin"></i>
+                        <p>Cargando detalles...</p>
                     </div>
-                    <div class="order-status">
-                        <strong>Estado:</strong> <span id="order-status" class="status-tag"></span>
-                    </div>
-                    <div class="order-total">
-                        <strong>Total:</strong> <span id="order-total"></span>
-                    </div>
-                </div>
-                
-                <table class="items-table">
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th>Cantidad</th>
-                            <th>Precio</th>
-                            <th>Total</th>
-                        </tr>
-                    </thead>
-                    <tbody id="order-items">
-                        <!-- Los items se cargarán dinámicamente -->
-                    </tbody>
-                </table>
-                
-                <div class="modal-actions">
-                    <button class="btn-cancel">Cerrar</button>
                 </div>
             </div>
         </div>
@@ -189,11 +169,10 @@ include 'includes/header.php';
             <div class="confirmation-body">
                 <p>¿Estás seguro de que deseas cancelar este pedido?</p>
                 <p>Esta acción no se puede deshacer.</p>
-                <p id="order-to-cancel"></p>
             </div>
             <div class="confirmation-actions">
-                <button type="button" class="btn-cancel-cancel">Cancelar</button>
-                <button type="button" class="btn-confirm-cancel">Confirmar</button>
+                <button type="button" class="btn-cancel-modal">No, mantener pedido</button>
+                <button type="button" class="btn-confirm-cancel">Sí, cancelar pedido</button>
             </div>
         </div>
     </div>
@@ -204,95 +183,176 @@ include 'includes/header.php';
 document.addEventListener('DOMContentLoaded', function() {
     // Referencias a elementos DOM
     const btnViewDetails = document.querySelectorAll('.btn-view-details');
-    const btnCancelOrder = document.querySelectorAll('.btn-cancel');
+    const btnCancelOrders = document.querySelectorAll('.btn-cancel-order');
     const orderDetailsModal = document.getElementById('order-details-modal');
     const cancelConfirmationModal = document.getElementById('cancel-confirmation-modal');
     const closeModal = document.querySelector('.close-modal');
     const closeConfirmation = document.querySelector('.confirmation-close');
-    const btnCancel = document.querySelector('.btn-cancel');
-    const btnCancelCancel = document.querySelector('.btn-cancel-cancel');
+    const btnCancelModal = document.querySelector('.btn-cancel-modal');
     const btnConfirmCancel = document.querySelector('.btn-confirm-cancel');
-    const orderIdToCancelText = document.getElementById('order-to-cancel');
+    const modalTitle = document.getElementById('modal-title');
+    const orderDetailsContent = document.getElementById('order-details-content');
     
     // Variable para almacenar el ID del pedido a cancelar
     let orderIdToCancel = null;
     
+    // Detectar si es móvil y añadir clase
+    if (window.innerWidth <= 480) {
+        document.querySelector('.pedidos-page').classList.add('mobile-view');
+    }
+    
     // Función para abrir el modal de detalles
-    function openOrderDetailsModal(orderId) {
+    function openDetailsModal(orderId) {
+        modalTitle.textContent = `Detalles del Pedido #${orderId}`;
+        orderDetailsContent.innerHTML = `
+            <div class="loading">
+                <i class="fas fa-spinner fa-spin"></i>
+                <p>Cargando detalles...</p>
+            </div>
+        `;
+        
         // Mostrar el modal
         orderDetailsModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'; // Evitar scroll
         
-        // Limpiar contenido previo
-        document.getElementById('order-items').innerHTML = '';
-        document.getElementById('order-date').textContent = '';
-        document.getElementById('order-status').textContent = '';
-        document.getElementById('order-total').textContent = '';
-        
-        // Obtener datos del pedido
-        fetch(`/backend/obtener_pedido.php?id=${orderId}`)
+        // Cargar los detalles del pedido mediante AJAX
+        fetch(`/backend/obtener_detalles_pedido.php?id=${orderId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Actualizar información del pedido
-                    document.getElementById('modal-order-title').textContent = `Pedido #${orderId}`;
-                    document.getElementById('order-date').textContent = data.pedido.fecha_pedido;
-                    document.getElementById('order-status').textContent = data.pedido.estado;
-                    document.getElementById('order-status').className = `status-tag status-${data.pedido.estado.toLowerCase()}`;
-                    document.getElementById('order-total').textContent = `$${parseFloat(data.pedido.total).toFixed(2)}`;
+                    // Construir el HTML para los detalles del pedido
+                    let html = `
+                        <div class="order-summary">
+                            <div class="order-info-detail">
+                                <div class="info-group">
+                                    <span class="info-label">Fecha:</span>
+                                    <span class="info-value">${data.pedido.fecha_formateada}</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Estado:</span>
+                                    <span class="info-value status-text ${data.pedido.estado}">${data.pedido.estado_texto}</span>
+                                </div>
+                                <div class="info-group">
+                                    <span class="info-label">Dirección de entrega:</span>
+                                    <span class="info-value">${data.pedido.direccion}</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="order-items">
+                            <h4>Productos del pedido</h4>
+                            <div class="items-list">
+                    `;
                     
-                    // Mostrar los items del pedido
-                    const tbody = document.getElementById('order-items');
+                    // Agregar cada item del pedido
                     data.items.forEach(item => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                            <td>${item.nombre}</td>
-                            <td>${item.cantidad}</td>
-                            <td>$${parseFloat(item.precio_unitario).toFixed(2)}</td>
-                            <td>$${parseFloat(item.total).toFixed(2)}</td>
+                        html += `
+                            <div class="order-item">
+                                <div class="item-image">
+                                    <img src="${item.imagen}" alt="${item.nombre}">
+                                </div>
+                                <div class="item-details">
+                                    <h5 class="item-name">${item.nombre}</h5>
+                                    <div class="item-meta">
+                                        <span class="item-quantity">Cantidad: ${item.cantidad}</span>
+                                        <span class="item-price">$${Number(item.precio).toFixed(2)} c/u</span>
+                                    </div>
+                                </div>
+                                <div class="item-total">
+                                    $${Number(item.subtotal).toFixed(2)}
+                                </div>
+                            </div>
                         `;
-                        tbody.appendChild(row);
                     });
+                    
+                    // Agregar resumen de precios
+                    html += `
+                            </div>
+                        </div>
+                        <div class="order-totals">
+                            <div class="total-line subtotal">
+                                <span class="total-label">Subtotal:</span>
+                                <span class="total-value">$${Number(data.totales.subtotal).toFixed(2)}</span>
+                            </div>
+                            <div class="total-line shipping">
+                                <span class="total-label">Envío:</span>
+                                <span class="total-value">$${Number(data.totales.envio).toFixed(2)}</span>
+                            </div>
+                            <div class="total-line discount">
+                                <span class="total-label">Descuento:</span>
+                                <span class="total-value">-$${Number(data.totales.descuento).toFixed(2)}</span>
+                            </div>
+                            <div class="total-line grand-total">
+                                <span class="total-label">Total:</span>
+                                <span class="total-value">$${Number(data.totales.total).toFixed(2)}</span>
+                            </div>
+                        </div>
+                    `;
+                    
+                    orderDetailsContent.innerHTML = html;
+                } else {
+                    orderDetailsContent.innerHTML = `
+                        <div class="error-message">
+                            <i class="fas fa-exclamation-circle"></i>
+                            <p>No se pudieron cargar los detalles del pedido</p>
+                        </div>
+                    `;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
+                orderDetailsContent.innerHTML = `
+                    <div class="error-message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>Ocurrió un error al cargar los detalles</p>
+                    </div>
+                `;
             });
     }
     
     // Función para abrir el modal de confirmación de cancelación
     function openCancelConfirmationModal(orderId) {
         orderIdToCancel = orderId;
-        orderIdToCancelText.textContent = `Pedido #${orderId}`;
         cancelConfirmationModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden'; // Evitar scroll
     }
     
-    // Función para cerrar el modal
-    function closeModalFunction() {
+    // Función para cerrar el modal de detalles
+    function closeDetailsModal() {
         orderDetailsModal.classList.remove('active');
-        document.body.style.overflow = '';
+        document.body.style.overflow = ''; // Restaurar scroll
     }
     
     // Función para cerrar el modal de confirmación
-    function closeConfirmationModal() {
+    function closeCancelConfirmationModal() {
         cancelConfirmationModal.classList.remove('active');
-        document.body.style.overflow = '';
+        document.body.style.overflow = ''; // Restaurar scroll
         orderIdToCancel = null;
     }
     
     // Eventos para abrir modal de detalles
     btnViewDetails.forEach(btn => {
         btn.addEventListener('click', function() {
-            const orderId = this.getAttribute('data-order');
-            openOrderDetailsModal(orderId);
+            const orderId = this.getAttribute('data-id');
+            openDetailsModal(orderId);
+        });
+    });
+    
+    // También permitir que se abra al hacer clic en la tarjeta completa
+    document.querySelectorAll('.order-card').forEach(card => {
+        card.addEventListener('click', function(e) {
+            // Solo abrir si el clic no fue en un botón
+            if (!e.target.closest('button')) {
+                const orderId = this.getAttribute('data-id');
+                openDetailsModal(orderId);
+            }
         });
     });
     
     // Eventos para mostrar confirmación de cancelación
-    btnCancelOrder.forEach(btn => {
-        btn.addEventListener('click', function() {
-            const orderId = this.getAttribute('data-order');
+    btnCancelOrders.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evitar que se abra el modal de detalles
+            const orderId = this.getAttribute('data-id');
             openCancelConfirmationModal(orderId);
         });
     });
@@ -305,32 +365,32 @@ document.addEventListener('DOMContentLoaded', function() {
     });
     
     // Eventos para cerrar modales
-    closeModal.addEventListener('click', closeModalFunction);
-    closeConfirmation.addEventListener('click', closeConfirmationModal);
-    btnCancel.addEventListener('click', closeModalFunction);
-    btnCancelCancel.addEventListener('click', closeConfirmationModal);
+    closeModal.addEventListener('click', closeDetailsModal);
+    closeConfirmation.addEventListener('click', closeCancelConfirmationModal);
+    btnCancelModal.addEventListener('click', closeCancelConfirmationModal);
     
     // Cerrar modal haciendo clic fuera del contenido
     orderDetailsModal.addEventListener('click', function(e) {
         if (e.target === orderDetailsModal) {
-            closeModalFunction();
+            closeDetailsModal();
         }
     });
     
     cancelConfirmationModal.addEventListener('click', function(e) {
         if (e.target === cancelConfirmationModal) {
-            closeConfirmationModal();
+            closeCancelConfirmationModal();
         }
     });
     
     // Si hay notificaciones, mostrarlas y ocultarlas después de un tiempo
     const notifications = document.querySelectorAll('.notification');
     if (notifications.length > 0) {
-        // Mostrar después de un pequeño retraso
+        // Mostrar después de un pequeño retraso para evitar problemas de layout
         setTimeout(function() {
             notifications.forEach(notification => {
                 notification.style.opacity = '1';
             });
+            
             // Ocultar después de 5 segundos
             setTimeout(function() {
                 notifications.forEach(notification => {
