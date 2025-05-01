@@ -1,126 +1,227 @@
-/* estilos.css - Estilos personalizados para la página de pedidos */
+/* pedidos.css - Estilos para la página de pedidos */
 
 /* Estilos generales */
-body {
+.pedidos-page {
     background-color: #f8f9fa;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    padding-bottom: 2rem;
 }
 
-.container {
-    background-color: white;
+.pedidos-page.mobile-view {
+    padding: 1rem;
+}
+
+/* Tarjetas de pedido */
+.order-card {
+    background-color: #ffffff;
     border-radius: 10px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
-    padding: 2rem;
-    margin-top: 2rem;
-}
-
-h2 {
-    color: #2c3e50;
-    font-weight: 600;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    padding: 1.5rem;
     margin-bottom: 1.5rem;
-}
-
-/* Alertas */
-.alert {
-    border-radius: 5px;
-    padding: 0.75rem 1.25rem;
-    margin-bottom: 1.5rem;
-}
-
-.alert-success {
-    background-color: #d4edda;
-    color: #155724;
-    border-left: 4px solid #28a745;
-}
-
-.alert-danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border-left: 4px solid #dc3545;
-}
-
-/* Tabla de pedidos */
-.table {
-    margin-bottom: 0;
-}
-
-.table th {
-    background-color: #f1f1f1;
-    font-weight: 600;
-    color: #333;
-}
-
-.table td {
-    vertical-align: middle;
-}
-
-.table-striped tbody tr:nth-of-type(odd) {
-    background-color: #fcfcfc;
-}
-
-/* Formulario de actualización de estado */
-.form-select {
-    border-radius: 5px;
-    padding: 0.375rem 0.75rem;
-    min-width: 180px;
-    transition: all 0.3s ease;
-}
-
-.form-select:focus {
-    border-color: #28a745;
-    box-shadow: 0 0 0 0.2rem rgba(40, 167, 69, 0.25);
-}
-
-.btn-primary {
-    background-color: #28a745;
-    border-color: #28a745;
-    border-radius: 5px;
-    padding: 0.375rem 1rem;
-    transition: all 0.3s ease;
-}
-
-.btn-primary:hover {
-    background-color: #218838;
-    border-color: #1e7e34;
-}
-
-/* Estilos responsivos */
-@media (max-width: 768px) {
-    .table thead {
-        display: none;
-    }
-    
-    .table tbody tr {
-        display: block;
-        margin-bottom: 1rem;
-        border: 1px solid #dee2e6;
-        border-radius: 5px;
-        padding: 1rem;
-    }
-    
-    .table tbody td {
-        display: flex;
-        justify-content: space-between;
-        padding: 0.5rem 0;
-        border: none;
-        border-bottom: 1px solid #eee;
-    }
-    
-    .table tbody td:last-child {
-        border-bottom: none;
-    }
-    
-    .d-flex {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-}
-
-/* Efectos adicionales */
-.card {
     transition: transform 0.3s ease;
 }
 
-.card:hover {
+.order-card:hover {
     transform: translateY(-5px);
+}
+
+/* Encabezado del pedido */
+.order-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.order-id {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.order-id span {
+    color: #7f8c8d;
+    margin-right: 0.5rem;
+}
+
+.order-date {
+    color: #34495e;
+    margin-right: 1rem;
+}
+
+.order-status {
+    font-weight: 500;
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    display: inline-block;
+    text-align: center;
+    min-width: 120px;
+}
+
+.status-pendiente { background-color: #ffeaa7; color: #d35400; }
+.status-en preparación { background-color: #fab1a0; color: #c0392b; }
+.status-listo para entregar { background-color: #74b9ff; color: #2980b9; }
+.status-entregado { background-color: #55efc4; color: #27ae60; }
+
+/* Resumen del pedido */
+.order-summary {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.item-count {
+    color: #7f8c8d;
+    font-size: 0.95rem;
+}
+
+.order-total {
+    font-weight: 600;
+    font-size: 1.1rem;
+    color: #2c3e50;
+}
+
+.order-total span {
+    color: #28a745;
+}
+
+/* Acciones del pedido */
+.order-actions {
+    display: flex;
+    gap: 1rem;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+}
+
+.btn-view-details, .btn-cancel {
+    padding: 0.4rem 1rem;
+    font-size: 0.9rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.btn-view-details {
+    background-color: #3498db;
+    color: white;
+    border: none;
+}
+
+.btn-view-details:hover {
+    background-color: #2980b9;
+}
+
+.btn-cancel {
+    background-color: #e74c3c;
+    color: white;
+    border: none;
+}
+
+.btn-cancel:hover {
+    background-color: #c0392b;
+}
+
+/* Estado vacío */
+.no-orders .empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    border: 2px dashed #e0e0e0;
+    border-radius: 10px;
+    background-color: #fafafa;
+}
+
+.no-orders .empty-state i {
+    font-size: 4rem;
+    color: #ccc;
+    margin-bottom: 1rem;
+}
+
+.no-orders h3 {
+    color: #34495e;
+    margin-bottom: 1rem;
+}
+
+.no-orders p {
+    color: #7f8c8d;
+    margin-bottom: 2rem;
+}
+
+/* Modal de detalles del pedido */
+.order-info {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.order-info div {
+    flex: 1 1 30%;
+}
+
+.order-info strong {
+    color: #7f8c8d;
+    margin-right: 0.5rem;
+}
+
+.status-tag {
+    padding: 0.3rem 0.8rem;
+    border-radius: 5px;
+    font-weight: 500;
+    display: inline-block;
+    min-width: 100px;
+    text-align: center;
+}
+
+.items-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 1.5rem;
+}
+
+.items-table thead {
+    background-color: #f1f1f1;
+}
+
+.items-table th,
+.items-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.items-table th {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .order-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .order-summary {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+    
+    .order-actions {
+        justify-content: flex-start;
+    }
+    
+    .order-info {
+        flex-direction: column;
+        gap: 1rem;
+    }
 }
