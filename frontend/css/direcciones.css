@@ -1,33 +1,36 @@
 /* Estilos para la página de direcciones - MisterJugo 
  * CSS mejorado con estilo coherente para restaurante de jugos
+ * Con encapsulamiento específico para evitar conflictos
  */
 
-/* Variables globales */
-:root {
-  --primary-color: #FF7A00;         /* Naranja vibrante (jugo) */
-  --primary-dark: #E56D00;          /* Naranja oscuro */
-  --primary-light: #FFA649;         /* Naranja claro */
-  --secondary-color: #4CAF50;       /* Verde lima (naturaleza) */
-  --secondary-dark: #388E3C;        /* Verde oscuro */
-  --secondary-light: #81C784;       /* Verde claro */
-  --accent-color: #8BC34A;          /* Verde limón (frescura) */
-  --background-light: #F9F7F2;      /* Beige claro (orgánico) */
-  --background-medium: #F0EBE1;     /* Beige medio */
-  --text-dark: #2D2A26;             /* Marrón muy oscuro (casi negro) */
-  --text-medium: #5F5B57;           /* Marrón medio */
-  --text-light: #ADA79E;            /* Marrón claro */
-  --white: #FFFFFF;
-  --shadow-small: 0 2px 6px rgba(0,0,0,0.1);
-  --shadow-medium: 0 4px 10px rgba(0,0,0,0.12);
-  --border-radius: 12px;
-  --transition-normal: 0.3s ease;
+/* Estilo específico para la página de direcciones */
+/* Para usar este CSS, añade la clase "direcciones-page" al elemento body o al div principal */
+
+.direcciones-page {
+  /* Variables locales */
+  --dir-primary: #FF7A00;           /* Naranja vibrante (jugo) */
+  --dir-primary-dark: #E56D00;      /* Naranja oscuro */
+  --dir-primary-light: #FFA649;     /* Naranja claro */
+  --dir-secondary: #4CAF50;         /* Verde lima (naturaleza) */
+  --dir-secondary-dark: #388E3C;    /* Verde oscuro */
+  --dir-secondary-light: #81C784;   /* Verde claro */
+  --dir-bg-light: #F9F7F2;          /* Beige claro (orgánico) */
+  --dir-text-dark: #2D2A26;         /* Marrón oscuro */
+  --dir-text-medium: #5F5B57;       /* Marrón medio */
+  --dir-text-light: #ADA79E;        /* Marrón claro */
+  --dir-white: #FFFFFF;
+  --dir-shadow-sm: 0 2px 6px rgba(0,0,0,0.1);
+  --dir-shadow-md: 0 4px 10px rgba(0,0,0,0.12);
+  --dir-radius: 12px;
+  --dir-transition: 0.3s ease;
+  color: var(--dir-text-dark);
 }
 
 /* Contenedor principal */
-.main-content {
+.direcciones-page .main-content {
   padding: 40px 0;
   min-height: calc(100vh - 80px);
-  background-color: var(--background-light);
+  background-color: var(--dir-bg-light);
   background-image: 
     radial-gradient(circle at 10% 10%, rgba(255, 165, 0, 0.03) 0%, transparent 30%),
     radial-gradient(circle at 90% 90%, rgba(76, 175, 80, 0.03) 0%, transparent 30%);
@@ -36,7 +39,8 @@
   align-items: center;
 }
 
-.container {
+/* Container */
+.direcciones-page .container {
   width: 100%;
   max-width: 1200px;
   padding: 0 20px;
@@ -44,23 +48,23 @@
 }
 
 /* Encabezado de página */
-.page-header {
+.direcciones-page .page-header {
   margin-bottom: 30px;
   text-align: center;
   position: relative;
 }
 
-.page-title {
-  font-family: 'Poppins', sans-serif;
+.direcciones-page .page-title {
+  font-family: inherit;
   font-size: 2.2rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--dir-text-dark);
   margin-bottom: 8px;
   position: relative;
   display: inline-block;
 }
 
-.page-title::after {
+.direcciones-page .page-title::after {
   content: '';
   position: absolute;
   bottom: -6px;
@@ -68,57 +72,57 @@
   transform: translateX(-50%);
   width: 80px;
   height: 3px;
-  background: var(--primary-color);
+  background: var(--dir-primary);
   border-radius: 3px;
 }
 
-.page-subtitle {
-  color: var(--text-medium);
+.direcciones-page .page-subtitle {
+  color: var(--dir-text-medium);
   font-size: 1.1rem;
   font-weight: 400;
 }
 
 /* Notificaciones */
-.notification {
+.direcciones-page .notification {
   padding: 15px 20px;
-  border-radius: var(--border-radius);
+  border-radius: var(--dir-radius);
   margin-bottom: 25px;
   display: flex;
   align-items: center;
   gap: 15px;
   transition: opacity 0.5s ease;
-  box-shadow: var(--shadow-small);
+  box-shadow: var(--dir-shadow-sm);
 }
 
-.notification i {
+.direcciones-page .notification i {
   font-size: 1.2rem;
 }
 
-.notification.success {
+.direcciones-page .notification.success {
   background-color: rgba(76, 175, 80, 0.15);
-  border-left: 4px solid var(--secondary-color);
-  color: var(--secondary-dark);
+  border-left: 4px solid var(--dir-secondary);
+  color: var(--dir-secondary-dark);
 }
 
-.notification.error {
+.direcciones-page .notification.error {
   background-color: rgba(244, 67, 54, 0.15);
   border-left: 4px solid #F44336;
   color: #D32F2F;
 }
 
-.notification p {
+.direcciones-page .notification p {
   margin: 0;
   font-size: 0.95rem;
   line-height: 1.4;
 }
 
 /* Contenedor de sección */
-.section-container {
+.direcciones-page .section-container {
   width: 100%;
 }
 
 /* Lista de tarjetas */
-.card-list {
+.direcciones-page .card-list {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 25px;
@@ -126,22 +130,22 @@
 }
 
 /* Tarjeta de dirección */
-.address-card {
-  background: var(--white);
-  border-radius: var(--border-radius);
+.direcciones-page .address-card {
+  background: var(--dir-white);
+  border-radius: var(--dir-radius);
   overflow: hidden;
-  transition: all var(--transition-normal);
-  box-shadow: var(--shadow-small);
+  transition: all var(--dir-transition);
+  box-shadow: var(--dir-shadow-sm);
   border: 1px solid rgba(0,0,0,0.05);
 }
 
-.address-card:hover {
-  box-shadow: var(--shadow-medium);
+.direcciones-page .address-card:hover {
+  box-shadow: var(--dir-shadow-md);
   transform: translateY(-3px);
 }
 
 /* Encabezado de la tarjeta */
-.address-header {
+.direcciones-page .address-header {
   padding: 15px 20px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
   display: flex;
@@ -150,48 +154,48 @@
   background-color: rgba(255, 122, 0, 0.03);
 }
 
-.address-title {
+.direcciones-page .address-title {
   font-size: 1.15rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--dir-text-dark);
   margin: 0;
 }
 
-.address-badge {
+.direcciones-page .address-badge {
   padding: 5px 12px;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: var(--primary-color);
-  color: var(--white);
+  background-color: var(--dir-primary);
+  color: var(--dir-white);
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
-.address-badge.primary {
-  background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+.direcciones-page .address-badge.primary {
+  background: linear-gradient(135deg, var(--dir-primary), var(--dir-primary-dark));
 }
 
 /* Contenido de la dirección */
-.address-content {
+.direcciones-page .address-content {
   padding: 15px 20px;
 }
 
-.address-content p {
+.direcciones-page .address-content p {
   margin-bottom: 10px;
   display: flex;
   align-items: flex-start;
   font-size: 0.95rem;
-  color: var(--text-medium);
+  color: var(--dir-text-medium);
   line-height: 1.4;
 }
 
-.address-content p:last-child {
+.direcciones-page .address-content p:last-child {
   margin-bottom: 0;
 }
 
-.address-content i {
-  color: var(--primary-color);
+.direcciones-page .address-content i {
+  color: var(--dir-primary);
   margin-right: 10px;
   font-size: 1rem;
   margin-top: 2px;
@@ -199,7 +203,7 @@
 }
 
 /* Acciones de la tarjeta */
-.address-actions {
+.direcciones-page .address-actions {
   padding: 15px 20px;
   display: flex;
   flex-wrap: wrap;
@@ -208,9 +212,9 @@
   background-color: rgba(255, 122, 0, 0.01);
 }
 
-.btn-edit,
-.btn-delete,
-.btn-default {
+.direcciones-page .btn-edit,
+.direcciones-page .btn-delete,
+.direcciones-page .btn-default {
   padding: 8px 16px;
   border-radius: 6px;
   font-size: 0.9rem;
@@ -223,61 +227,61 @@
   cursor: pointer;
 }
 
-.btn-edit {
-  background-color: var(--primary-light);
-  color: var(--white);
+.direcciones-page .btn-edit {
+  background-color: var(--dir-primary-light);
+  color: var(--dir-white);
 }
 
-.btn-edit:hover {
-  background-color: var(--primary-color);
+.direcciones-page .btn-edit:hover {
+  background-color: var(--dir-primary);
 }
 
-.btn-delete {
+.direcciones-page .btn-delete {
   background-color: #F5F5F5;
   color: #E53935;
   border: 1px solid rgba(229, 57, 53, 0.2);
 }
 
-.btn-delete:hover {
+.direcciones-page .btn-delete:hover {
   background-color: rgba(229, 57, 53, 0.1);
 }
 
-.btn-default {
-  background-color: var(--secondary-light);
-  color: var(--white);
+.direcciones-page .btn-default {
+  background-color: var(--dir-secondary-light);
+  color: var(--dir-white);
 }
 
-.btn-default:hover {
-  background-color: var(--secondary-color);
+.direcciones-page .btn-default:hover {
+  background-color: var(--dir-secondary);
 }
 
 /* Tarjeta para agregar nueva dirección */
-.add-new-card {
-  background: var(--white);
-  border-radius: var(--border-radius);
+.direcciones-page .add-new-card {
+  background: var(--dir-white);
+  border-radius: var(--dir-radius);
   overflow: hidden;
-  box-shadow: var(--shadow-small);
-  border: 1px dashed var(--primary-light);
+  box-shadow: var(--dir-shadow-sm);
+  border: 1px dashed var(--dir-primary-light);
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 30px;
   height: 100%;
   min-height: 180px;
-  transition: all var(--transition-normal);
+  transition: all var(--dir-transition);
 }
 
-.add-new-card:hover {
+.direcciones-page .add-new-card:hover {
   background-color: rgba(255, 122, 0, 0.03);
-  box-shadow: var(--shadow-medium);
+  box-shadow: var(--dir-shadow-md);
 }
 
-.btn-add {
+.direcciones-page .btn-add {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 10px;
-  color: var(--primary-color);
+  color: var(--dir-primary);
   font-size: 1.05rem;
   font-weight: 600;
   border: none;
@@ -285,60 +289,60 @@
   cursor: pointer;
 }
 
-.btn-add i {
+.direcciones-page .btn-add i {
   font-size: 2rem;
   transition: transform 0.2s ease;
 }
 
-.add-new-card:hover .btn-add i {
+.direcciones-page .add-new-card:hover .btn-add i {
   transform: scale(1.1);
 }
 
-.btn-add span {
-  color: var(--primary-color);
+.direcciones-page .btn-add span {
+  color: var(--dir-primary);
 }
 
 /* Estado vacío */
-.no-addresses {
+.direcciones-page .no-addresses {
   padding: 40px 0;
   display: flex;
   justify-content: center;
   width: 100%;
 }
 
-.empty-state {
+.direcciones-page .empty-state {
   padding: 40px;
-  border-radius: var(--border-radius);
-  box-shadow: var(--shadow-small);
-  background: var(--white);
+  border-radius: var(--dir-radius);
+  box-shadow: var(--dir-shadow-sm);
+  background: var(--dir-white);
   text-align: center;
   max-width: 450px;
   width: 100%;
 }
 
-.empty-state i {
+.direcciones-page .empty-state i {
   font-size: 3rem;
-  color: var(--primary-color);
+  color: var(--dir-primary);
   margin-bottom: 20px;
   opacity: 0.9;
 }
 
-.empty-state h3 {
+.direcciones-page .empty-state h3 {
   font-size: 1.5rem;
   margin-bottom: 10px;
-  color: var(--text-dark);
+  color: var(--dir-text-dark);
   font-weight: 600;
 }
 
-.empty-state p {
-  color: var(--text-medium);
+.direcciones-page .empty-state p {
+  color: var(--dir-text-medium);
   margin-bottom: 25px;
   font-size: 0.95rem;
 }
 
-.btn-primary {
-  background-color: var(--primary-color);
-  color: var(--white);
+.direcciones-page .btn-primary {
+  background-color: var(--dir-primary);
+  color: var(--dir-white);
   padding: 10px 24px;
   border-radius: 6px;
   font-size: 1rem;
@@ -351,12 +355,12 @@
   gap: 8px;
 }
 
-.btn-primary:hover {
-  background-color: var(--primary-dark);
+.direcciones-page .btn-primary:hover {
+  background-color: var(--dir-primary-dark);
 }
 
 /* Estilos del modal */
-.modal {
+.direcciones-page .modal {
   display: none;
   position: fixed;
   top: 0;
@@ -371,18 +375,18 @@
   align-items: center;
 }
 
-.modal.active {
+.direcciones-page .modal.active {
   display: flex;
   opacity: 1;
 }
 
-.modal-content {
-  background: var(--white);
-  border-radius: var(--border-radius);
+.direcciones-page .modal-content {
+  background: var(--dir-white);
+  border-radius: var(--dir-radius);
   max-width: 550px;
   width: 90%;
   padding: 30px;
-  box-shadow: var(--shadow-medium);
+  box-shadow: var(--dir-shadow-md);
   position: relative;
   transform: translateY(20px);
   transition: transform 0.3s ease;
@@ -391,11 +395,11 @@
   flex-direction: column;
 }
 
-.modal.active .modal-content {
+.direcciones-page .modal.active .modal-content {
   transform: translateY(0);
 }
 
-.modal-header {
+.direcciones-page .modal-header {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -404,24 +408,24 @@
   border-bottom: 1px solid rgba(0,0,0,0.08);
 }
 
-.modal-header h3 {
+.direcciones-page .modal-header h3 {
   font-size: 1.4rem;
   font-weight: 600;
-  color: var(--text-dark);
+  color: var(--dir-text-dark);
   margin: 0;
 }
 
-.modal-body {
+.direcciones-page .modal-body {
   overflow-y: auto;
   padding-right: 10px;
   flex-grow: 1;
 }
 
-.close-modal {
+.direcciones-page .close-modal {
   background: none;
   border: none;
   font-size: 1.5rem;
-  color: var(--text-light);
+  color: var(--dir-text-light);
   cursor: pointer;
   transition: color 0.2s ease;
   padding: 0;
@@ -431,84 +435,84 @@
   justify-content: center;
 }
 
-.close-modal:hover {
-  color: var(--text-dark);
+.direcciones-page .close-modal:hover {
+  color: var(--dir-text-dark);
 }
 
 /* Estilos de formulario */
-.form-group {
+.direcciones-page .form-group {
   margin-bottom: 20px;
 }
 
-.form-row {
+.direcciones-page .form-row {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 15px;
 }
 
-label {
+.direcciones-page label {
   display: block;
   margin-bottom: 8px;
   font-weight: 500;
-  color: var(--text-medium);
+  color: var(--dir-text-medium);
   font-size: 0.95rem;
 }
 
-input[type="text"],
-input[type="tel"],
-textarea {
+.direcciones-page input[type="text"],
+.direcciones-page input[type="tel"],
+.direcciones-page textarea {
   padding: 12px 15px;
   border: 1px solid rgba(0,0,0,0.12);
   border-radius: 6px;
   font-size: 0.95rem;
   transition: all 0.2s ease;
   width: 100%;
-  color: var(--text-dark);
-  background-color: var(--white);
+  color: var(--dir-text-dark);
+  background-color: var(--dir-white);
 }
 
-input[type="text"]:focus,
-input[type="tel"]:focus,
-textarea:focus {
-  border-color: var(--primary-color);
+.direcciones-page input[type="text"]:focus,
+.direcciones-page input[type="tel"]:focus,
+.direcciones-page textarea:focus {
+  border-color: var(--dir-primary);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
   outline: none;
 }
 
-textarea {
+.direcciones-page textarea {
   resize: vertical;
   min-height: 100px;
 }
 
-.checkbox-group {
+.direcciones-page .checkbox-group {
   display: flex;
   align-items: center;
   gap: 10px;
   margin: 5px 0 20px;
 }
 
-.checkbox-group input[type="checkbox"] {
+.direcciones-page .checkbox-group input[type="checkbox"] {
   width: 18px;
   height: 18px;
-  accent-color: var(--primary-color);
+  accent-color: var(--dir-primary);
 }
 
-.checkbox-group label {
+.direcciones-page .checkbox-group label {
   margin-bottom: 0;
   font-weight: 400;
   font-size: 0.95rem;
 }
 
-.form-actions {
+.direcciones-page .form-actions {
   display: flex;
   justify-content: flex-end;
   gap: 15px;
   margin-top: 10px;
 }
 
-.btn-cancel {
+.direcciones-page .btn-cancel {
   background-color: #F5F5F5;
-  color: var(--text-medium);
+  color: var(--dir-text-medium);
   padding: 10px 20px;
   border-radius: 6px;
   border: none;
@@ -518,13 +522,13 @@ textarea {
   cursor: pointer;
 }
 
-.btn-cancel:hover {
+.direcciones-page .btn-cancel:hover {
   background-color: #EBEBEB;
 }
 
-.btn-save {
-  background-color: var(--primary-color);
-  color: var(--white);
+.direcciones-page .btn-save {
+  background-color: var(--dir-primary);
+  color: var(--dir-white);
   padding: 10px 20px;
   border-radius: 6px;
   border: none;
@@ -534,61 +538,61 @@ textarea {
   cursor: pointer;
 }
 
-.btn-save:hover {
-  background-color: var(--primary-dark);
+.direcciones-page .btn-save:hover {
+  background-color: var(--dir-primary-dark);
 }
 
 /* Media queries */
 @media (max-width: 768px) {
-  .form-row {
+  .direcciones-page .form-row {
     grid-template-columns: 1fr;
   }
   
-  .card-list {
+  .direcciones-page .card-list {
     grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
   }
   
-  .empty-state {
+  .direcciones-page .empty-state {
     padding: 30px 20px;
   }
   
-  .btn-primary,
-  .btn-save,
-  .btn-cancel {
+  .direcciones-page .btn-primary,
+  .direcciones-page .btn-save,
+  .direcciones-page .btn-cancel {
     width: 100%;
     justify-content: center;
   }
   
-  .form-actions {
+  .direcciones-page .form-actions {
     flex-direction: column;
   }
 }
 
 @media (max-width: 480px) {
-  .card-list {
+  .direcciones-page .card-list {
     grid-template-columns: 1fr;
   }
 
-  .address-actions {
+  .direcciones-page .address-actions {
     flex-direction: column;
   }
   
-  .btn-edit,
-  .btn-delete,
-  .btn-default {
+  .direcciones-page .btn-edit,
+  .direcciones-page .btn-delete,
+  .direcciones-page .btn-default {
     width: 100%;
     justify-content: center;
   }
   
-  .modal-content {
+  .direcciones-page .modal-content {
     padding: 20px;
   }
   
-  .page-title {
+  .direcciones-page .page-title {
     font-size: 1.8rem;
   }
   
-  .page-subtitle {
+  .direcciones-page .page-subtitle {
     font-size: 1rem;
   }
 }
