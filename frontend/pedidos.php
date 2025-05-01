@@ -3,7 +3,7 @@ session_start();
 
 // Verificar si el usuario está autenticado (ajusta según tu sistema de sesión)
 if (!isset($_SESSION['usuario_id'])) {
-    header("Location: ../login.php"); // Ajusta la ruta según tu estructura
+    header("Location: ../login"); // Ajusta la ruta según tu estructura
     exit();
 }
 
