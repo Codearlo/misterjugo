@@ -92,6 +92,14 @@
   gap: 15px;
   transition: opacity 0.5s ease;
   box-shadow: var(--dir-shadow-sm);
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  width: 90%;
+  max-width: 600px;
+  opacity: 0;
 }
 
 .direcciones-page .notification i {
@@ -123,10 +131,11 @@
 
 /* Lista de tarjetas */
 .direcciones-page .card-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  display: flex;
+  flex-direction: column;
   gap: 25px;
   margin-top: 20px;
+  width: 100%;
 }
 
 /* Tarjeta de dirección */
@@ -179,6 +188,9 @@
 /* Contenido de la dirección */
 .direcciones-page .address-content {
   padding: 15px 20px;
+  background-color: #f8f8f8;
+  border-radius: 8px;
+  margin: 10px 20px;
 }
 
 .direcciones-page .address-content p {
@@ -210,6 +222,7 @@
   gap: 10px;
   border-top: 1px solid rgba(0,0,0,0.05);
   background-color: rgba(255, 122, 0, 0.01);
+  justify-content: center;
 }
 
 .direcciones-page .btn-edit,
@@ -228,12 +241,12 @@
 }
 
 .direcciones-page .btn-edit {
-  background-color: var(--dir-primary-light);
+  background-color: var(--dir-primary);
   color: var(--dir-white);
 }
 
 .direcciones-page .btn-edit:hover {
-  background-color: var(--dir-primary);
+  background-color: var(--dir-primary-dark);
 }
 
 .direcciones-page .btn-delete {
@@ -548,10 +561,6 @@
     grid-template-columns: 1fr;
   }
   
-  .direcciones-page .card-list {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
-  
   .direcciones-page .empty-state {
     padding: 30px 20px;
   }
@@ -566,15 +575,21 @@
   .direcciones-page .form-actions {
     flex-direction: column;
   }
+  
+  .direcciones-page .address-card {
+    width: 100%;
+  }
+  
+  .direcciones-page .address-actions {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
 }
 
 @media (max-width: 480px) {
-  .direcciones-page .card-list {
-    grid-template-columns: 1fr;
-  }
-
   .direcciones-page .address-actions {
-    flex-direction: column;
+    grid-template-columns: 1fr;
   }
   
   .direcciones-page .btn-edit,
@@ -586,6 +601,7 @@
   
   .direcciones-page .modal-content {
     padding: 20px;
+    width: 95%;
   }
   
   .direcciones-page .page-title {
@@ -594,5 +610,15 @@
   
   .direcciones-page .page-subtitle {
     font-size: 1rem;
+  }
+  
+  .direcciones-page .address-content {
+    margin: 10px;
+    padding: 12px;
+  }
+
+  .direcciones-page .notification {
+    width: 95%;
+    padding: 12px 15px;
   }
 }

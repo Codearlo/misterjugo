@@ -69,41 +69,42 @@ include 'includes/header.php';
 
 <!-- Inicio de la página de direcciones con la clase específica -->
 <div class="direcciones-page">
+    <!-- Notificaciones fijas que no afectan el layout -->
+    <?php if (!empty($exito_direccion)): ?>
+        <div class="notification success">
+            <i class="fas fa-check-circle"></i>
+            <div>
+                <p><?php echo $exito_direccion; ?></p>
+            </div>
+        </div>
+    <?php endif; ?>
+    
+    <?php if (!empty($error_direccion)): ?>
+        <div class="notification error">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>
+                <p><?php echo $error_direccion; ?></p>
+            </div>
+        </div>
+    <?php endif; ?>
+    
+    <?php if (!empty($errores_direccion)): ?>
+        <div class="notification error">
+            <i class="fas fa-exclamation-circle"></i>
+            <div>
+                <?php foreach($errores_direccion as $error): ?>
+                    <p><?php echo $error; ?></p>
+                <?php endforeach; ?>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <div class="main-content">
         <div class="container">
             <div class="page-header">
                 <h2 class="page-title">Mis Direcciones</h2>
                 <p class="page-subtitle">Administra tus direcciones de entrega</p>
             </div>
-            
-            <?php if (!empty($exito_direccion)): ?>
-                <div class="notification success">
-                    <i class="fas fa-check-circle"></i>
-                    <div>
-                        <p><?php echo $exito_direccion; ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($error_direccion)): ?>
-                <div class="notification error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <div>
-                        <p><?php echo $error_direccion; ?></p>
-                    </div>
-                </div>
-            <?php endif; ?>
-            
-            <?php if (!empty($errores_direccion)): ?>
-                <div class="notification error">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <div>
-                        <?php foreach($errores_direccion as $error): ?>
-                            <p><?php echo $error; ?></p>
-                        <?php endforeach; ?>
-                    </div>
-                </div>
-            <?php endif; ?>
             
             <div class="section-container">
                 <?php if (count($direcciones) > 0): ?>
@@ -232,6 +233,11 @@ document.addEventListener('DOMContentLoaded', function() {
     const modalTitle = document.getElementById('modal-title');
     const addressForm = document.getElementById('address-form');
     
+    // Detectar si es móvil y añadir clase
+    if (window.innerWidth <= 480) {
+        document.querySelector('.direcciones-page').classList.add('mobile-view');
+    }
+    
     // Función para abrir el modal
     function openModal(title, addressId = '') {
         modalTitle.textContent = title;
@@ -331,14 +337,22 @@ document.addEventListener('DOMContentLoaded', function() {
     // Si hay notificaciones, ocultarlas después de un tiempo
     const notifications = document.querySelectorAll('.notification');
     if (notifications.length > 0) {
+        // Mostrar después de un pequeño retraso para evitar problemas de layout
         setTimeout(function() {
             notifications.forEach(notification => {
-                notification.style.opacity = '0';
-                setTimeout(() => {
-                    notification.style.display = 'none';
-                }, 500);
+                notification.style.opacity = '1';
             });
-        }, 5000);
+            
+            // Ocultar después de 5 segundos
+            setTimeout(function() {
+                notifications.forEach(notification => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.style.display = 'none';
+                    }, 500);
+                });
+            }, 5000);
+        }, 300);
     }
 });
 </script>
