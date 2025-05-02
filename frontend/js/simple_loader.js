@@ -1,12 +1,10 @@
-// misterjugo_loader.js - Loader personalizado con estilo MisterJugo
+// misterjugo_fullscreen_loader.js - Loader a pantalla completa con estilo MisterJugo
 (function() {
-    // Colores extraídos del CSS de MisterJugo (naranja)
-    var primaryColor = '#ff9933';       // Color naranja principal (simulando --primary-color)
-    var primaryLight = '#ffb366';       // Naranja más claro (simulando --primary-light)
-    var primaryDark = '#e67300';        // Naranja más oscuro (simulando --primary-dark)
-    var bgColor = '#ffffff';            // Fondo blanco
-    var textColor = '#333333';          // Color de texto
-    var secondaryColor = '#666666';     // Color secundario para detalles
+    // Colores extraídos del CSS de MisterJugo
+    var bgColor = '#ffaa55';          // Color naranja de fondo (como el de la imagen)
+    var barColor = '#e67300';         // Naranja más oscuro para la barra de progreso
+    var textColor = '#ffffff';        // Texto en color blanco
+    var logoUrl = '';                 // URL del logo (déjala vacía si aún no la tienes)
     
     // Crear y añadir los estilos del loader
     function insertLoaderStyles() {
@@ -19,7 +17,7 @@
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background: linear-gradient(135deg, ${primaryLight}, ${primaryColor}) !important;
+                background-color: ${bgColor} !important;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -31,50 +29,51 @@
                 opacity: 0;
             }
             
-            .mj-loader-card {
-                background-color: #ffffff !important;
-                border-radius: 12px !important;
-                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
-                padding: 30px !important;
+            .mj-loader-content {
                 text-align: center !important;
-                width: 85% !important;
-                max-width: 320px !important;
-                transition: all 0.3s ease !important;
+                width: 80% !important;
+                max-width: 400px !important;
             }
             
             .mj-loader-logo {
-                text-align: center !important;
-                margin-bottom: 20px !important;
+                margin-bottom: 15px !important;
+            }
+            
+            .mj-loader-logo img {
+                max-width: 100px !important;
+                height: auto !important;
             }
             
             .mj-logo-text {
-                font-size: 1.8rem !important;
+                font-size: 2.2rem !important;
                 font-weight: 700 !important;
-                color: ${primaryColor} !important;
+                color: ${textColor} !important;
                 margin: 10px 0 !important;
                 font-family: 'Poppins', Arial, sans-serif !important;
             }
             
             .mj-loader-subtitle {
-                color: ${secondaryColor} !important;
-                font-size: 0.95rem !important;
+                color: ${textColor} !important;
+                font-size: 1rem !important;
                 margin: 10px 0 25px !important;
                 font-family: 'Poppins', Arial, sans-serif !important;
+                font-weight: 500 !important;
             }
             
             .mj-progress-container {
-                background-color: rgba(0, 0, 0, 0.1) !important;
-                height: 8px !important;
-                border-radius: 4px !important;
+                background-color: rgba(255, 255, 255, 0.3) !important;
+                height: 10px !important;
+                border-radius: 5px !important;
                 overflow: hidden !important;
                 margin: 0 auto 20px auto !important;
+                width: 100% !important;
             }
             
             .mj-progress-bar {
                 height: 100% !important;
                 width: 0% !important;
-                background: linear-gradient(135deg, ${primaryColor}, ${primaryDark}) !important;
-                border-radius: 4px !important;
+                background-color: ${barColor} !important;
+                border-radius: 5px !important;
                 position: relative !important;
                 transition: width 0.3s ease-in-out !important;
             }
@@ -100,6 +99,8 @@
                 font-family: 'Poppins', Arial, sans-serif !important;
                 font-size: 1rem !important;
                 margin: 15px 0 !important;
+                font-weight: 700 !important;
+                letter-spacing: 1px !important;
             }
             
             /* Ocultar temporalmente el contenido de la página */
@@ -135,23 +136,30 @@
         loaderDiv.id = 'mj-loader';
         loaderDiv.className = 'mj-fade-in';
         
+        // Logo HTML (si existe URL del logo)
+        var logoHTML = '';
+        if (logoUrl && logoUrl.length > 0) {
+            logoHTML = `<img src="${logoUrl}" alt="MisterJugo Logo">`;
+        }
+        
         loaderDiv.innerHTML = `
-            <div class="mj-loader-card">
+            <div class="mj-loader-content">
                 <div class="mj-loader-logo">
-                    <div class="mj-logo-text">MisterJugo</div>
+                    ${logoHTML}
                 </div>
+                <div class="mj-logo-text">MisterJugo</div>
                 <div class="mj-loader-subtitle">Preparando todo para ti...</div>
                 <div class="mj-progress-container">
                     <div class="mj-progress-bar" id="mj-progress-bar"></div>
                 </div>
-                <p class="mj-loader-text">Cargando...</p>
+                <p class="mj-loader-text">CARGANDO...</p>
             </div>
         `;
         
         return loaderDiv;
     }
     
-    // Actualizar la barra de progreso
+    // Actualizar la barra de progreso de manera correcta
     function updateProgress(percent) {
         var progressBar = document.getElementById('mj-progress-bar');
         if (progressBar) {
@@ -159,17 +167,33 @@
         }
     }
     
-    // Simular progreso
+    // Simular progreso de forma más realista
     function simulateProgress() {
         var progress = 0;
         var interval = setInterval(function() {
-            progress += Math.random() * 5;
-            if (progress > 90) {
-                clearInterval(interval);
-                progress = 90;
+            // Calcular incremento: más rápido al inicio y más lento cerca del final
+            var increment = 0;
+            
+            if (progress < 30) {
+                increment = Math.random() * 4 + 1; // Avance rápido al inicio
+            } else if (progress < 60) {
+                increment = Math.random() * 3 + 0.5; // Avance moderado
+            } else if (progress < 85) {
+                increment = Math.random() * 1.5 + 0.2; // Avance lento
+            } else {
+                increment = Math.random() * 0.5 + 0.1; // Muy lento al final
             }
+            
+            progress += increment;
+            
+            // Limitar al 95% - el 100% se mostrará cuando realmente esté cargado
+            if (progress > 95) {
+                clearInterval(interval);
+                progress = 95;
+            }
+            
             updateProgress(progress);
-        }, 200);
+        }, 150);
         
         return interval;
     }
@@ -215,9 +239,10 @@
                 clearInterval(cssCheckInterval);
                 clearInterval(progressInterval);
                 
-                // Completar el progreso y ocultar
+                // Asegurar que la barra llegue al 100%
                 updateProgress(100);
                 
+                // Dar tiempo para ver la barra completa
                 setTimeout(function() {
                     hideLoader();
                 }, 500);
@@ -229,8 +254,12 @@
             clearInterval(cssCheckInterval);
             clearInterval(progressInterval);
             updateProgress(100);
-            hideLoader();
-        }, 3500);
+            
+            // Dar tiempo para ver la barra completa
+            setTimeout(function() {
+                hideLoader();
+            }, 500);
+        }, 5000);
     }
     
     // Comprobar si los CSS se han cargado correctamente
