@@ -1,11 +1,15 @@
-// fixed_misterjugo_loader.js - Loader simplificado para MisterJugo con logo y barra funcional
+// fast_misterjugo_loader.js - Loader optimizado para MisterJugo con carga rápida
 (function() {
-    // Ruta del logo - Usando exactamente la misma ruta que usas en tu login
+    // Ruta del logo
     var logoPath = "images/logo_mrjugo.png";
     
     // Colores
     var bgColor = '#ffaa55';  // Naranja de fondo
     var barColor = '#e67300'; // Naranja oscuro para la barra
+    
+    // Tiempos (en milisegundos)
+    var maxWaitTime = 2000;   // Tiempo máximo que esperará antes de ocultar (2 segundos)
+    var barSpeed = 80;        // Velocidad de la barra (menor = más rápido)
     
     // Insertar los estilos básicos directamente
     function createStyles() {
@@ -22,7 +26,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                transition: opacity 0.5s ease;
+                transition: opacity 0.3s ease;
             }
             
             .mjloader-container {
@@ -67,7 +71,7 @@
                 width: 0%;
                 height: 100%;
                 background-color: ${barColor};
-                transition: width 0.2s ease-out;
+                transition: width 0.1s linear;
             }
             
             .mjloader-text {
@@ -81,7 +85,7 @@
             
             body > *:not(#mjloader-overlay) {
                 opacity: 0;
-                transition: opacity 0.4s ease;
+                transition: opacity 0.3s ease;
             }
             
             body.mjloader-done > *:not(#mjloader-overlay) {
@@ -129,29 +133,38 @@
         }
     }
     
-    // Función para simular el progreso
+    // Función para simular el progreso más rápido
     function startProgress() {
         var progress = 0;
+        var increment = 5; // Incremento más grande para avanzar más rápido
+        
         var interval = setInterval(function() {
-            progress += Math.random() * 3 + 1;
+            progress += increment;
+            
+            // Aumentar la velocidad de avance
+            if (progress < 50) {
+                increment = 5 + Math.random() * 3; // 5-8%
+            } else if (progress < 85) {
+                increment = 3 + Math.random() * 2; // 3-5%
+            } else {
+                increment = 2 + Math.random() * 1; // 2-3%
+            }
             
             if (progress >= 100) {
                 clearInterval(interval);
                 progress = 100;
-                
-                // Cuando llega al 100%, ocultamos el loader
-                setTimeout(hideLoader, 500);
+                hideLoader();
             }
             
             updateProgress(progress);
-        }, 200);
+        }, barSpeed);
         
-        // Máximo tiempo de espera
+        // Tiempo máximo de espera reducido
         setTimeout(function() {
             clearInterval(interval);
             updateProgress(100);
-            setTimeout(hideLoader, 500);
-        }, 5000);
+            hideLoader();
+        }, maxWaitTime);
     }
     
     // Ocultar el loader
@@ -162,8 +175,16 @@
             
             setTimeout(function() {
                 document.body.classList.add('mjloader-done');
-            }, 500);
+            }, 300); // Transición más rápida
         }
+    }
+    
+    // Precargar el logo
+    function preloadLogo(callback) {
+        var img = new Image();
+        img.onload = callback;
+        img.onerror = callback; // Continuar incluso si falla la carga del logo
+        img.src = logoPath;
     }
     
     // Iniciar todo
@@ -171,20 +192,23 @@
         // 1. Crear los estilos
         createStyles();
         
-        // 2. Esperar a que el DOM esté listo
-        if (document.readyState === 'loading') {
+        // 2. Crear y mostrar el loader
+        var loader = createLoader();
+        
+        // 3. Añadir el loader al body
+        if (document.body) {
+            document.body.appendChild(loader);
+            // 4. Iniciar la barra de progreso rápida
+            startProgress();
+        } else {
+            // Si no hay body aún, esperar
             document.addEventListener('DOMContentLoaded', function() {
-                var loader = createLoader();
                 document.body.appendChild(loader);
                 startProgress();
             });
-        } else {
-            var loader = createLoader();
-            document.body.appendChild(loader);
-            startProgress();
         }
     }
     
-    // Ejecutar
+    // Ejecutar inmediatamente
     init();
 })();
