@@ -1,7 +1,7 @@
 // cache_busting_loader.js - Con protección anti-caché incluida
 (function() {
     // Versión del loader - cambia esto cada vez que actualices el script
-    var VERSION = '1.0.0';
+    var VERSION = '1.0.1';
     
     // Ruta del logo
     var logoPath = "images/logo_mrjugo.png";
