@@ -58,3 +58,10 @@ ErrorDocument 404 /frontend/404.php
   ExpiresByType image/x-icon "access plus 1 week"
   ExpiresDefault "access plus 0 seconds"
 </IfModule>
+
+# Desactivar caché para archivos CSS
+<FilesMatch "\.(css)$">
+    Header set Cache-Control "no-cache, no-store, must-revalidate"
+    Header set Pragma "no-cache"
+    Header set Expires 0
+</FilesMatch>
