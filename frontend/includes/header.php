@@ -16,6 +16,7 @@ if(isset($_COOKIE['logout_message'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+<script src="/js/loader.js"></script>    
 <script src="/js/cache_control.js"></script>
 <head>
     <meta charset="UTF-8">
