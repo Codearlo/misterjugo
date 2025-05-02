@@ -1,267 +1,177 @@
-// progress_bar_loader.js - Loader con barra de progreso y colores personalizables
+// simple_colored_loader.js - Versión simplificada con colores garantizados
 (function() {
-    // Configuración personalizable - Modifica estos valores según tus preferencias
-    var config = {
-        // Colores principales
-        backgroundColor: '#ffffff', // Color de fondo de la pantalla
-        progressBarColor: '#009688', // Color de la barra de progreso
-        progressBarBackground: '#f3f3f3', // Color de fondo de la barra
-        textColor: '#333333', // Color del texto
-        
-        // Textos
-        loadingText: 'Cargando...', // Texto principal
-        
-        // Configuración de la barra
-        progressBarHeight: '6px', // Altura de la barra de progreso
-        progressBarWidth: '250px', // Ancho de la barra de progreso
-        
-        // Tiempos de transición
-        fadeDelay: 500, // Tiempo antes de comenzar a desvanecer (ms)
-        fadeTime: 500, // Duración de la transición de desvanecimiento (ms)
-        maxWaitTime: 3000, // Tiempo máximo antes de ocultar el loader (ms)
-        
-        // Efectos visuales adicionales
-        showPulseEffect: true, // Mostrar efecto pulsante en la barra
-        showShadow: true // Mostrar sombra en la barra
-    };
+    // Los colores y configuración directamente en variables para más claridad
+    var loaderBackgroundColor = '#ffffff';  // Color de fondo
+    var progressBarColor = '#009688';       // Color de la barra de progreso (verde azulado)
+    var progressBgColor = '#f3f3f3';        // Color de fondo de la barra
+    var textColor = '#333333';              // Color del texto
+    var loadingText = 'Cargando...';        // Texto que se muestra
+    var maxWaitTime = 3000;                 // Tiempo máximo de espera
 
-    // Insertar estilos de manera optimizada
-    function insertStyles() {
-        var styleElem = document.createElement('style');
-        styleElem.type = 'text/css';
-        
-        // Definir los estilos con las opciones personalizables
-        var css = `
-            #page-loader {
+    // Crear los elementos directamente sin complicaciones
+    function createAndInsertLoader() {
+        // 1. Crear el elemento de estilo primero y añadirlo
+        var styleEl = document.createElement('style');
+        styleEl.textContent = `
+            #my-page-loader {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: ${config.backgroundColor};
+                background-color: ${loaderBackgroundColor} !important;
                 display: flex;
                 justify-content: center;
                 align-items: center;
                 z-index: 9999;
-                transition: opacity ${config.fadeTime}ms ease;
+                transition: opacity 0.5s ease;
             }
             
-            #page-loader.fade-out {
+            #my-page-loader.fade-out {
                 opacity: 0;
             }
             
-            .loader-content {
+            .my-loader-content {
                 text-align: center;
                 padding: 25px;
-                border-radius: 8px;
-                max-width: 80%;
-                display: flex;
-                flex-direction: column;
-                align-items: center;
-                justify-content: center;
             }
             
-            .loader-progress-container {
-                background-color: ${config.progressBarBackground};
-                width: ${config.progressBarWidth};
-                height: ${config.progressBarHeight};
-                border-radius: ${parseInt(config.progressBarHeight) / 2}px;
+            .my-progress-container {
+                background-color: ${progressBgColor} !important;
+                width: 250px;
+                height: 8px;
+                border-radius: 4px;
                 overflow: hidden;
                 margin: 0 auto 20px auto;
-                position: relative;
-                ${config.showShadow ? 'box-shadow: 0 2px 5px rgba(0,0,0,0.1);' : ''}
             }
             
-            .loader-progress-bar {
+            .my-progress-bar {
                 height: 100%;
                 width: 0%;
-                background-color: ${config.progressBarColor};
+                background-color: ${progressBarColor} !important;
                 transition: width 0.3s ease-in-out;
-                position: relative;
-                ${config.showPulseEffect ? 'animation: progress-pulse 1.5s ease-in-out infinite;' : ''}
             }
             
-            @keyframes progress-pulse {
-                0% { opacity: 1; }
-                50% { opacity: 0.7; }
-                100% { opacity: 1; }
-            }
-            
-            .loader-text {
-                color: ${config.textColor};
+            .my-loader-text {
+                color: ${textColor} !important;
                 font-family: Arial, sans-serif;
                 font-size: 16px;
                 margin: 10px 0;
-                font-weight: 500;
             }
             
-            /* Ocultar temporalmente el contenido de la página */
-            body > *:not(#page-loader) {
+            body > *:not(#my-page-loader) {
                 opacity: 0;
-                transition: opacity ${config.fadeTime}ms ease;
+                transition: opacity 0.5s ease;
             }
             
-            body.loaded > *:not(#page-loader) {
+            body.my-loaded > *:not(#my-page-loader) {
                 opacity: 1;
             }
             
-            body.loaded #page-loader {
+            body.my-loaded #my-page-loader {
                 display: none;
             }
         `;
+        document.head.appendChild(styleEl);
         
-        // Asegurarse de que los estilos se apliquen correctamente
-        if (styleElem.styleSheet) {
-            // Para IE
-            styleElem.styleSheet.cssText = css;
-        } else {
-            // Para el resto de navegadores
-            styleElem.appendChild(document.createTextNode(css));
-        }
-        
-        // Insertar al principio del head para darle prioridad
-        var head = document.head || document.getElementsByTagName('head')[0];
-        head.insertBefore(styleElem, head.firstChild);
-    }
-    
-    // Crear la estructura del loader con barra de progreso
-    function createLoader() {
-        var loader = document.createElement('div');
-        loader.id = 'page-loader';
-        loader.innerHTML = `
-            <div class="loader-content">
-                <div class="loader-progress-container">
-                    <div class="loader-progress-bar" id="loader-progress"></div>
+        // 2. Crear el elemento loader y añadirlo
+        var loaderEl = document.createElement('div');
+        loaderEl.id = 'my-page-loader';
+        loaderEl.innerHTML = `
+            <div class="my-loader-content">
+                <div class="my-progress-container">
+                    <div class="my-progress-bar" id="my-progress-bar"></div>
                 </div>
-                <p class="loader-text">${config.loadingText}</p>
+                <p class="my-loader-text">${loadingText}</p>
             </div>
         `;
-        return loader;
-    }
-    
-    // Función para actualizar el progreso de la barra
-    function updateProgress(percentage) {
-        var progressBar = document.getElementById('loader-progress');
-        if (progressBar) {
-            progressBar.style.width = (percentage * 100) + '%';
+        
+        // 3. Añadirlo al body tan pronto como podamos
+        if (document.body) {
+            document.body.insertBefore(loaderEl, document.body.firstChild);
+            startLoader();
+        } else {
+            // Si aún no hay body, esperar a que exista
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.insertBefore(loaderEl, document.body.firstChild);
+                startLoader();
+            });
         }
     }
     
-    // Simular el progreso de carga para mejor experiencia de usuario
-    function simulateProgress() {
+    // Actualizar el progreso de la barra
+    function updateProgress(percent) {
+        var progressBar = document.getElementById('my-progress-bar');
+        if (progressBar) {
+            progressBar.style.width = percent + '%';
+        }
+    }
+    
+    // Funcionamiento de la simulación y ocultación
+    function startLoader() {
+        // Simular progreso
         var progress = 0;
         var progressInterval = setInterval(function() {
-            // Incrementar progreso de manera no lineal para hacerlo más realista
-            var increment = Math.max(0.5, Math.random() * 5) * (1 - progress / 100);
-            progress += increment;
-            
-            // Limitamos al 90% - el 100% se muestra cuando realmente está todo cargado
+            progress += Math.random() * 3;
             if (progress > 90) {
                 clearInterval(progressInterval);
                 progress = 90;
             }
-            
-            updateProgress(progress / 100);
-        }, 200);
+            updateProgress(progress);
+        }, 150);
         
-        return progressInterval;
-    }
-    
-    // Función principal para inicializar el loader
-    function initLoader() {
-        // Insertar estilos inmediatamente
-        insertStyles();
-        
-        // Esperar a que el DOM esté listo
-        document.addEventListener('DOMContentLoaded', function() {
-            // Crear y añadir el loader
-            var loader = createLoader();
-            document.body.insertBefore(loader, document.body.firstChild);
-            
-            // Empezar simulación de progreso
-            var progressInterval = simulateProgress();
-            
-            // Forzar recarga de CSS con timestamp para evitar caché
-            var styleSheets = document.querySelectorAll('link[rel="stylesheet"]');
-            var totalSheets = styleSheets.length;
-            var loadedSheets = 0;
-            
-            styleSheets.forEach(function(sheet) {
-                var href = sheet.getAttribute('href');
-                if (href && !href.includes('cdnjs.cloudflare.com')) {
-                    var timestamp = Math.floor(Date.now() / 1000);
-                    var newHref = href.includes('?') 
-                        ? href + '&v=' + timestamp 
-                        : href + '?v=' + timestamp;
-                    sheet.setAttribute('href', newHref);
-                    
-                    // Verificar si podemos detectar cuando se carga la hoja de estilo
-                    var originalSheet = sheet;
-                    var newSheet = sheet.cloneNode();
-                    newSheet.href = newHref;
-                    
-                    newSheet.onload = function() {
-                        loadedSheets++;
-                        updateProgress(Math.min(0.9, loadedSheets / totalSheets));
-                    };
-                    
-                    originalSheet.parentNode.insertBefore(newSheet, originalSheet.nextSibling);
-                    originalSheet.parentNode.removeChild(originalSheet);
-                }
-            });
-            
-            // Función para comprobar si todos los CSS están cargados
-            function checkCSSLoaded() {
-                var allLoaded = true;
-                for (var i = 0; i < document.styleSheets.length; i++) {
-                    try {
-                        var sheet = document.styleSheets[i];
-                        var rules = sheet.cssRules || sheet.rules;
-                        if (!rules || rules.length === 0) {
-                            allLoaded = false;
-                        }
-                    } catch(e) {
-                        // Error de seguridad al acceder a CSS de otro dominio
-                        // Esto es normal, continuamos
-                    }
-                }
-                return allLoaded;
-            }
-            
-            // Función para ocultar el loader
-            function hideLoader() {
-                // Detener la simulación de progreso
+        // Comprobar CSS y ocultar cuando todo esté listo
+        var checkInterval = setInterval(function() {
+            if (checkIfCSSLoaded()) {
+                clearInterval(checkInterval);
                 clearInterval(progressInterval);
+                updateProgress(100);
                 
-                // Mostrar 100% en la barra
-                updateProgress(1);
-                
-                // Pequeña demora para que se vea el 100%
                 setTimeout(function() {
-                    loader.classList.add('fade-out');
-                    
-                    setTimeout(function() {
-                        document.body.classList.add('loaded');
-                    }, config.fadeTime);
-                }, config.fadeDelay);
-            }
-            
-            // Comprobar periódicamente si los CSS están cargados
-            var cssCheckInterval = setInterval(function() {
-                if (checkCSSLoaded()) {
-                    clearInterval(cssCheckInterval);
                     hideLoader();
-                }
-            }, 50);
-            
-            // Tiempo máximo de espera
-            setTimeout(function() {
-                clearInterval(cssCheckInterval);
-                hideLoader();
-            }, config.maxWaitTime);
-        });
+                }, 500);
+            }
+        }, 100);
+        
+        // Establecer tiempo máximo
+        setTimeout(function() {
+            clearInterval(checkInterval);
+            clearInterval(progressInterval);
+            updateProgress(100);
+            hideLoader();
+        }, maxWaitTime);
     }
     
-    // Ejecutar inmediatamente
-    initLoader();
+    // Revisar si los CSS se han cargado
+    function checkIfCSSLoaded() {
+        var allLoaded = true;
+        var sheets = document.styleSheets;
+        
+        for (var i = 0; i < sheets.length; i++) {
+            try {
+                var rules = sheets[i].cssRules || sheets[i].rules;
+                if (!rules || rules.length === 0) {
+                    allLoaded = false;
+                }
+            } catch(e) {
+                // Error típico de CORS, ignoramos
+            }
+        }
+        
+        return allLoaded;
+    }
+    
+    // Ocultar el loader de forma suave
+    function hideLoader() {
+        var loader = document.getElementById('my-page-loader');
+        if (loader) {
+            loader.classList.add('fade-out');
+            setTimeout(function() {
+                document.body.classList.add('my-loaded');
+            }, 500);
+        }
+    }
+    
+    // Asegurarnos de que los estilos se apliquen de inmediato
+    createAndInsertLoader();
 })();
