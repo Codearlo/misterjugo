@@ -1,4 +1,4 @@
-// loader.js - Pantalla de carga mientras el CSS se aplica
+// loader.js - Pantalla de carga para MisterJugo
 (function() {
     // Crear y añadir el estilo para el loader
     var style = document.createElement('style');
@@ -9,12 +9,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: #ffffff;
+            background: linear-gradient(135deg, #FFA649, #FF7A00);
             display: flex;
             justify-content: center;
             align-items: center;
             z-index: 9999;
             transition: opacity 0.3s ease;
+            font-family: 'Poppins', sans-serif;
         }
         
         #page-loader.fade-out {
@@ -23,16 +24,37 @@
         
         .loader-content {
             text-align: center;
+            padding: 30px;
+            background-color: rgba(255, 255, 255, 0.95);
+            border-radius: 12px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            max-width: 300px;
+            width: 90%;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+        
+        .loader-logo {
+            width: 80px;
+            height: auto;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 2px 5px rgba(0, 0, 0, 0.2));
         }
         
         .loader-spinner {
-            border: 5px solid #f3f3f3;
-            border-top: 5px solid #009688; /* Cambia este color al color principal de tu sitio */
+            border: 4px solid #F5F5F5;
+            border-top: 4px solid #FF7A00;
             border-radius: 50%;
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
-            margin: 0 auto 15px auto;
+            margin: 15px auto;
+            box-shadow: 0 4px 10px rgba(255, 122, 0, 0.2);
         }
         
         @keyframes spin {
@@ -40,17 +62,29 @@
             100% { transform: rotate(360deg); }
         }
         
+        .loader-message {
+            color: #2D2A26;
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+        }
+        
+        .loader-submessage {
+            color: #5F5B57;
+            font-size: 0.9rem;
+        }
+        
         /* Ocultar temporalmente el contenido de la página */
-        body > * {
+        body {
             opacity: 0;
-            transition: opacity 0.3s ease;
         }
         
-        body.loaded > * {
+        body.content-loaded {
             opacity: 1;
+            transition: opacity 0.5s ease;
         }
         
-        body.loaded #page-loader {
+        body.content-loaded #page-loader {
             display: none;
         }
     `;
@@ -61,16 +95,18 @@
     loader.id = 'page-loader';
     loader.innerHTML = `
         <div class="loader-content">
+            <img src="/images/logo_mrjugo.png" alt="Logo MisterJugo" class="loader-logo">
             <div class="loader-spinner"></div>
-            <p>Cargando...</p>
+            <p class="loader-message">¡Preparando lo mejor para ti!</p>
+            <p class="loader-submessage">Cargando jugos naturales...</p>
         </div>
     `;
     
-    // Añadir el loader al principio del body
-    document.addEventListener('DOMContentLoaded', function() {
+    // Función para insertar el loader
+    function insertLoader() {
         document.body.insertBefore(loader, document.body.firstChild);
         
-        // Forzar recarga de CSS
+        // Forzar recarga de CSS con versión dinámica
         var styleSheets = document.querySelectorAll('link[rel="stylesheet"]');
         styleSheets.forEach(function(sheet) {
             var href = sheet.getAttribute('href');
@@ -87,7 +123,6 @@
             var allLoaded = true;
             for (var i = 0; i < document.styleSheets.length; i++) {
                 try {
-                    // Comprobar si la hoja de estilo está cargada comprobando sus reglas
                     var sheet = document.styleSheets[i];
                     var rules = sheet.cssRules || sheet.rules;
                     if (!rules || rules.length === 0) {
@@ -110,9 +145,9 @@
                 
                 // Después de la transición, marcar como cargado
                 setTimeout(function() {
-                    document.body.classList.add('loaded');
+                    document.body.classList.add('content-loaded');
                 }, 300);
-            }, 500); // 500ms de demora mínima para mostrar el loader
+            }, 800); // Tiempo mínimo para mostrar el loader
         }
         
         // Comprobar si los CSS están cargados
@@ -123,10 +158,23 @@
             }
         }, 50);
         
-        // Por si acaso, ocultar el loader después de 2.5 segundos máximo
+        // Por si acaso, ocultar el loader después de 3 segundos máximo
         setTimeout(function() {
             clearInterval(cssCheckInterval);
             hideLoader();
-        }, 2500);
-    });
+        }, 3000);
+        
+        // También escuchar el evento load para eliminar el loader
+        window.addEventListener('load', function() {
+            clearInterval(cssCheckInterval);
+            setTimeout(hideLoader, 500); // Pequeña demora después de load
+        });
+    }
+    
+    // Si el DOM ya está listo, insertar ahora
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', insertLoader);
+    } else {
+        insertLoader();
+    }
 })();
