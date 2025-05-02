@@ -16,6 +16,26 @@ if(isset($_COOKIE['logout_message'])) {
 ?>
 <!DOCTYPE html>
 <html lang="es">
+<script>
+// Forzar recarga de CSS sin tocar PHP
+document.addEventListener('DOMContentLoaded', function() {
+    // Solo recargar CSS locales, no CDNs
+    var styleSheets = document.querySelectorAll('link[rel="stylesheet"]');
+    styleSheets.forEach(function(sheet) {
+        var href = sheet.getAttribute('href');
+        if (href && !href.includes('cdnjs.cloudflare.com')) {
+            // Evitar duplicar parámetros versión
+            if (href.includes('?v=') || href.includes('&v=')) {
+                // Ya tiene versión, no hacer nada
+            } else {
+                // Añadir parámetro de versión
+                var newHref = href + (href.includes('?') ? '&' : '?') + 'v=' + Math.floor(Date.now() / 1000);
+                sheet.setAttribute('href', newHref);
+            }
+        }
+    });
+});
+</script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
