@@ -1,25 +1,25 @@
-// simple_colored_loader.js - Versión simplificada con colores garantizados
+// misterjugo_loader.js - Loader personalizado con estilo MisterJugo
 (function() {
-    // Los colores y configuración directamente en variables para más claridad
-    var loaderBackgroundColor = '#ffffff';  // Color de fondo
-    var progressBarColor = '#009688';       // Color de la barra de progreso (verde azulado)
-    var progressBgColor = '#f3f3f3';        // Color de fondo de la barra
-    var textColor = '#333333';              // Color del texto
-    var loadingText = 'Cargando...';        // Texto que se muestra
-    var maxWaitTime = 3000;                 // Tiempo máximo de espera
-
-    // Crear los elementos directamente sin complicaciones
-    function createAndInsertLoader() {
-        // 1. Crear el elemento de estilo primero y añadirlo
+    // Colores extraídos del CSS de MisterJugo (naranja)
+    var primaryColor = '#ff9933';       // Color naranja principal (simulando --primary-color)
+    var primaryLight = '#ffb366';       // Naranja más claro (simulando --primary-light)
+    var primaryDark = '#e67300';        // Naranja más oscuro (simulando --primary-dark)
+    var bgColor = '#ffffff';            // Fondo blanco
+    var textColor = '#333333';          // Color de texto
+    var secondaryColor = '#666666';     // Color secundario para detalles
+    
+    // Crear y añadir los estilos del loader
+    function insertLoaderStyles() {
         var styleEl = document.createElement('style');
+        styleEl.type = 'text/css';
         styleEl.textContent = `
-            #my-page-loader {
+            #mj-loader {
                 position: fixed;
                 top: 0;
                 left: 0;
                 width: 100%;
                 height: 100%;
-                background-color: ${loaderBackgroundColor} !important;
+                background: linear-gradient(135deg, ${primaryLight}, ${primaryColor}) !important;
                 display: flex;
                 justify-content: center;
                 align-items: center;
@@ -27,104 +27,195 @@
                 transition: opacity 0.5s ease;
             }
             
-            #my-page-loader.fade-out {
+            #mj-loader.fade-out {
                 opacity: 0;
             }
             
-            .my-loader-content {
-                text-align: center;
-                padding: 25px;
+            .mj-loader-card {
+                background-color: #ffffff !important;
+                border-radius: 12px !important;
+                box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15) !important;
+                padding: 30px !important;
+                text-align: center !important;
+                width: 85% !important;
+                max-width: 320px !important;
+                transition: all 0.3s ease !important;
             }
             
-            .my-progress-container {
-                background-color: ${progressBgColor} !important;
-                width: 250px;
-                height: 8px;
-                border-radius: 4px;
-                overflow: hidden;
-                margin: 0 auto 20px auto;
+            .mj-loader-logo {
+                text-align: center !important;
+                margin-bottom: 20px !important;
             }
             
-            .my-progress-bar {
-                height: 100%;
-                width: 0%;
-                background-color: ${progressBarColor} !important;
-                transition: width 0.3s ease-in-out;
+            .mj-logo-text {
+                font-size: 1.8rem !important;
+                font-weight: 700 !important;
+                color: ${primaryColor} !important;
+                margin: 10px 0 !important;
+                font-family: 'Poppins', Arial, sans-serif !important;
             }
             
-            .my-loader-text {
+            .mj-loader-subtitle {
+                color: ${secondaryColor} !important;
+                font-size: 0.95rem !important;
+                margin: 10px 0 25px !important;
+                font-family: 'Poppins', Arial, sans-serif !important;
+            }
+            
+            .mj-progress-container {
+                background-color: rgba(0, 0, 0, 0.1) !important;
+                height: 8px !important;
+                border-radius: 4px !important;
+                overflow: hidden !important;
+                margin: 0 auto 20px auto !important;
+            }
+            
+            .mj-progress-bar {
+                height: 100% !important;
+                width: 0% !important;
+                background: linear-gradient(135deg, ${primaryColor}, ${primaryDark}) !important;
+                border-radius: 4px !important;
+                position: relative !important;
+                transition: width 0.3s ease-in-out !important;
+            }
+            
+            .mj-progress-bar::before {
+                content: '' !important;
+                position: absolute !important;
+                top: 0 !important;
+                left: -100% !important;
+                width: 100% !important;
+                height: 100% !important;
+                background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent) !important;
+                animation: shimmer 1.5s infinite !important;
+            }
+            
+            @keyframes shimmer {
+                0% { left: -100%; }
+                100% { left: 100%; }
+            }
+            
+            .mj-loader-text {
                 color: ${textColor} !important;
-                font-family: Arial, sans-serif;
-                font-size: 16px;
-                margin: 10px 0;
+                font-family: 'Poppins', Arial, sans-serif !important;
+                font-size: 1rem !important;
+                margin: 15px 0 !important;
             }
             
-            body > *:not(#my-page-loader) {
-                opacity: 0;
-                transition: opacity 0.5s ease;
+            /* Ocultar temporalmente el contenido de la página */
+            body > *:not(#mj-loader) {
+                opacity: 0 !important;
+                transition: opacity 0.5s ease !important;
             }
             
-            body.my-loaded > *:not(#my-page-loader) {
-                opacity: 1;
+            body.mj-loaded > *:not(#mj-loader) {
+                opacity: 1 !important;
             }
             
-            body.my-loaded #my-page-loader {
-                display: none;
+            body.mj-loaded #mj-loader {
+                display: none !important;
+            }
+            
+            @keyframes fadeIn {
+                from { opacity: 0; }
+                to { opacity: 1; }
+            }
+            
+            .mj-fade-in {
+                animation: fadeIn 0.5s ease forwards !important;
             }
         `;
-        document.head.appendChild(styleEl);
         
-        // 2. Crear el elemento loader y añadirlo
-        var loaderEl = document.createElement('div');
-        loaderEl.id = 'my-page-loader';
-        loaderEl.innerHTML = `
-            <div class="my-loader-content">
-                <div class="my-progress-container">
-                    <div class="my-progress-bar" id="my-progress-bar"></div>
+        document.head.insertBefore(styleEl, document.head.firstChild);
+    }
+    
+    // Crear el HTML del loader
+    function createLoaderHTML() {
+        var loaderDiv = document.createElement('div');
+        loaderDiv.id = 'mj-loader';
+        loaderDiv.className = 'mj-fade-in';
+        
+        loaderDiv.innerHTML = `
+            <div class="mj-loader-card">
+                <div class="mj-loader-logo">
+                    <div class="mj-logo-text">MisterJugo</div>
                 </div>
-                <p class="my-loader-text">${loadingText}</p>
+                <div class="mj-loader-subtitle">Preparando todo para ti...</div>
+                <div class="mj-progress-container">
+                    <div class="mj-progress-bar" id="mj-progress-bar"></div>
+                </div>
+                <p class="mj-loader-text">Cargando...</p>
             </div>
         `;
         
-        // 3. Añadirlo al body tan pronto como podamos
-        if (document.body) {
-            document.body.insertBefore(loaderEl, document.body.firstChild);
-            startLoader();
-        } else {
-            // Si aún no hay body, esperar a que exista
-            document.addEventListener('DOMContentLoaded', function() {
-                document.body.insertBefore(loaderEl, document.body.firstChild);
-                startLoader();
-            });
-        }
+        return loaderDiv;
     }
     
-    // Actualizar el progreso de la barra
+    // Actualizar la barra de progreso
     function updateProgress(percent) {
-        var progressBar = document.getElementById('my-progress-bar');
+        var progressBar = document.getElementById('mj-progress-bar');
         if (progressBar) {
             progressBar.style.width = percent + '%';
         }
     }
     
-    // Funcionamiento de la simulación y ocultación
-    function startLoader() {
-        // Simular progreso
+    // Simular progreso
+    function simulateProgress() {
         var progress = 0;
-        var progressInterval = setInterval(function() {
-            progress += Math.random() * 3;
+        var interval = setInterval(function() {
+            progress += Math.random() * 5;
             if (progress > 90) {
-                clearInterval(progressInterval);
+                clearInterval(interval);
                 progress = 90;
             }
             updateProgress(progress);
-        }, 150);
+        }, 200);
         
-        // Comprobar CSS y ocultar cuando todo esté listo
-        var checkInterval = setInterval(function() {
+        return interval;
+    }
+    
+    // Función principal que inicia todo
+    function initLoader() {
+        // 1. Insertar estilos
+        insertLoaderStyles();
+        
+        // 2. Crear y añadir el loader
+        var loader = createLoaderHTML();
+        
+        // Si el DOM ya está cargado, añadimos inmediatamente
+        if (document.body) {
+            document.body.insertBefore(loader, document.body.firstChild);
+            var progressInterval = simulateProgress();
+            startWatching(progressInterval);
+        } else {
+            // Si no, esperamos a que el DOM esté listo
+            document.addEventListener('DOMContentLoaded', function() {
+                document.body.insertBefore(loader, document.body.firstChild);
+                var progressInterval = simulateProgress();
+                startWatching(progressInterval);
+            });
+        }
+    }
+    
+    // Vigilar la carga de CSS y ocultar el loader cuando esté listo
+    function startWatching(progressInterval) {
+        // Forzar recarga de CSS con parámetro de versión
+        var styleSheets = document.querySelectorAll('link[rel="stylesheet"]');
+        styleSheets.forEach(function(sheet) {
+            var href = sheet.getAttribute('href');
+            if (href && !href.includes('?v=') && !href.includes('&v=')) {
+                var newHref = href + (href.includes('?') ? '&' : '?') + 'v=' + Math.floor(Date.now() / 1000);
+                sheet.setAttribute('href', newHref);
+            }
+        });
+        
+        // Comprobar periódicamente si los CSS están cargados
+        var cssCheckInterval = setInterval(function() {
             if (checkIfCSSLoaded()) {
-                clearInterval(checkInterval);
+                clearInterval(cssCheckInterval);
                 clearInterval(progressInterval);
+                
+                // Completar el progreso y ocultar
                 updateProgress(100);
                 
                 setTimeout(function() {
@@ -133,23 +224,22 @@
             }
         }, 100);
         
-        // Establecer tiempo máximo
+        // Por seguridad, un tiempo máximo
         setTimeout(function() {
-            clearInterval(checkInterval);
+            clearInterval(cssCheckInterval);
             clearInterval(progressInterval);
             updateProgress(100);
             hideLoader();
-        }, maxWaitTime);
+        }, 3500);
     }
     
-    // Revisar si los CSS se han cargado
+    // Comprobar si los CSS se han cargado correctamente
     function checkIfCSSLoaded() {
         var allLoaded = true;
-        var sheets = document.styleSheets;
-        
-        for (var i = 0; i < sheets.length; i++) {
+        for (var i = 0; i < document.styleSheets.length; i++) {
             try {
-                var rules = sheets[i].cssRules || sheets[i].rules;
+                var sheet = document.styleSheets[i];
+                var rules = sheet.cssRules || sheet.rules;
                 if (!rules || rules.length === 0) {
                     allLoaded = false;
                 }
@@ -157,21 +247,21 @@
                 // Error típico de CORS, ignoramos
             }
         }
-        
         return allLoaded;
     }
     
-    // Ocultar el loader de forma suave
+    // Ocultar el loader con efecto de desvanecimiento
     function hideLoader() {
-        var loader = document.getElementById('my-page-loader');
+        var loader = document.getElementById('mj-loader');
         if (loader) {
             loader.classList.add('fade-out');
+            
             setTimeout(function() {
-                document.body.classList.add('my-loaded');
+                document.body.classList.add('mj-loaded');
             }, 500);
         }
     }
     
-    // Asegurarnos de que los estilos se apliquen de inmediato
-    createAndInsertLoader();
+    // Ejecutar todo al cargar
+    initLoader();
 })();
