@@ -1,5 +1,6 @@
 <?php
 
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/no_cache.php';
 // Comprobar si el usuario está logueado
 session_start();
 $isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
@@ -19,7 +20,7 @@ if(isset($_COOKIE['logout_message'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MisterJugo - Jugos Naturales</title>
-    <link rel="stylesheet" href="<?php echo add_version('/css/styles.css'); ?>">
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Estilos para las animaciones del menú lateral */
