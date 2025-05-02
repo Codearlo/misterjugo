@@ -1,38 +1,32 @@
+// cache_busting_loader.js - Con protección anti-caché incluida
 (function() {
-    // Ejecutar cuando el DOM esté listo
-    document.addEventListener('DOMContentLoaded', function() {
-        // Buscar todas las hojas de estilo
-        var styleSheets = document.querySelectorAll('link[rel="stylesheet"]');
-        
-        // Añadir parámetro de versión a cada hoja de estilo
-        styleSheets.forEach(function(sheet) {
-            var href = sheet.getAttribute('href');
-            // No modificar CDNs externas para evitar problemas
-            if (href && !href.includes('cdnjs.cloudflare.com')) {
-                // Evitar duplicar parámetros de versión
-                if (!href.includes('?v=') && !href.includes('&v=')) {
-                    // Añadir parámetro con timestamp único
-                    var newHref = href + (href.includes('?') ? '&' : '?') + 'v=' + Math.floor(Date.now() / 1000);
-                    sheet.setAttribute('href', newHref);
-                }
-            }
-        });
-    });
-})();
-
-// ultrafast_misterjugo_loader.js - Loader mínimo de alta velocidad
-(function() {
+    // Versión del loader - cambia esto cada vez que actualices el script
+    var VERSION = '1.0.0';
+    
     // Ruta del logo
     var logoPath = "images/logo_mrjugo.png";
+    
+    // Añade timestamp para prevenir caché de la imagen
+    logoPath = addCacheBuster(logoPath);
     
     // Colores
     var bgColor = '#ffaa55';  // Naranja de fondo
     var barColor = '#e67300'; // Naranja oscuro para la barra
     
-    // Configuración de tiempos ultra-rápidos
-    var totalLoadTime = 800;  // Tiempo total en milisegundos (menos de 1 segundo)
+    // Configuración de tiempos
+    var totalLoadTime = 800;  // Tiempo total en milisegundos
     
-    // Insertar estilos mínimos
+    // Función para añadir parámetro anti-caché a URLs
+    function addCacheBuster(url) {
+        // Evita añadir parámetro a URLs vacías
+        if (!url || url.length === 0) return url;
+        
+        var timestamp = new Date().getTime();
+        var connector = url.indexOf('?') !== -1 ? '&' : '?';
+        return url + connector + '_v=' + timestamp;
+    }
+    
+    // Insertar estilos
     function createStyles() {
         var style = document.createElement('style');
         style.textContent = `
@@ -137,7 +131,18 @@
         return overlay;
     }
     
-    // Función para mostrar un progreso rápido
+    // Función para forzar la recarga de todos los CSS
+    function reloadAllCSS() {
+        var links = document.getElementsByTagName('link');
+        for (var i = 0; i < links.length; i++) {
+            var link = links[i];
+            if (link.rel === 'stylesheet') {
+                link.href = addCacheBuster(link.href);
+            }
+        }
+    }
+    
+    // Función para cargar rápido
     function quickLoad() {
         var progress = document.getElementById('mjloader-progress');
         if (progress) {
@@ -145,6 +150,9 @@
             setTimeout(function() {
                 progress.style.width = '100%';
             }, 10);
+            
+            // Forzar recarga de todos los CSS para evitar caché
+            reloadAllCSS();
             
             // Ocultar después del tiempo configurado
             setTimeout(hideLoader, totalLoadTime);
@@ -163,17 +171,41 @@
         }
     }
     
-    // Inicializar
+    // Manejar el almacenamiento local para verificar versión
+    function handleVersionCache() {
+        try {
+            var storedVersion = localStorage.getItem('mjloader_version');
+            // Si la versión cambió, forzar recarga de página para actualizar caché
+            if (storedVersion && storedVersion !== VERSION) {
+                localStorage.setItem('mjloader_version', VERSION);
+                // No usar reload() inmediatamente para evitar bucles
+                setTimeout(function() {
+                    window.location.reload(true); // true = forzar recarga desde servidor
+                }, 100);
+                return false;
+            }
+            // Guardar versión actual
+            localStorage.setItem('mjloader_version', VERSION);
+            return true;
+        } catch (e) {
+            // Si localStorage no está disponible, continuar normalmente
+            return true;
+        }
+    }
+    
+    // Inicializar todo
     function init() {
-        // 1. Crear estilos
+        // Verificar caché - si devuelve false, se está recargando la página
+        if (!handleVersionCache()) return;
+        
+        // Crear estilos
         createStyles();
         
-        // 2. Crear y añadir el loader
+        // Crear y añadir el loader
         var loader = createLoader();
         
         if (document.body) {
             document.body.appendChild(loader);
-            // Cargar rápidamente
             quickLoad();
         } else {
             document.addEventListener('DOMContentLoaded', function() {
