@@ -1,4 +1,4 @@
-// fast_misterjugo_loader.js - Loader optimizado para MisterJugo con carga rápida
+// ultrafast_misterjugo_loader.js - Loader mínimo de alta velocidad
 (function() {
     // Ruta del logo
     var logoPath = "images/logo_mrjugo.png";
@@ -7,11 +7,10 @@
     var bgColor = '#ffaa55';  // Naranja de fondo
     var barColor = '#e67300'; // Naranja oscuro para la barra
     
-    // Tiempos (en milisegundos)
-    var maxWaitTime = 2000;   // Tiempo máximo que esperará antes de ocultar (2 segundos)
-    var barSpeed = 80;        // Velocidad de la barra (menor = más rápido)
+    // Configuración de tiempos ultra-rápidos
+    var totalLoadTime = 800;  // Tiempo total en milisegundos (menos de 1 segundo)
     
-    // Insertar los estilos básicos directamente
+    // Insertar estilos mínimos
     function createStyles() {
         var style = document.createElement('style');
         style.textContent = `
@@ -26,7 +25,7 @@
                 display: flex;
                 justify-content: center;
                 align-items: center;
-                transition: opacity 0.3s ease;
+                transition: opacity 0.2s ease;
             }
             
             .mjloader-container {
@@ -35,7 +34,7 @@
             }
             
             .mjloader-logo {
-                margin-bottom: 20px;
+                margin-bottom: 15px;
             }
             
             .mjloader-logo img {
@@ -47,14 +46,7 @@
                 color: white;
                 font-size: 28px;
                 font-weight: bold;
-                margin: 15px 0;
-                font-family: Arial, sans-serif;
-            }
-            
-            .mjloader-subtitle {
-                color: white;
-                font-size: 16px;
-                margin: 10px 0 25px;
+                margin: 10px 0;
                 font-family: Arial, sans-serif;
             }
             
@@ -71,7 +63,7 @@
                 width: 0%;
                 height: 100%;
                 background-color: ${barColor};
-                transition: width 0.1s linear;
+                transition: width 0.7s cubic-bezier(0.1, 0.7, 1.0, 0.1);
             }
             
             .mjloader-text {
@@ -80,12 +72,11 @@
                 font-weight: bold;
                 text-transform: uppercase;
                 font-family: Arial, sans-serif;
-                letter-spacing: 1px;
             }
             
             body > *:not(#mjloader-overlay) {
                 opacity: 0;
-                transition: opacity 0.3s ease;
+                transition: opacity 0.2s ease;
             }
             
             body.mjloader-done > *:not(#mjloader-overlay) {
@@ -114,7 +105,6 @@
                     <img src="${logoPath}" alt="MisterJugo Logo">
                 </div>
                 <div class="mjloader-title">MisterJugo</div>
-                <div class="mjloader-subtitle">Preparando todo para ti...</div>
                 <div class="mjloader-bar-container">
                     <div class="mjloader-bar" id="mjloader-progress"></div>
                 </div>
@@ -125,46 +115,18 @@
         return overlay;
     }
     
-    // Función para actualizar la barra de progreso
-    function updateProgress(percentage) {
-        var bar = document.getElementById('mjloader-progress');
-        if (bar) {
-            bar.style.width = percentage + '%';
+    // Función para mostrar un progreso rápido
+    function quickLoad() {
+        var progress = document.getElementById('mjloader-progress');
+        if (progress) {
+            // Iniciar la animación inmediatamente al 100%
+            setTimeout(function() {
+                progress.style.width = '100%';
+            }, 10);
+            
+            // Ocultar después del tiempo configurado
+            setTimeout(hideLoader, totalLoadTime);
         }
-    }
-    
-    // Función para simular el progreso más rápido
-    function startProgress() {
-        var progress = 0;
-        var increment = 5; // Incremento más grande para avanzar más rápido
-        
-        var interval = setInterval(function() {
-            progress += increment;
-            
-            // Aumentar la velocidad de avance
-            if (progress < 50) {
-                increment = 5 + Math.random() * 3; // 5-8%
-            } else if (progress < 85) {
-                increment = 3 + Math.random() * 2; // 3-5%
-            } else {
-                increment = 2 + Math.random() * 1; // 2-3%
-            }
-            
-            if (progress >= 100) {
-                clearInterval(interval);
-                progress = 100;
-                hideLoader();
-            }
-            
-            updateProgress(progress);
-        }, barSpeed);
-        
-        // Tiempo máximo de espera reducido
-        setTimeout(function() {
-            clearInterval(interval);
-            updateProgress(100);
-            hideLoader();
-        }, maxWaitTime);
     }
     
     // Ocultar el loader
@@ -175,36 +137,26 @@
             
             setTimeout(function() {
                 document.body.classList.add('mjloader-done');
-            }, 300); // Transición más rápida
+            }, 200);
         }
     }
     
-    // Precargar el logo
-    function preloadLogo(callback) {
-        var img = new Image();
-        img.onload = callback;
-        img.onerror = callback; // Continuar incluso si falla la carga del logo
-        img.src = logoPath;
-    }
-    
-    // Iniciar todo
+    // Inicializar
     function init() {
-        // 1. Crear los estilos
+        // 1. Crear estilos
         createStyles();
         
-        // 2. Crear y mostrar el loader
+        // 2. Crear y añadir el loader
         var loader = createLoader();
         
-        // 3. Añadir el loader al body
         if (document.body) {
             document.body.appendChild(loader);
-            // 4. Iniciar la barra de progreso rápida
-            startProgress();
+            // Cargar rápidamente
+            quickLoad();
         } else {
-            // Si no hay body aún, esperar
             document.addEventListener('DOMContentLoaded', function() {
                 document.body.appendChild(loader);
-                startProgress();
+                quickLoad();
             });
         }
     }
