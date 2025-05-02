@@ -240,4 +240,4 @@ if(isset($_COOKIE['logout_message'])) {
                 }, 5000);
             }
         });
-    </script>
+    </script> 
