@@ -1,6 +1,5 @@
 <?php
 
-include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/no_cache.php';
 // Comprobar si el usuario está logueado
 session_start();
 $isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
