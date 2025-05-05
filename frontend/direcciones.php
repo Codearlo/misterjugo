@@ -66,7 +66,7 @@ include 'includes/header.php';
 ?>
 <script src="js/cache_control.js"></script>
 <link rel="stylesheet" href="/css/direcciones.css">
-<script src="/js/direcciones.js"></script>
+<script src="js/direcciones.js"></script>
 
 <!-- Inicio de la página de direcciones con la clase específica -->
 <div class="direcciones-page">
