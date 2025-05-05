@@ -19,6 +19,10 @@
   --dir-text-medium: #5F5B57;       /* Marrón medio */
   --dir-text-light: #ADA79E;        /* Marrón claro */
   --dir-white: #FFFFFF;
+  --dir-pending: #FF9800;           /* Naranja (pendiente) */
+  --dir-processing: #2196F3;        /* Azul (procesando) */
+  --dir-completed: #4CAF50;         /* Verde (completado) */
+  --dir-cancelled: #F44336;         /* Rojo (cancelado) */
   --dir-shadow-sm: 0 2px 6px rgba(0,0,0,0.1);
   --dir-shadow-md: 0 4px 10px rgba(0,0,0,0.12);
   --dir-radius: 12px;
@@ -28,7 +32,7 @@
 
 /* Contenedor principal */
 .direcciones-page .main-content {
-  padding: 40px 0;
+  padding: 60px 0;
   min-height: calc(100vh - 80px);
   background-color: var(--dir-bg-light);
   background-image: 
@@ -49,37 +53,34 @@
 
 /* Encabezado de página */
 .direcciones-page .page-header {
-  margin-bottom: 30px;
-  text-align: center;
+  margin-bottom: 40px;
+  text-align: left;
   position: relative;
 }
 
 .direcciones-page .page-title {
   font-family: inherit;
-  font-size: 2.2rem;
-  font-weight: 600;
+  font-size: 2.5rem;
+  font-weight: 700;
   color: var(--dir-text-dark);
-  margin-bottom: 8px;
+  margin-bottom: 12px;
   position: relative;
   display: inline-block;
 }
 
-.direcciones-page .page-title::after {
-  content: '';
-  position: absolute;
-  bottom: -6px;
-  left: 50%;
-  transform: translateX(-50%);
+.direcciones-page .title-underline {
   width: 80px;
-  height: 3px;
+  height: 4px;
   background: var(--dir-primary);
-  border-radius: 3px;
+  margin-bottom: 15px;
+  border-radius: 2px;
 }
 
 .direcciones-page .page-subtitle {
   color: var(--dir-text-medium);
   font-size: 1.1rem;
   font-weight: 400;
+  margin-top: 0;
 }
 
 /* Notificaciones */
@@ -126,6 +127,8 @@
 /* Contenedor de sección */
 .direcciones-page .section-container {
   width: 100%;
+  display: flex;
+  justify-content: center;
 }
 
 /* Lista de tarjetas */
@@ -145,6 +148,7 @@
   transition: all var(--dir-transition);
   box-shadow: var(--dir-shadow-sm);
   border: 1px solid rgba(0,0,0,0.05);
+  cursor: pointer;
 }
 
 .direcciones-page .address-card:hover {
@@ -152,7 +156,7 @@
   transform: translateY(-3px);
 }
 
-/* Encabezado de la tarjeta */
+/* Encabezado de la tarjeta de dirección */
 .direcciones-page .address-header {
   padding: 15px 20px;
   border-bottom: 1px solid rgba(0,0,0,0.05);
@@ -170,50 +174,40 @@
 }
 
 .direcciones-page .address-badge {
-  padding: 5px 12px;
+  padding: 4px 10px;
   border-radius: 20px;
   font-size: 0.75rem;
   font-weight: 600;
-  background-color: var(--dir-primary);
-  color: var(--dir-white);
+  color: white;
   text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .direcciones-page .address-badge.primary {
-  background: linear-gradient(135deg, var(--dir-primary), var(--dir-primary-dark));
+  background-color: var(--dir-primary);
 }
 
 /* Contenido de la dirección */
 .direcciones-page .address-content {
   padding: 15px 20px;
-  background-color: #f8f8f8;
-  border-radius: 8px;
-  margin: 10px 20px;
 }
 
 .direcciones-page .address-content p {
-  margin-bottom: 10px;
-  display: flex;
-  align-items: flex-start;
+  margin: 8px 0;
   font-size: 0.95rem;
-  color: var(--dir-text-medium);
-  line-height: 1.4;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
-.direcciones-page .address-content p:last-child {
-  margin-bottom: 0;
-}
-
-.direcciones-page .address-content i {
+.direcciones-page .address-content p i {
   color: var(--dir-primary);
-  margin-right: 10px;
-  font-size: 1rem;
-  margin-top: 2px;
-  min-width: 16px;
+  width: 16px;
+  text-align: center;
 }
 
-/* Acciones de la tarjeta */
+/* Acciones de dirección */
 .direcciones-page .address-actions {
   padding: 15px 20px;
   display: flex;
@@ -259,12 +253,13 @@
 }
 
 .direcciones-page .btn-default {
-  background-color: var(--dir-secondary-light);
-  color: var(--dir-white);
+  background-color: #F5F5F5;
+  color: var(--dir-secondary);
+  border: 1px solid rgba(76, 175, 80, 0.2);
 }
 
 .direcciones-page .btn-default:hover {
-  background-color: var(--dir-secondary);
+  background-color: rgba(76, 175, 80, 0.1);
 }
 
 /* Tarjeta para agregar nueva dirección */
@@ -272,69 +267,61 @@
   background: var(--dir-white);
   border-radius: var(--dir-radius);
   overflow: hidden;
-  box-shadow: var(--dir-shadow-sm);
-  border: 1px dashed var(--dir-primary-light);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px;
-  height: 100%;
-  min-height: 180px;
   transition: all var(--dir-transition);
-}
-
-.direcciones-page .add-new-card:hover {
-  background-color: rgba(255, 122, 0, 0.03);
-  box-shadow: var(--dir-shadow-md);
+  box-shadow: var(--dir-shadow-sm);
+  border: 1px solid rgba(0,0,0,0.05);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 30px 20px;
+  min-height: 140px;
 }
 
 .direcciones-page .btn-add {
-  display: flex;
-  flex-direction: column;
+  background-color: var(--dir-bg-light);
+  color: var(--dir-primary);
+  padding: 12px 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
   align-items: center;
   gap: 10px;
-  color: var(--dir-primary);
-  font-size: 1.05rem;
-  font-weight: 600;
-  border: none;
-  background: transparent;
+  border: 1px dashed var(--dir-primary-light);
   cursor: pointer;
 }
 
+.direcciones-page .btn-add:hover {
+  background-color: rgba(255, 122, 0, 0.08);
+  transform: translateY(-2px);
+}
+
 .direcciones-page .btn-add i {
-  font-size: 2rem;
-  transition: transform 0.2s ease;
-}
-
-.direcciones-page .add-new-card:hover .btn-add i {
-  transform: scale(1.1);
-}
-
-.direcciones-page .btn-add span {
-  color: var(--dir-primary);
+  font-size: 1.1rem;
 }
 
 /* Estado vacío */
 .direcciones-page .no-addresses {
-  padding: 40px 0;
+  padding: 0;
   display: flex;
   justify-content: center;
   width: 100%;
+  max-width: 500px;
 }
 
 .direcciones-page .empty-state {
-  padding: 40px;
-  border-radius: var(--dir-radius);
-  box-shadow: var(--dir-shadow-sm);
-  background: var(--dir-white);
+  padding: 50px 30px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #FFFFFF;
   text-align: center;
-  max-width: 450px;
   width: 100%;
 }
 
 .direcciones-page .empty-state i {
   font-size: 3rem;
-  color: var(--dir-primary);
+  color: #FF8C00;
   margin-bottom: 20px;
   opacity: 0.9;
 }
@@ -342,20 +329,21 @@
 .direcciones-page .empty-state h3 {
   font-size: 1.5rem;
   margin-bottom: 10px;
-  color: var(--dir-text-dark);
+  color: #333333;
   font-weight: 600;
 }
 
 .direcciones-page .empty-state p {
-  color: var(--dir-text-medium);
+  color: #666666;
   margin-bottom: 25px;
   font-size: 0.95rem;
 }
 
+/* Botones principales */
 .direcciones-page .btn-primary {
   background-color: var(--dir-primary);
   color: var(--dir-white);
-  padding: 10px 24px;
+  padding: 12px 24px;
   border-radius: 6px;
   font-size: 1rem;
   font-weight: 500;
@@ -364,11 +352,14 @@
   cursor: pointer;
   display: inline-flex;
   align-items: center;
-  gap: 8px;
+  gap: 10px;
+  text-decoration: none;
 }
 
 .direcciones-page .btn-primary:hover {
   background-color: var(--dir-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--dir-shadow-sm);
 }
 
 /* Estilos del modal */
@@ -395,14 +386,14 @@
 .direcciones-page .modal-content {
   background: var(--dir-white);
   border-radius: var(--dir-radius);
-  max-width: 550px;
+  max-width: 600px;
   width: 90%;
-  padding: 30px;
+  max-height: 90vh;
+  overflow-y: auto;
   box-shadow: var(--dir-shadow-md);
   position: relative;
   transform: translateY(20px);
   transition: transform 0.3s ease;
-  max-height: 90vh;
   display: flex;
   flex-direction: column;
 }
@@ -415,9 +406,12 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 20px;
-  padding-bottom: 15px;
+  padding: 20px 30px;
   border-bottom: 1px solid rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  background: var(--dir-white);
+  z-index: 10;
 }
 
 .direcciones-page .modal-header h3 {
@@ -428,9 +422,8 @@
 }
 
 .direcciones-page .modal-body {
+  padding: 25px 30px 30px;
   overflow-y: auto;
-  padding-right: 10px;
-  flex-grow: 1;
 }
 
 .direcciones-page .close-modal {
@@ -451,36 +444,40 @@
   color: var(--dir-text-dark);
 }
 
-/* Estilos de formulario */
+/* Formulario */
 .direcciones-page .form-group {
   margin-bottom: 20px;
 }
 
 .direcciones-page .form-row {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  display: flex;
   gap: 15px;
+  margin-bottom: 20px;
+}
+
+.direcciones-page .form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
 }
 
 .direcciones-page label {
   display: block;
-  margin-bottom: 8px;
+  margin-bottom: 6px;
   font-weight: 500;
-  color: var(--dir-text-medium);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  color: var(--dir-text-dark);
 }
 
 .direcciones-page input[type="text"],
 .direcciones-page input[type="tel"],
 .direcciones-page textarea {
-  padding: 12px 15px;
-  border: 1px solid rgba(0,0,0,0.12);
-  border-radius: 6px;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
   width: 100%;
-  color: var(--dir-text-dark);
-  background-color: var(--dir-white);
+  padding: 12px 15px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  background-color: #FAFAFA;
 }
 
 .direcciones-page input[type="text"]:focus,
@@ -489,72 +486,74 @@
   border-color: var(--dir-primary);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
   outline: none;
+  background-color: white;
 }
 
 .direcciones-page textarea {
-  resize: vertical;
   min-height: 100px;
+  resize: vertical;
 }
 
+/* Checkbox estilizado */
 .direcciones-page .checkbox-group {
   display: flex;
   align-items: center;
   gap: 10px;
-  margin: 5px 0 20px;
+  margin-bottom: 25px;
 }
 
-.direcciones-page .checkbox-group input[type="checkbox"] {
+.direcciones-page input[type="checkbox"] {
   width: 18px;
   height: 18px;
+  margin: 0;
+  cursor: pointer;
   accent-color: var(--dir-primary);
 }
 
 .direcciones-page .checkbox-group label {
   margin-bottom: 0;
-  font-weight: 400;
-  font-size: 0.95rem;
-}
-
-.direcciones-page .form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.direcciones-page .btn-cancel {
-  background-color: #F5F5F5;
-  color: var(--dir-text-medium);
-  padding: 10px 20px;
-  border-radius: 6px;
-  border: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
   cursor: pointer;
 }
 
-.direcciones-page .btn-cancel:hover {
-  background-color: #EBEBEB;
+/* Botones de acción del formulario */
+.direcciones-page .form-actions {
+  display: flex;
+  gap: 15px;
+  justify-content: flex-end;
+  margin-top: 10px;
+}
+
+.direcciones-page .btn-save,
+.direcciones-page .btn-cancel {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  cursor: pointer;
 }
 
 .direcciones-page .btn-save {
   background-color: var(--dir-primary);
-  color: var(--dir-white);
-  padding: 10px 20px;
-  border-radius: 6px;
+  color: white;
   border: none;
-  font-weight: 500;
-  font-size: 0.95rem;
-  transition: all 0.2s ease;
-  cursor: pointer;
 }
 
 .direcciones-page .btn-save:hover {
   background-color: var(--dir-primary-dark);
 }
 
-/* Estilos para el modal de confirmación de eliminación */
+.direcciones-page .btn-cancel {
+  background-color: #F5F5F5;
+  color: var(--dir-text-medium);
+  border: 1px solid rgba(0,0,0,0.1);
+}
+
+.direcciones-page .btn-cancel:hover {
+  background-color: #EBEBEB;
+}
+
+/* Modal de confirmación */
 .direcciones-page .confirmation-modal {
   display: none;
   position: fixed;
@@ -625,15 +624,6 @@
   margin-bottom: 8px;
 }
 
-.direcciones-page .confirmation-body #address-to-delete {
-  font-weight: 500;
-  color: var(--dir-text-dark);
-  padding: 8px 12px;
-  background-color: #f8f8f8;
-  border-radius: 4px;
-  margin-top: 8px;
-}
-
 .direcciones-page .confirmation-actions {
   display: flex;
   justify-content: flex-end;
@@ -675,71 +665,100 @@
 /* Media queries */
 @media (max-width: 768px) {
   .direcciones-page .form-row {
-    grid-template-columns: 1fr;
+      flex-direction: column;
+      gap: 20px;
   }
   
   .direcciones-page .empty-state {
-    padding: 30px 20px;
+      padding: 40px 20px;
   }
   
+  .direcciones-page .empty-state h3 {
+      font-size: 1.6rem;
+  }
+  
+  .direcciones-page .empty-state p {
+      font-size: 1rem;
+  }
+  
+  .direcciones-page .btn-add,
   .direcciones-page .btn-primary,
+  .direcciones-page .btn-edit,
+  .direcciones-page .btn-delete,
+  .direcciones-page .btn-default,
   .direcciones-page .btn-save,
   .direcciones-page .btn-cancel,
   .direcciones-page .btn-confirm-delete,
   .direcciones-page .btn-cancel-delete {
-    width: 100%;
-    justify-content: center;
+      width: 100%;
+      justify-content: center;
   }
   
-  .direcciones-page .form-actions,
+  .direcciones-page .btn-add {
+      font-size: 0.9rem;
+      padding: 10px 15px;
+  }
+  
   .direcciones-page .confirmation-actions {
-    flex-direction: column;
+      flex-direction: column;
   }
   
   .direcciones-page .address-card {
-    width: 100%;
+      width: 100%;
   }
   
   .direcciones-page .address-actions {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+  }
+  
+  .direcciones-page .page-title {
+      font-size: 2.2rem;
   }
 }
 
 @media (max-width: 480px) {
-  .direcciones-page .address-actions {
-    grid-template-columns: 1fr;
-  }
-  
-  .direcciones-page .btn-edit,
-  .direcciones-page .btn-delete,
-  .direcciones-page .btn-default {
-    width: 100%;
-    justify-content: center;
+  .direcciones-page .main-content {
+      padding: 40px 0;
   }
   
   .direcciones-page .modal-content,
   .direcciones-page .confirmation-content {
-    padding: 20px;
-    width: 95%;
+      padding: 15px;
+      width: 95%;
+  }
+  
+  .direcciones-page .modal-header {
+      padding: 15px;
+  }
+  
+  .direcciones-page .modal-body {
+      padding: 15px;
   }
   
   .direcciones-page .page-title {
-    font-size: 1.8rem;
+      font-size: 1.8rem;
   }
   
   .direcciones-page .page-subtitle {
-    font-size: 1rem;
+      font-size: 1rem;
   }
   
-  .direcciones-page .address-content {
-    margin: 10px;
-    padding: 12px;
-  }
-
   .direcciones-page .notification {
-    width: 95%;
-    padding: 12px 15px;
+      width: 95%;
+      padding: 12px 15px;
+  }
+  
+  .direcciones-page .form-actions {
+      flex-direction: column;
+  }
+  
+  .direcciones-page .add-new-card {
+      padding: 25px 15px;
+  }
+  
+  .direcciones-page .btn-add span {
+      font-size: 0.85rem;
   }
 }
