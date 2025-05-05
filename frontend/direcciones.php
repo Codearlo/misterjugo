@@ -64,7 +64,7 @@ if (!$tiene_direccion_predeterminada && count($direcciones) > 0) {
 // Incluir el archivo header
 include 'includes/header.php';
 ?>
-
+<script src="js/cache_control.js"></script>
 <link rel="stylesheet" href="/css/direcciones.css">
 <script src="/js/direcciones.js"></script>
 
