@@ -66,6 +66,7 @@ include 'includes/header.php';
 ?>
 
 <link rel="stylesheet" href="/css/direcciones.css">
+<script src="/js/direcciones.js"></script>
 
 <!-- Inicio de la página de direcciones con la clase específica -->
 <div class="direcciones-page">
@@ -73,6 +74,7 @@ include 'includes/header.php';
         <div class="container">
             <div class="page-header">
                 <h2 class="page-title">Mis Direcciones</h2>
+                <div class="title-underline"></div>
                 <p class="page-subtitle">Administra tus direcciones de entrega</p>
             </div>
             
@@ -181,13 +183,13 @@ include 'includes/header.php';
                         <input type="text" id="calle" name="calle" placeholder="Calle, número, colonia" required value="<?php echo htmlspecialchars($datos_direccion['calle']); ?>">
                     </div>
                     <div class="form-row">
-                        <div class="form-group">
-                            <label for="ciudad">Ciudad</label>
-                            <input type="text" id="ciudad" name="ciudad" placeholder="Ciudad" required value="<?php echo htmlspecialchars($datos_direccion['ciudad']); ?>">
+                        <div class="form-group autocomplete">
+                            <label for="ciudad">Distrito</label>
+                            <input type="text" id="ciudad" name="ciudad" placeholder="Seleccione distrito" required value="<?php echo !empty($datos_direccion['ciudad']) ? htmlspecialchars($datos_direccion['ciudad']) : 'Ica'; ?>">
                         </div>
                         <div class="form-group">
-                            <label for="estado">Estado</label>
-                            <input type="text" id="estado" name="estado" placeholder="Estado" required value="<?php echo htmlspecialchars($datos_direccion['estado']); ?>">
+                            <label for="estado">Provincia</label>
+                            <input type="text" id="estado" name="estado" placeholder="Provincia" required value="<?php echo !empty($datos_direccion['estado']) ? htmlspecialchars($datos_direccion['estado']) : 'Ica'; ?>">
                         </div>
                     </div>
                     <div class="form-row">
@@ -291,6 +293,9 @@ document.addEventListener('DOMContentLoaded', function() {
         } else {
             // Es un nuevo registro, limpiar el formulario
             addressForm.reset();
+            // Establecer valores predeterminados para distrito y provincia
+            document.getElementById('ciudad').value = 'Ica';
+            document.getElementById('estado').value = 'Ica';
         }
         
         addressModal.classList.add('active');

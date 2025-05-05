@@ -475,19 +475,21 @@
 
 .direcciones-page input[type="text"],
 .direcciones-page input[type="tel"],
-.direcciones-page textarea {
+.direcciones-page textarea,
+.direcciones-page select {
   width: 100%;
   padding: 12px 15px;
   border: 1px solid rgba(0,0,0,0.15);
   border-radius: 6px;
-  font-size: 1rem;
+  font-size: 0.95rem;
   transition: border-color 0.2s ease, box-shadow 0.2s ease;
   background-color: #FAFAFA;
 }
 
 .direcciones-page input[type="text"]:focus,
 .direcciones-page input[type="tel"]:focus,
-.direcciones-page textarea:focus {
+.direcciones-page textarea:focus,
+.direcciones-page select:focus {
   border-color: var(--dir-primary);
   box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
   outline: none;
@@ -497,6 +499,42 @@
 .direcciones-page textarea {
   min-height: 100px;
   resize: vertical;
+}
+
+/* Autocompletado */
+.direcciones-page .autocomplete {
+  position: relative;
+}
+
+.direcciones-page .autocomplete-items {
+  position: absolute;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-top: none;
+  z-index: 99;
+  top: 100%;
+  left: 0;
+  right: 0;
+  border-radius: 0 0 6px 6px;
+  max-height: 200px;
+  overflow-y: auto;
+  background-color: white;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.direcciones-page .autocomplete-items div {
+  padding: 10px 15px;
+  cursor: pointer;
+  font-size: 0.9rem;
+  border-bottom: 1px solid #f1f1f1;
+  transition: background-color 0.2s ease;
+}
+
+.direcciones-page .autocomplete-items div:hover {
+  background-color: rgba(255, 122, 0, 0.1);
+}
+
+.direcciones-page .autocomplete-active {
+  background-color: rgba(255, 122, 0, 0.2) !important;
 }
 
 /* Checkbox estilizado */
