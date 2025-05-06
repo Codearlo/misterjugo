@@ -154,6 +154,9 @@ include 'includes/header.php';
                 <div class="profile-section stats-section">
                     <div class="section-header">
                         <h3><i class="fas fa-chart-pie"></i> Mis Estadísticas</h3>
+                        <a href="/pedidos" class="btn-view-orders">
+                            <i class="fas fa-list"></i> Ver historial de pedidos
+                        </a>
                     </div>
                     
                     <div class="section-content">
@@ -197,12 +200,6 @@ include 'includes/header.php';
                                     <span class="stat-label">Cancelados</span>
                                 </div>
                             </div>
-                        </div>
-                        
-                        <div class="stats-action">
-                            <a href="/pedidos" class="btn-view-orders">
-                                <i class="fas fa-list"></i> Ver historial de pedidos
-                            </a>
                         </div>
                     </div>
                 </div>
