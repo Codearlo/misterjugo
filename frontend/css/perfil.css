@@ -425,8 +425,27 @@
   color: var(--perfil-text-medium);
 }
 
-.perfil-page .stats-action {
-  text-align: center;
+.perfil-page .btn-action {
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--perfil-primary);
+  color: var(--perfil-white);
+  text-decoration: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.perfil-page .btn-action:hover {
+  background-color: var(--perfil-primary-dark);
+  transform: translateY(-3px);
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
 }
 
 /* Sección de direcciones */

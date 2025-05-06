@@ -81,7 +81,7 @@ $stats['cancelados'] = $row['total'];
 // Incluir el archivo header
 include 'includes/header.php';
 ?>
-<script src="js/cache_control.js"></script>
+
 <link rel="stylesheet" href="/css/perfil.css">
 
 <!-- Inicio de la página de perfil con la clase específica -->
@@ -114,7 +114,7 @@ include 'includes/header.php';
                 <div class="profile-section personal-info">
                     <div class="section-header">
                         <h3><i class="fas fa-user-circle"></i> Información Personal</h3>
-                        <button class="btn-edit-info" id="btn-edit-personal">
+                        <button class="btn-edit-info btn-action" id="btn-edit-personal">
                             <i class="fas fa-edit"></i> Editar
                         </button>
                     </div>
@@ -154,7 +154,7 @@ include 'includes/header.php';
                 <div class="profile-section stats-section">
                     <div class="section-header">
                         <h3><i class="fas fa-chart-pie"></i> Mis Estadísticas</h3>
-                        <a href="/pedidos" class="btn-view-orders">
+                        <a href="/pedidos" class="btn-view-orders btn-action">
                             <i class="fas fa-list"></i> Ver historial de pedidos
                         </a>
                     </div>
@@ -208,7 +208,7 @@ include 'includes/header.php';
                 <div class="profile-section addresses-section">
                     <div class="section-header">
                         <h3><i class="fas fa-map-marker-alt"></i> Dirección de Entrega</h3>
-                        <a href="/direcciones" class="btn-view-addresses">
+                        <a href="/direcciones" class="btn-view-addresses btn-action">
                             <i class="fas fa-list"></i> Ver todas mis direcciones
                         </a>
                     </div>
