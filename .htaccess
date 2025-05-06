@@ -75,12 +75,7 @@ ErrorDocument 500 /frontend/error.php
   Deny from all
 </DirectoryMatch>
 
-# Proteger directorio backend excepto para solicitudes locales
-<IfModule mod_rewrite.c>
-  RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$
-  RewriteCond %{REMOTE_ADDR} !^::1$
-  RewriteRule ^backend/(.*)$ - [F,L]
-</IfModule>
+
 
 # Medidas de seguridad
 <IfModule mod_headers.c>
