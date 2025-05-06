@@ -1,140 +1,61 @@
 <?php
-// Iniciar sesión para guardar mensajes
+// procesar_recuperacion.php sin envío de correos
 session_start();
 
-// Incluir archivo de conexión a la base de datos
-require_once 'conexion.php';
-
-// Función para registrar errores (para depuración)
-function registrar_error($mensaje) {
-    // Crear un archivo de log en la carpeta backend
-    $log_file = __DIR__ . '/error_log.txt';
-    $fecha = date('Y-m-d H:i:s');
-    $mensaje_log = "[$fecha] $mensaje\n";
+try {
+    // Incluir conexión
+    require_once 'conexion.php';
     
-    // Escribir en el archivo
-    file_put_contents($log_file, $mensaje_log, FILE_APPEND);
-}
-
-// Verificar si se ha enviado el formulario
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    // Registrar inicio del proceso
-    registrar_error("Iniciando proceso de recuperación");
-    
-    // Obtener y limpiar el correo electrónico
+    // Obtener el email
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     
-    // Verificar que el email existe
-    if (empty($email)) {
-        $_SESSION['error_recuperacion'] = "Por favor ingresa tu correo electrónico.";
+    if (empty($email) || !filter_var($email, FILTER_VALIDATE_EMAIL)) {
+        $_SESSION['error_recuperacion'] = "Correo electrónico inválido";
         header("Location: ../recuperar-password.php");
         exit;
     }
     
-    // Validar formato de correo electrónico
-    if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
-        $_SESSION['error_recuperacion'] = "El formato del correo electrónico no es válido.";
-        header("Location: ../recuperar-password.php");
-        exit;
-    }
+    // Verificar si el usuario existe
+    $stmt = $conn->prepare("SELECT id FROM usuarios WHERE email = ?");
+    $stmt->execute([$email]);
     
-    try {
-        // Registrar conexión a la base de datos
-        registrar_error("Intentando conectar a la base de datos");
+    if ($stmt->rowCount() > 0) {
+        // Generar token
+        $token = bin2hex(random_bytes(16)); // 32 caracteres
+        $expira = date('Y-m-d H:i:s', strtotime('+1 hour'));
         
-        // Verificar si la conexión está establecida correctamente
-        if (!isset($conn) || !$conn) {
-            throw new Exception("Error de conexión a la base de datos");
-        }
+        // Crear tabla si no existe
+        $conn->exec("CREATE TABLE IF NOT EXISTS recuperacion_password (
+            id INT AUTO_INCREMENT PRIMARY KEY,
+            email VARCHAR(255) NOT NULL,
+            token VARCHAR(64) NOT NULL,
+            expira DATETIME NOT NULL,
+            usado TINYINT(1) DEFAULT 0,
+            fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )");
         
-        // Verificar primero si la tabla existe
-        $stmt = $conn->query("SHOW TABLES LIKE 'recuperacion_password'");
-        $table_exists = ($stmt->rowCount() > 0);
-        
-        if (!$table_exists) {
-            // Crear la tabla si no existe
-            registrar_error("Creando tabla de recuperación_password");
-            $sql = "CREATE TABLE recuperacion_password (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(255) NOT NULL,
-                token VARCHAR(64) NOT NULL,
-                expira DATETIME NOT NULL,
-                usado TINYINT(1) DEFAULT 0,
-                fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )";
-            $conn->exec($sql);
-        }
-        
-        // Verificar si el correo existe en la base de datos
-        $stmt = $conn->prepare("SELECT id, nombre FROM usuarios WHERE email = ?");
+        // Eliminar tokens anteriores
+        $stmt = $conn->prepare("DELETE FROM recuperacion_password WHERE email = ?");
         $stmt->execute([$email]);
         
-        if ($stmt->rowCount() > 0) {
-            // Obtener datos del usuario
-            $usuario = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            // Generar token único
-            $token = bin2hex(random_bytes(32));
-            $expira = date('Y-m-d H:i:s', strtotime('+1 hour')); // El token expira en 1 hora
-            
-            // Eliminar tokens anteriores de este usuario
-            $stmt = $conn->prepare("DELETE FROM recuperacion_password WHERE email = ?");
-            $stmt->execute([$email]);
-            
-            // Guardar el token en la base de datos
-            $stmt = $conn->prepare("INSERT INTO recuperacion_password (email, token, expira) VALUES (?, ?, ?)");
-            $stmt->execute([$email, $token, $expira]);
-            
-            // Construir el enlace de recuperación
-            $enlace = "https://misterjugo.codearlo.com/restablecer-password.php?token=" . $token;
-            
-            // Enviar correo electrónico
-            $asunto = "Recuperación de contraseña - MisterJugo";
-            $mensaje = "Hola " . $usuario['nombre'] . ",\n\n";
-            $mensaje .= "Has solicitado restablecer tu contraseña en MisterJugo. Haz clic en el siguiente enlace para crear una nueva contraseña:\n\n";
-            $mensaje .= $enlace . "\n\n";
-            $mensaje .= "Este enlace expirará en 1 hora.\n\n";
-            $mensaje .= "Si no solicitaste este cambio, puedes ignorar este correo y tu contraseña seguirá siendo la misma.\n\n";
-            $mensaje .= "Saludos,\n";
-            $mensaje .= "Equipo MisterJugo";
-            
-            $cabeceras = "From: noreply@misterjugo.com" . "\r\n";
-            
-            // Intentar enviar el correo y registrar el resultado
-            $mail_enviado = mail($email, $asunto, $mensaje, $cabeceras);
-            registrar_error("Intento de envío de correo a $email: " . ($mail_enviado ? "Éxito" : "Fallo"));
-            
-            if ($mail_enviado) {
-                $_SESSION['exito_recuperacion'] = "Se ha enviado un enlace de recuperación a tu correo electrónico. Por favor revisa tu bandeja de entrada.";
-            } else {
-                // Si falla el envío, aún mostrar mensaje de éxito por seguridad
-                // pero registrar el error internamente
-                registrar_error("Error al enviar correo a $email");
-                $_SESSION['exito_recuperacion'] = "Si tu correo está registrado en nuestro sistema, recibirás un enlace para restablecer tu contraseña.";
-            }
-        } else {
-            // No informamos si el correo existe o no por seguridad
-            registrar_error("Email no encontrado: $email");
-            $_SESSION['exito_recuperacion'] = "Si tu correo está registrado en nuestro sistema, recibirás un enlace para restablecer tu contraseña.";
-        }
+        // Guardar nuevo token
+        $stmt = $conn->prepare("INSERT INTO recuperacion_password (email, token, expira) VALUES (?, ?, ?)");
+        $stmt->execute([$email, $token, $expira]);
         
-    } catch (PDOException $e) {
-        registrar_error("Error PDO: " . $e->getMessage());
-        $_SESSION['error_recuperacion'] = "Ha ocurrido un error. Por favor, intenta nuevamente más tarde.";
-    } catch (Exception $e) {
-        registrar_error("Error general: " . $e->getMessage());
-        $_SESSION['error_recuperacion'] = "Ha ocurrido un error. Por favor, intenta nuevamente más tarde.";
+        // En lugar de enviar correo, mostrar el enlace directamente (solo para pruebas)
+        $_SESSION['exito_recuperacion'] = "Enlace de recuperación (solo para pruebas): <a href='../restablecer-password.php?token=$token'>Restablecer contraseña</a>";
+    } else {
+        // Usuario no encontrado
+        $_SESSION['exito_recuperacion'] = "Si tu correo está registrado, recibirás instrucciones para recuperar tu contraseña.";
     }
     
-    // Registrar finalización del proceso
-    registrar_error("Finalizando proceso de recuperación");
+} catch (Exception $e) {
+    // Guardar el error en un archivo
+    file_put_contents(__DIR__ . '/error_log.txt', date('Y-m-d H:i:s') . ' - ' . $e->getMessage() . "\n", FILE_APPEND);
     
-    header("Location: ../recuperar-password.php");
-    exit;
-} else {
-    // Si alguien intenta acceder directamente a este archivo
-    header("Location: ../recuperar-password.php");
-    exit;
+    $_SESSION['error_recuperacion'] = "Ha ocurrido un error. Por favor, intenta nuevamente más tarde.";
 }
+
+header("Location: ../recuperar-password.php");
+exit;
 ?>
