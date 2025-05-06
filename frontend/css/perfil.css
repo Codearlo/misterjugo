@@ -7,889 +7,906 @@
 /* Para usar este CSS, añade la clase "perfil-page" al elemento contenedor principal */
 
 .perfil-page {
-    /* Variables locales - mismas que en pedidos para mantener coherencia */
-    --perfil-primary: #FF7A00;           /* Naranja vibrante (jugo) */
-    --perfil-primary-dark: #E56D00;      /* Naranja oscuro */
-    --perfil-primary-light: #FFA649;     /* Naranja claro */
-    --perfil-secondary: #4CAF50;         /* Verde lima (naturaleza) */
-    --perfil-secondary-dark: #388E3C;    /* Verde oscuro */
-    --perfil-secondary-light: #81C784;   /* Verde claro */
-    --perfil-bg-light: #F9F7F2;          /* Beige claro (orgánico) */
-    --perfil-text-dark: #2D2A26;         /* Marrón oscuro */
-    --perfil-text-medium: #5F5B57;       /* Marrón medio */
-    --perfil-text-light: #ADA79E;        /* Marrón claro */
-    --perfil-white: #FFFFFF;
-    --perfil-pending: #FF9800;           /* Naranja (pendiente) */
-    --perfil-processing: #2196F3;        /* Azul (procesando) */
-    --perfil-completed: #4CAF50;         /* Verde (completado) */
-    --perfil-cancelled: #F44336;         /* Rojo (cancelado) */
-    --perfil-shadow-sm: 0 2px 6px rgba(0,0,0,0.1);
-    --perfil-shadow-md: 0 4px 10px rgba(0,0,0,0.12);
-    --perfil-radius: 12px;
-    --perfil-transition: 0.3s ease;
-    color: var(--perfil-text-dark);
-  }
-  
-  /* Contenedor principal */
-  .perfil-page .main-content {
-    padding: 60px 0;
-    min-height: calc(100vh - 80px);
-    background-color: var(--perfil-bg-light);
-    background-image: 
-      radial-gradient(circle at 10% 10%, rgba(255, 165, 0, 0.03) 0%, transparent 30%),
-      radial-gradient(circle at 90% 90%, rgba(76, 175, 80, 0.03) 0%, transparent 30%);
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  /* Container */
-  .perfil-page .container {
-    width: 100%;
-    max-width: 1200px;
-    padding: 0 20px;
-    margin: 0 auto;
-  }
-  
-  /* Encabezado de página */
-  .perfil-page .page-header {
-    margin-bottom: 40px;
-    text-align: left;
-    position: relative;
-  }
-  
-  .perfil-page .page-title {
-    font-family: inherit;
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--perfil-text-dark);
-    margin-bottom: 12px;
-    position: relative;
-    display: inline-block;
-  }
-  
-  .perfil-page .title-underline {
-    width: 80px;
-    height: 4px;
-    background: var(--perfil-primary);
-    margin-bottom: 15px;
-    border-radius: 2px;
-  }
-  
-  .perfil-page .page-subtitle {
-    color: var(--perfil-text-medium);
-    font-size: 1.1rem;
-    font-weight: 400;
-    margin-top: 0;
-  }
-  
-  /* Notificaciones */
-  .perfil-page .notification {
-    padding: 15px 20px;
-    border-radius: var(--perfil-radius);
-    margin-bottom: 25px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: opacity 0.5s ease;
-    box-shadow: var(--perfil-shadow-sm);
-    width: 100%;
-    opacity: 0;
-    background-color: var(--perfil-white);
-    border-left: 4px solid transparent;
-    max-width: 800px;
-    margin-left: auto;
-    margin-right: auto;
-  }
-  
-  .perfil-page .notification i {
-    font-size: 1.2rem;
-  }
-  
-  .perfil-page .notification.success {
-    background-color: rgba(76, 175, 80, 0.15);
-    border-left-color: var(--perfil-secondary);
-    color: var(--perfil-secondary-dark);
-  }
-  
-  .perfil-page .notification.error {
-    background-color: rgba(244, 67, 54, 0.15);
-    border-left-color: #F44336;
-    color: #D32F2F;
-  }
-  
-  .perfil-page .notification p {
-    margin: 0;
-    font-size: 0.95rem;
-    line-height: 1.4;
-  }
-  
-  /* Contenedor del perfil */
-  .perfil-page .profile-container {
-    display: flex;
-    flex-direction: column;
-    gap: 30px;
-    width: 100%;
-  }
-  
-  /* Secciones del perfil */
-  .perfil-page .profile-section {
-    background-color: var(--perfil-white);
-    border-radius: var(--perfil-radius);
-    box-shadow: var(--perfil-shadow-sm);
-    overflow: hidden;
-    transition: all var(--perfil-transition);
-    border: 1px solid rgba(0,0,0,0.05);
-  }
-  
-  .perfil-page .profile-section:hover {
-    box-shadow: var(--perfil-shadow-md);
-  }
-  
-  /* Encabezado de sección */
-  .perfil-page .section-header {
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
-    background-color: rgba(255, 122, 0, 0.03);
-  }
-  
-  .perfil-page .section-header h3 {
-    font-size: 1.25rem;
-    font-weight: 600;
-    color: var(--perfil-text-dark);
-    margin: 0;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .perfil-page .section-header h3 i {
-    color: var(--perfil-primary);
-    font-size: 1.1rem;
-  }
-  
-  /* Contenido de sección */
-  .perfil-page .section-content {
-    padding: 25px 20px;
-  }
-  
-  .perfil-page .section-content.hidden {
-    display: none;
-  }
-  
-  /* Grupos de información */
-  .perfil-page .info-group {
-    margin-bottom: 15px;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 5px 15px;
-  }
-  
-  .perfil-page .info-label {
-    font-size: 0.9rem;
-    font-weight: 500;
-    color: var(--perfil-text-medium);
-    min-width: 120px;
-  }
-  
-  .perfil-page .info-value {
-    font-size: 1rem;
-    font-weight: 500;
-    color: var(--perfil-text-dark);
-  }
-  
-  /* Botones de edición */
-  .perfil-page .btn-edit-info,
-  .perfil-page .btn-add-address {
-    padding: 8px 15px;
-    border-radius: 6px;
-    font-size: 0.9rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    border: none;
-    cursor: pointer;
-    background-color: var(--perfil-primary-light);
-    color: var(--perfil-white);
-  }
-  
-  .perfil-page .btn-edit-info:hover,
-  .perfil-page .btn-add-address:hover {
-    background-color: var(--perfil-primary);
-  }
-  
-  /* Formularios */
-  .perfil-page .form-group {
-    margin-bottom: 20px;
+  /* Variables locales - mismas que en pedidos para mantener coherencia */
+  --perfil-primary: #FF7A00;           /* Naranja vibrante (jugo) */
+  --perfil-primary-dark: #E56D00;      /* Naranja oscuro */
+  --perfil-primary-light: #FFA649;     /* Naranja claro */
+  --perfil-secondary: #4CAF50;         /* Verde lima (naturaleza) */
+  --perfil-secondary-dark: #388E3C;    /* Verde oscuro */
+  --perfil-secondary-light: #81C784;   /* Verde claro */
+  --perfil-bg-light: #F9F7F2;          /* Beige claro (orgánico) */
+  --perfil-text-dark: #2D2A26;         /* Marrón oscuro */
+  --perfil-text-medium: #5F5B57;       /* Marrón medio */
+  --perfil-text-light: #ADA79E;        /* Marrón claro */
+  --perfil-white: #FFFFFF;
+  --perfil-pending: #FF9800;           /* Naranja (pendiente) */
+  --perfil-processing: #2196F3;        /* Azul (procesando) */
+  --perfil-completed: #4CAF50;         /* Verde (completado) */
+  --perfil-cancelled: #F44336;         /* Rojo (cancelado) */
+  --perfil-shadow-sm: 0 2px 6px rgba(0,0,0,0.1);
+  --perfil-shadow-md: 0 4px 10px rgba(0,0,0,0.12);
+  --perfil-radius: 12px;
+  --perfil-transition: 0.3s ease;
+  color: var(--perfil-text-dark);
+}
+
+/* Contenedor principal */
+.perfil-page .main-content {
+  padding: 60px 0;
+  min-height: calc(100vh - 80px);
+  background-color: var(--perfil-bg-light);
+  background-image: 
+    radial-gradient(circle at 10% 10%, rgba(255, 165, 0, 0.03) 0%, transparent 30%),
+    radial-gradient(circle at 90% 90%, rgba(76, 175, 80, 0.03) 0%, transparent 30%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Container */
+.perfil-page .container {
+  width: 100%;
+  max-width: 1200px;
+  padding: 0 20px;
+  margin: 0 auto;
+}
+
+/* Encabezado de página */
+.perfil-page .page-header {
+  margin-bottom: 40px;
+  text-align: left;
+  position: relative;
+}
+
+.perfil-page .page-title {
+  font-family: inherit;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--perfil-text-dark);
+  margin-bottom: 12px;
+  position: relative;
+  display: inline-block;
+}
+
+.perfil-page .title-underline {
+  width: 80px;
+  height: 4px;
+  background: var(--perfil-primary);
+  margin-bottom: 15px;
+  border-radius: 2px;
+}
+
+.perfil-page .page-subtitle {
+  color: var(--perfil-text-medium);
+  font-size: 1.1rem;
+  font-weight: 400;
+  margin-top: 0;
+}
+
+/* Notificaciones */
+.perfil-page .notification {
+  padding: 15px 20px;
+  border-radius: var(--perfil-radius);
+  margin-bottom: 25px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: opacity 0.5s ease;
+  box-shadow: var(--perfil-shadow-sm);
+  width: 100%;
+  opacity: 0;
+  background-color: var(--perfil-white);
+  border-left: 4px solid transparent;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.perfil-page .notification i {
+  font-size: 1.2rem;
+}
+
+.perfil-page .notification.success {
+  background-color: rgba(76, 175, 80, 0.15);
+  border-left-color: var(--perfil-secondary);
+  color: var(--perfil-secondary-dark);
+}
+
+.perfil-page .notification.error {
+  background-color: rgba(244, 67, 54, 0.15);
+  border-left-color: #F44336;
+  color: #D32F2F;
+}
+
+.perfil-page .notification p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+/* Contenedor del perfil */
+.perfil-page .profile-container {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+  width: 100%;
+}
+
+/* Secciones del perfil */
+.perfil-page .profile-section {
+  background-color: var(--perfil-white);
+  border-radius: var(--perfil-radius);
+  box-shadow: var(--perfil-shadow-sm);
+  overflow: hidden;
+  transition: all var(--perfil-transition);
+  border: 1px solid rgba(0,0,0,0.05);
+}
+
+.perfil-page .profile-section:hover {
+  box-shadow: var(--perfil-shadow-md);
+}
+
+/* Encabezado de sección */
+.perfil-page .section-header {
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+  background-color: rgba(255, 122, 0, 0.03);
+}
+
+.perfil-page .section-header h3 {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--perfil-text-dark);
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-page .section-header h3 i {
+  color: var(--perfil-primary);
+  font-size: 1.1rem;
+}
+
+/* Contenido de sección */
+.perfil-page .section-content {
+  padding: 25px 20px;
+}
+
+.perfil-page .section-content.hidden {
+  display: none;
+}
+
+/* Grupos de información */
+.perfil-page .info-group {
+  margin-bottom: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px 15px;
+}
+
+.perfil-page .info-label {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--perfil-text-medium);
+  min-width: 120px;
+}
+
+.perfil-page .info-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--perfil-text-dark);
+}
+
+/* Botones de edición */
+.perfil-page .btn-edit-info,
+.perfil-page .btn-view-addresses {
+  padding: 8px 15px;
+  border-radius: 6px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+  background-color: var(--perfil-primary-light);
+  color: var(--perfil-white);
+  text-decoration: none;
+}
+
+.perfil-page .btn-add-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: var(--perfil-primary);
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  margin-top: 15px;
+}
+
+.perfil-page .btn-add-primary:hover {
+  background-color: var(--perfil-primary-dark);
+  transform: translateY(-2px);
+  box-shadow: var(--perfil-shadow-sm);
+}
+
+/* Formularios */
+.perfil-page .form-group {
+  margin-bottom: 20px;
+}
+
+.perfil-page .form-row {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 20px;
+}
+
+.perfil-page .form-row .form-group {
+  flex: 1;
+  margin-bottom: 0;
+}
+
+.perfil-page label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: var(--perfil-text-medium);
+  font-size: 0.95rem;
+}
+
+.perfil-page input[type="text"],
+.perfil-page input[type="email"],
+.perfil-page input[type="password"],
+.perfil-page input[type="tel"],
+.perfil-page textarea {
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid rgba(0,0,0,0.15);
+  border-radius: 6px;
+  font-size: 1rem;
+  transition: border-color 0.2s ease;
+  color: var(--perfil-text-dark);
+  background-color: #FFFFFF;
+}
+
+.perfil-page input:focus,
+.perfil-page textarea:focus {
+  outline: none;
+  border-color: var(--perfil-primary);
+  box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2);
+}
+
+.perfil-page textarea {
+  resize: vertical;
+  min-height: 100px;
+}
+
+/* Grupo de checkboxes */
+.perfil-page .checkbox-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.perfil-page .checkbox-group input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  accent-color: var(--perfil-primary);
+}
+
+.perfil-page .checkbox-group label {
+  margin-bottom: 0;
+  cursor: pointer;
+}
+
+/* Acciones de formulario */
+.perfil-page .form-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.perfil-page .btn-cancel,
+.perfil-page .btn-save {
+  padding: 10px 20px;
+  border-radius: 6px;
+  font-size: 0.95rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  border: none;
+  cursor: pointer;
+}
+
+.perfil-page .btn-cancel {
+  background-color: #F5F5F5;
+  color: var(--perfil-text-medium);
+}
+
+.perfil-page .btn-save {
+  background-color: var(--perfil-primary);
+  color: var(--perfil-white);
+}
+
+.perfil-page .btn-cancel:hover {
+  background-color: #EBEBEB;
+}
+
+.perfil-page .btn-save:hover {
+  background-color: var(--perfil-primary-dark);
+}
+
+/* Sección de contraseña */
+.perfil-page .password-placeholder {
+  font-size: 1.2rem;
+  color: var(--perfil-text-light);
+  margin-bottom: 10px;
+  letter-spacing: 2px;
+}
+
+.perfil-page .password-hint {
+  color: var(--perfil-text-medium);
+  font-size: 0.9rem;
+  font-style: italic;
+}
+
+/* Sección de estadísticas */
+.perfil-page .stats-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 20px;
+  margin-bottom: 25px;
+}
+
+.perfil-page .stat-card {
+  background-color: rgba(255, 255, 255, 0.5);
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.05);
+  padding: 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  transition: all 0.3s ease;
+}
+
+.perfil-page .stat-card:hover {
+  transform: translateY(-3px);
+  box-shadow: var(--perfil-shadow-sm);
+}
+
+.perfil-page .stat-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+  background-color: var(--perfil-primary-light);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.3rem;
+}
+
+.perfil-page .stat-icon.pending {
+  background-color: var(--perfil-pending);
+}
+
+.perfil-page .stat-icon.completed {
+  background-color: var(--perfil-completed);
+}
+
+.perfil-page .stat-icon.cancelled {
+  background-color: var(--perfil-cancelled);
+}
+
+.perfil-page .stat-data {
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil-page .stat-value {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--perfil-text-dark);
+  line-height: 1.2;
+}
+
+.perfil-page .stat-label {
+  font-size: 0.85rem;
+  color: var(--perfil-text-medium);
+}
+
+.perfil-page .stats-action {
+  text-align: center;
+}
+
+.perfil-page .btn-view-orders {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 20px;
+  background-color: var(--perfil-primary);
+  color: white;
+  border-radius: 6px;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.perfil-page .btn-view-orders:hover {
+  background-color: var(--perfil-primary-dark);
+}
+
+/* Sección de direcciones */
+.perfil-page .address-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.perfil-page .address-card {
+  border: 1px solid rgba(0,0,0,0.08);
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.perfil-page .address-card:hover {
+  box-shadow: var(--perfil-shadow-sm);
+}
+
+.perfil-page .address-card.default {
+  border-color: var(--perfil-primary-light);
+  box-shadow: 0 0 0 1px rgba(255, 122, 0, 0.2);
+}
+
+.perfil-page .default-badge {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: var(--perfil-primary);
+  color: white;
+  font-size: 0.75rem;
+  font-weight: 600;
+  padding: 4px 10px;
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.perfil-page .address-content {
+  padding: 20px;
+  background-color: #FFFFFF;
+}
+
+.perfil-page .address-line {
+  margin: 0 0 10px 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+.perfil-page .address-line i {
+  color: var(--perfil-primary);
+  font-size: 0.9rem;
+  margin-top: 3px;
+}
+
+.perfil-page .address-instructions {
+  margin: 15px 0 0 0;
+  color: var(--perfil-text-medium);
+  font-style: italic;
+  background-color: rgba(0,0,0,0.03);
+  padding: 10px 15px;
+  border-radius: 6px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  line-height: 1.4;
+}
+
+.perfil-page .address-instructions i {
+  color: var(--perfil-text-medium);
+  font-size: 0.9rem;
+  margin-top: 3px;
+}
+
+.perfil-page .address-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 15px 20px;
+  background-color: rgba(0,0,0,0.02);
+  border-top: 1px solid rgba(0,0,0,0.05);
+}
+
+.perfil-page .btn-edit-address,
+.perfil-page .btn-set-default,
+.perfil-page .btn-delete-address {
+  padding: 7px 12px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border: none;
+  cursor: pointer;
+}
+
+.perfil-page .btn-edit-address {
+  background-color: #EFEFEF;
+  color: var(--perfil-text-medium);
+}
+
+.perfil-page .btn-set-default {
+  background-color: rgba(76, 175, 80, 0.1);
+  color: var(--perfil-secondary-dark);
+}
+
+.perfil-page .btn-delete-address {
+  background-color: rgba(244, 67, 54, 0.1);
+  color: #E53935;
+}
+
+.perfil-page .btn-edit-address:hover {
+  background-color: #E0E0E0;
+}
+
+.perfil-page .btn-set-default:hover {
+  background-color: rgba(76, 175, 80, 0.2);
+}
+
+.perfil-page .btn-delete-address:hover {
+  background-color: rgba(244, 67, 54, 0.2);
+}
+
+/* Estado vacío de direcciones */
+.perfil-page .no-addresses {
+  padding: 0;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;
+}
+
+.perfil-page .empty-state {
+  padding: 40px 30px;
+  border-radius: 8px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+  background: #FFFFFF;
+  text-align: center;
+  width: 100%;
+}
+
+.perfil-page .empty-state i {
+  font-size: 3rem;
+  color: var(--perfil-primary);
+  margin-bottom: 20px;
+  opacity: 0.8;
+}
+
+.perfil-page .empty-state h3 {
+  font-size: 1.4rem;
+  margin-bottom: 10px;
+  color: var(--perfil-text-dark);
+  font-weight: 600;
+}
+
+.perfil-page .empty-state p {
+  color: var(--perfil-text-medium);
+  margin-bottom: 0;
+  font-size: 0.95rem;
+}
+
+/* Estilos del modal */
+.perfil-page .modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  justify-content: center;
+  align-items: center;
+}
+
+.perfil-page .modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+.perfil-page .modal-content {
+  background: var(--perfil-white);
+  border-radius: var(--perfil-radius);
+  max-width: 600px;
+  width: 90%;
+  max-height: 90vh;
+  overflow-y: auto;
+  box-shadow: var(--perfil-shadow-md);
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.perfil-page .modal.active .modal-content {
+  transform: translateY(0);
+}
+
+.perfil-page .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 25px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  position: sticky;
+  top: 0;
+  background: var(--perfil-white);
+  z-index: 10;
+}
+
+.perfil-page .modal-header h3 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--perfil-text-dark);
+  margin: 0;
+}
+
+.perfil-page .modal-body {
+  padding: 25px;
+  overflow-y: auto;
+}
+
+.perfil-page .close-modal,
+.perfil-page .confirmation-close {
+  background: none;
+  border: none;
+  font-size: 1.5rem;
+  color: var(--perfil-text-light);
+  cursor: pointer;
+  transition: color 0.2s ease;
+  padding: 0;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.perfil-page .close-modal:hover,
+.perfil-page .confirmation-close:hover {
+  color: var(--perfil-text-dark);
+}
+
+/* Modal de confirmación */
+.perfil-page .confirmation-modal {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0,0,0,0.5);
+  z-index: 1000;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  justify-content: center;
+  align-items: center;
+}
+
+.perfil-page .confirmation-modal.active {
+  display: flex;
+  opacity: 1;
+}
+
+.perfil-page .confirmation-content {
+  background: var(--perfil-white);
+  border-radius: var(--perfil-radius);
+  max-width: 400px;
+  width: 90%;
+  padding: 25px;
+  box-shadow: var(--perfil-shadow-md);
+  position: relative;
+  transform: translateY(20px);
+  transition: transform 0.3s ease;
+}
+
+.perfil-page .confirmation-modal.active .confirmation-content {
+  transform: translateY(0);
+}
+
+.perfil-page .confirmation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.perfil-page .confirmation-header h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--perfil-text-dark);
+  margin: 0;
+}
+
+.perfil-page .confirmation-body {
+  margin-bottom: 20px;
+  color: var(--perfil-text-medium);
+}
+
+.perfil-page .confirmation-body p {
+  margin-bottom: 8px;
+}
+
+.perfil-page .confirmation-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+}
+
+.perfil-page .btn-cancel-modal {
+  background-color: #F5F5F5;
+  color: var(--perfil-text-medium);
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.perfil-page .btn-confirm-delete,
+.perfil-page .btn-save-modal {
+  padding: 10px 20px;
+  border-radius: 6px;
+  border: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.perfil-page .btn-save-modal {
+  background-color: var(--perfil-primary);
+  color: var(--perfil-white);
+}
+
+.perfil-page .btn-confirm-delete {
+  background-color: #E53935;
+  color: var(--perfil-white);
+}
+
+.perfil-page .btn-cancel-modal:hover {
+  background-color: #EBEBEB;
+}
+
+.perfil-page .btn-save-modal:hover {
+  background-color: var(--perfil-primary-dark);
+}
+
+.perfil-page .btn-confirm-delete:hover {
+  background-color: #D32F2F;
+}
+
+/* Media queries */
+@media (max-width: 768px) {
+  .perfil-page .stats-grid {
+    grid-template-columns: repeat(2, 1fr);
   }
   
   .perfil-page .form-row {
-    display: flex;
-    gap: 15px;
-    margin-bottom: 20px;
+    flex-direction: column;
+    gap: 20px;
   }
   
-  .perfil-page .form-row .form-group {
-    flex: 1;
-    margin-bottom: 0;
-  }
-  
-  .perfil-page label {
-    display: block;
-    margin-bottom: 8px;
-    font-weight: 500;
-    color: var(--perfil-text-medium);
-    font-size: 0.95rem;
-  }
-  
-  .perfil-page input[type="text"],
-  .perfil-page input[type="email"],
-  .perfil-page input[type="password"],
-  .perfil-page input[type="tel"],
-  .perfil-page textarea {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid rgba(0,0,0,0.15);
-    border-radius: 6px;
-    font-size: 1rem;
-    transition: border-color 0.2s ease;
-    color: var(--perfil-text-dark);
-    background-color: #FFFFFF;
-  }
-  
-  .perfil-page input:focus,
-  .perfil-page textarea:focus {
-    outline: none;
-    border-color: var(--perfil-primary);
-    box-shadow: 0 0 0 2px rgba(255, 122, 0, 0.2);
-  }
-  
-  .perfil-page textarea {
-    resize: vertical;
-    min-height: 100px;
-  }
-  
-  /* Grupo de checkboxes */
-  .perfil-page .checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-  }
-  
-  .perfil-page .checkbox-group input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    accent-color: var(--perfil-primary);
-  }
-  
-  .perfil-page .checkbox-group label {
-    margin-bottom: 0;
-    cursor: pointer;
-  }
-  
-  /* Acciones de formulario */
   .perfil-page .form-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-    margin-top: 30px;
+    flex-direction: column;
   }
   
   .perfil-page .btn-cancel,
-  .perfil-page .btn-save {
-    padding: 10px 20px;
-    border-radius: 6px;
-    font-size: 0.95rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .perfil-page .btn-cancel {
-    background-color: #F5F5F5;
-    color: var(--perfil-text-medium);
-  }
-  
-  .perfil-page .btn-save {
-    background-color: var(--perfil-primary);
-    color: var(--perfil-white);
-  }
-  
-  .perfil-page .btn-cancel:hover {
-    background-color: #EBEBEB;
-  }
-  
-  .perfil-page .btn-save:hover {
-    background-color: var(--perfil-primary-dark);
-  }
-  
-  /* Sección de contraseña */
-  .perfil-page .password-placeholder {
-    font-size: 1.2rem;
-    color: var(--perfil-text-light);
-    margin-bottom: 10px;
-    letter-spacing: 2px;
-  }
-  
-  .perfil-page .password-hint {
-    color: var(--perfil-text-medium);
-    font-size: 0.9rem;
-    font-style: italic;
-  }
-  
-  /* Sección de estadísticas */
-  .perfil-page .stats-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 25px;
-  }
-  
-  .perfil-page .stat-card {
-    background-color: rgba(255, 255, 255, 0.5);
-    border-radius: 8px;
-    border: 1px solid rgba(0,0,0,0.05);
-    padding: 20px;
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    transition: all 0.3s ease;
-  }
-  
-  .perfil-page .stat-card:hover {
-    transform: translateY(-3px);
-    box-shadow: var(--perfil-shadow-sm);
-  }
-  
-  .perfil-page .stat-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 25px;
-    background-color: var(--perfil-primary-light);
-    color: white;
-    display: flex;
-    align-items: center;
+  .perfil-page .btn-save,
+  .perfil-page .btn-view-orders,
+  .perfil-page .btn-edit-address,
+  .perfil-page .btn-set-default,
+  .perfil-page .btn-delete-address,
+  .perfil-page .btn-cancel-modal,
+  .perfil-page .btn-confirm-delete,
+  .perfil-page .btn-save-modal {
+    width: 100%;
     justify-content: center;
-    font-size: 1.3rem;
-  }
-  
-  .perfil-page .stat-icon.pending {
-    background-color: var(--perfil-pending);
-  }
-  
-  .perfil-page .stat-icon.completed {
-    background-color: var(--perfil-completed);
-  }
-  
-  .perfil-page .stat-icon.cancelled {
-    background-color: var(--perfil-cancelled);
-  }
-  
-  .perfil-page .stat-data {
-    display: flex;
-    flex-direction: column;
-  }
-  
-  .perfil-page .stat-value {
-    font-size: 1.8rem;
-    font-weight: 700;
-    color: var(--perfil-text-dark);
-    line-height: 1.2;
-  }
-  
-  .perfil-page .stat-label {
-    font-size: 0.85rem;
-    color: var(--perfil-text-medium);
-  }
-  
-  .perfil-page .stats-action {
-    text-align: center;
-  }
-  
-  .perfil-page .btn-view-orders {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    padding: 10px 20px;
-    background-color: var(--perfil-primary);
-    color: white;
-    border-radius: 6px;
-    font-weight: 500;
-    text-decoration: none;
-    transition: all 0.2s ease;
-  }
-  
-  .perfil-page .btn-view-orders:hover {
-    background-color: var(--perfil-primary-dark);
-  }
-  
-  /* Sección de direcciones */
-  .perfil-page .address-list {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-  }
-  
-  .perfil-page .address-card {
-    border: 1px solid rgba(0,0,0,0.08);
-    border-radius: 8px;
-    overflow: hidden;
-    transition: all 0.3s ease;
-    position: relative;
-  }
-  
-  .perfil-page .address-card:hover {
-    box-shadow: var(--perfil-shadow-sm);
-  }
-  
-  .perfil-page .address-card.default {
-    border-color: var(--perfil-primary-light);
-    box-shadow: 0 0 0 1px rgba(255, 122, 0, 0.2);
-  }
-  
-  .perfil-page .default-badge {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: var(--perfil-primary);
-    color: white;
-    font-size: 0.75rem;
-    font-weight: 600;
-    padding: 4px 10px;
-    border-radius: 20px;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-  }
-  
-  .perfil-page .address-content {
-    padding: 20px;
-    background-color: #FFFFFF;
-  }
-  
-  .perfil-page .address-line {
-    margin: 0 0 10px 0;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    line-height: 1.4;
-  }
-  
-  .perfil-page .address-line i {
-    color: var(--perfil-primary);
-    font-size: 0.9rem;
-    margin-top: 3px;
-  }
-  
-  .perfil-page .address-instructions {
-    margin: 15px 0 0 0;
-    color: var(--perfil-text-medium);
-    font-style: italic;
-    background-color: rgba(0,0,0,0.03);
-    padding: 10px 15px;
-    border-radius: 6px;
-    display: flex;
-    align-items: flex-start;
-    gap: 10px;
-    line-height: 1.4;
-  }
-  
-  .perfil-page .address-instructions i {
-    color: var(--perfil-text-medium);
-    font-size: 0.9rem;
-    margin-top: 3px;
   }
   
   .perfil-page .address-actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 15px 20px;
-    background-color: rgba(0,0,0,0.02);
-    border-top: 1px solid rgba(0,0,0,0.05);
-  }
-  
-  .perfil-page .btn-edit-address,
-  .perfil-page .btn-set-default,
-  .perfil-page .btn-delete-address {
-    padding: 7px 12px;
-    border-radius: 6px;
-    font-size: 0.85rem;
-    font-weight: 500;
-    transition: all 0.2s ease;
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    border: none;
-    cursor: pointer;
-  }
-  
-  .perfil-page .btn-edit-address {
-    background-color: #EFEFEF;
-    color: var(--perfil-text-medium);
-  }
-  
-  .perfil-page .btn-set-default {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: var(--perfil-secondary-dark);
-  }
-  
-  .perfil-page .btn-delete-address {
-    background-color: rgba(244, 67, 54, 0.1);
-    color: #E53935;
-  }
-  
-  .perfil-page .btn-edit-address:hover {
-    background-color: #E0E0E0;
-  }
-  
-  .perfil-page .btn-set-default:hover {
-    background-color: rgba(76, 175, 80, 0.2);
-  }
-  
-  .perfil-page .btn-delete-address:hover {
-    background-color: rgba(244, 67, 54, 0.2);
-  }
-  
-  /* Estado vacío de direcciones */
-  .perfil-page .no-addresses {
-    padding: 0;
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    max-width: 500px;
-    margin: 0 auto;
-  }
-  
-  .perfil-page .empty-state {
-    padding: 40px 30px;
-    border-radius: 8px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-    background: #FFFFFF;
-    text-align: center;
-    width: 100%;
-  }
-  
-  .perfil-page .empty-state i {
-    font-size: 3rem;
-    color: var(--perfil-primary);
-    margin-bottom: 20px;
-    opacity: 0.8;
-  }
-  
-  .perfil-page .empty-state h3 {
-    font-size: 1.4rem;
-    margin-bottom: 10px;
-    color: var(--perfil-text-dark);
-    font-weight: 600;
-  }
-  
-  .perfil-page .empty-state p {
-    color: var(--perfil-text-medium);
-    margin-bottom: 0;
-    font-size: 0.95rem;
-  }
-  
-  /* Estilos del modal */
-  .perfil-page .modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    justify-content: center;
-    align-items: center;
-  }
-  
-  .perfil-page .modal.active {
-    display: flex;
-    opacity: 1;
-  }
-  
-  .perfil-page .modal-content {
-    background: var(--perfil-white);
-    border-radius: var(--perfil-radius);
-    max-width: 600px;
-    width: 90%;
-    max-height: 90vh;
-    overflow-y: auto;
-    box-shadow: var(--perfil-shadow-md);
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
-    display: flex;
     flex-direction: column;
   }
   
-  .perfil-page .modal.active .modal-content {
-    transform: translateY(0);
+  .perfil-page .confirmation-actions {
+    flex-direction: column;
+  }
+  
+  .perfil-page .section-header {
+    flex-direction: column;
+    gap: 15px;
+    align-items: flex-start;
+  }
+  
+  .perfil-page .btn-edit-info,
+  .perfil-page .btn-add-address {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .perfil-page .page-title {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .perfil-page .stats-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .perfil-page .modal-content,
+  .perfil-page .confirmation-content {
+    padding: 15px;
+    width: 95%;
   }
   
   .perfil-page .modal-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding: 20px 25px;
-    border-bottom: 1px solid rgba(0,0,0,0.08);
-    position: sticky;
-    top: 0;
-    background: var(--perfil-white);
-    z-index: 10;
-  }
-  
-  .perfil-page .modal-header h3 {
-    font-size: 1.3rem;
-    font-weight: 600;
-    color: var(--perfil-text-dark);
-    margin: 0;
+    padding: 15px;
   }
   
   .perfil-page .modal-body {
-    padding: 25px;
-    overflow-y: auto;
+    padding: 15px;
   }
   
-  .perfil-page .close-modal,
-  .perfil-page .confirmation-close {
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    color: var(--perfil-text-light);
-    cursor: pointer;
-    transition: color 0.2s ease;
-    padding: 0;
-    line-height: 1;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  .perfil-page .page-title {
+    font-size: 1.8rem;
   }
   
-  .perfil-page .close-modal:hover,
-  .perfil-page .confirmation-close:hover {
-    color: var(--perfil-text-dark);
+  .perfil-page .page-subtitle {
+    font-size: 1rem;
   }
   
-  /* Modal de confirmación */
-  .perfil-page .confirmation-modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0,0,0,0.5);
-    z-index: 1000;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    justify-content: center;
-    align-items: center;
+  .perfil-page .notification {
+    width: 95%;
+    padding: 12px 15px;
   }
   
-  .perfil-page .confirmation-modal.active {
-    display: flex;
-    opacity: 1;
+  .perfil-page .empty-state {
+    padding: 30px 20px;
   }
   
-  .perfil-page .confirmation-content {
-    background: var(--perfil-white);
-    border-radius: var(--perfil-radius);
-    max-width: 400px;
-    width: 90%;
-    padding: 25px;
-    box-shadow: var(--perfil-shadow-md);
-    position: relative;
-    transform: translateY(20px);
-    transition: transform 0.3s ease;
+  .perfil-page .empty-state i {
+    font-size: 2.5rem;
   }
   
-  .perfil-page .confirmation-modal.active .confirmation-content {
-    transform: translateY(0);
-  }
-  
-  .perfil-page .confirmation-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 15px;
-  }
-  
-  .perfil-page .confirmation-header h3 {
+  .perfil-page .empty-state h3 {
     font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--perfil-text-dark);
-    margin: 0;
   }
   
-  .perfil-page .confirmation-body {
-    margin-bottom: 20px;
-    color: var(--perfil-text-medium);
+  .perfil-page .main-content {
+    padding: 40px 0;
   }
-  
-  .perfil-page .confirmation-body p {
-    margin-bottom: 8px;
-  }
-  
-  .perfil-page .confirmation-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 15px;
-  }
-  
-  .perfil-page .btn-cancel-modal {
-    background-color: #F5F5F5;
-    color: var(--perfil-text-medium);
-    padding: 10px 20px;
-    border-radius: 6px;
-    border: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-  
-  .perfil-page .btn-confirm-delete,
-  .perfil-page .btn-save-modal {
-    padding: 10px 20px;
-    border-radius: 6px;
-    border: none;
-    font-weight: 500;
-    font-size: 0.95rem;
-    transition: all 0.2s ease;
-    cursor: pointer;
-  }
-  
-  .perfil-page .btn-save-modal {
-    background-color: var(--perfil-primary);
-    color: var(--perfil-white);
-  }
-  
-  .perfil-page .btn-confirm-delete {
-    background-color: #E53935;
-    color: var(--perfil-white);
-  }
-  
-  .perfil-page .btn-cancel-modal:hover {
-    background-color: #EBEBEB;
-  }
-  
-  .perfil-page .btn-save-modal:hover {
-    background-color: var(--perfil-primary-dark);
-  }
-  
-  .perfil-page .btn-confirm-delete:hover {
-    background-color: #D32F2F;
-  }
-  
-  /* Media queries */
-  @media (max-width: 768px) {
-    .perfil-page .stats-grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
-    
-    .perfil-page .form-row {
-      flex-direction: column;
-      gap: 20px;
-    }
-    
-    .perfil-page .form-actions {
-      flex-direction: column;
-    }
-    
-    .perfil-page .btn-cancel,
-    .perfil-page .btn-save,
-    .perfil-page .btn-view-orders,
-    .perfil-page .btn-edit-address,
-    .perfil-page .btn-set-default,
-    .perfil-page .btn-delete-address,
-    .perfil-page .btn-cancel-modal,
-    .perfil-page .btn-confirm-delete,
-    .perfil-page .btn-save-modal {
-      width: 100%;
-      justify-content: center;
-    }
-    
-    .perfil-page .address-actions {
-      flex-direction: column;
-    }
-    
-    .perfil-page .confirmation-actions {
-      flex-direction: column;
-    }
-    
-    .perfil-page .section-header {
-      flex-direction: column;
-      gap: 15px;
-      align-items: flex-start;
-    }
-    
-    .perfil-page .btn-edit-info,
-    .perfil-page .btn-add-address {
-      width: 100%;
-      justify-content: center;
-    }
-    
-    .perfil-page .page-title {
-      font-size: 2rem;
-    }
-  }
-  
-  @media (max-width: 480px) {
-    .perfil-page .stats-grid {
-      grid-template-columns: 1fr;
-    }
-    
-    .perfil-page .modal-content,
-    .perfil-page .confirmation-content {
-      padding: 15px;
-      width: 95%;
-    }
-    
-    .perfil-page .modal-header {
-      padding: 15px;
-    }
-    
-    .perfil-page .modal-body {
-      padding: 15px;
-    }
-    
-    .perfil-page .page-title {
-      font-size: 1.8rem;
-    }
-    
-    .perfil-page .page-subtitle {
-      font-size: 1rem;
-    }
-    
-    .perfil-page .notification {
-      width: 95%;
-      padding: 12px 15px;
-    }
-    
-    .perfil-page .empty-state {
-      padding: 30px 20px;
-    }
-    
-    .perfil-page .empty-state i {
-      font-size: 2.5rem;
-    }
-    
-    .perfil-page .empty-state h3 {
-      font-size: 1.2rem;
-    }
-    
-    .perfil-page .main-content {
-      padding: 40px 0;
-    }
-  }
+}
