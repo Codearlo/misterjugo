@@ -1,5 +1,5 @@
 <?php
-// Iniciar sesión para mensajes de error/éxito
+// Iniciar sesión para mensajes
 session_start();
 
 // Verificar si hay un mensaje de error o éxito
