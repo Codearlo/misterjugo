@@ -81,7 +81,7 @@ $stats['cancelados'] = $row['total'];
 // Incluir el archivo header
 include 'includes/header.php';
 ?>
-
+<script src="js/cache_control.js"></script>
 <link rel="stylesheet" href="/css/perfil.css">
 
 <!-- Inicio de la página de perfil con la clase específica -->
