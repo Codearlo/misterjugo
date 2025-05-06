@@ -55,6 +55,16 @@ unset($_SESSION['email']); // Limpiar después de usar
                 <?php unset($_SESSION['error_login']); ?>
             <?php endif; ?>
             
+            <?php if (isset($_SESSION['exito_login'])): ?>
+                <div class="notification success">
+                    <i class="fas fa-check-circle"></i>
+                    <div>
+                        <p><?php echo $_SESSION['exito_login']; ?></p>
+                    </div>
+                </div>
+                <?php unset($_SESSION['exito_login']); ?>
+            <?php endif; ?>
+            
             <form id="loginForm" action="backend/procesar_login.php" method="POST" class="auth-form">
                 <div class="form-group">
                     <div class="input-with-icon">
@@ -76,7 +86,7 @@ unset($_SESSION['email']); // Limpiar después de usar
                 <div class="form-group">
                     <!-- Entrada oculta que siempre establece "recordar" como activado -->
                     <input type="hidden" name="recordar" value="1">
-                    <a href="recuperar-password.php" class="forgot-password" style="display: block; text-align: right;">¿Olvidaste tu contraseña?</a>
+                    <a href="recuperar_password" class="forgot-password" style="display: block; text-align: right;">¿Olvidaste tu contraseña?</a>
                 </div>
                 
                 <button type="submit" class="btn-submit">Iniciar Sesión</button>

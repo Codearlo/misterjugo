@@ -189,7 +189,7 @@ include 'includes/header.php';
                         </div>
                         <div class="form-group">
                             <label for="estado">Provincia</label>
-                            <input type="text" id="estado" name="estado" placeholder="Provincia" required value="<?php echo !empty($datos_direccion['estado']) ? htmlspecialchars($datos_direccion['estado']) : 'Ica'; ?>">
+                            <input type="text" id="estado" name="estado" placeholder="Provincia" required value="<?php echo !empty($datos_direccion['estado']) ? htmlspecialchars($datos_direccion['estado']) : ''; ?>">
                         </div>
                     </div>
                     <div class="form-row">
