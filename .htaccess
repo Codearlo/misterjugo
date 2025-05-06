@@ -15,14 +15,10 @@ RewriteRule ^carrito$ frontend/cart.php [L]
 RewriteRule ^productos$ frontend/productos.php [L]
 RewriteRule ^direcciones$ frontend/direcciones.php [L]
 
-# Agregar reglas para recuperación de contraseña
-RewriteRule ^recuperar-password$ frontend/recuperar-password.php [L]
-RewriteRule ^restablecer-password$ frontend/restablecer-password.php [L]
-
 # Permitir URLs con o sin barra final
-RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones|recuperar-password|restablecer-password)/$ frontend/$1.php [L]
+RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones)/$ frontend/$1.php [L]
 
-# Redireccionar recursos estáticos (IMPORTANTE: mantener estas reglas exactamente así)
+# Redireccionar recursos estáticos
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
@@ -32,6 +28,8 @@ Options -Indexes
 
 # Configurar página de errores personalizada
 ErrorDocument 404 /frontend/404.php
+ErrorDocument 403 /frontend/404.php
+ErrorDocument 500 /frontend/error.php
 
 # Prevenir el almacenamiento en caché para páginas dinámicas
 <FilesMatch "\.(php)$">
@@ -42,87 +40,92 @@ ErrorDocument 404 /frontend/404.php
 
 # Comprimir archivos para mejorar el rendimiento
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json application/xml
 </IfModule>
 
 # Cache de navegador para archivos estáticos
 <IfModule mod_expires.c>
   ExpiresActive On
-  ExpiresByType image/jpg "access plus 1 week"
-  ExpiresByType image/jpeg "access plus 1 week"
-  ExpiresByType image/gif "access plus 1 week"
-  ExpiresByType image/png "access plus 1 week"
-  ExpiresByType image/svg+xml "access plus 1 week"
-  ExpiresByType text/css "access plus 1 day"
-  ExpiresByType application/pdf "access plus 1 day"
-  ExpiresByType text/x-javascript "access plus 1 day"
-  ExpiresByType application/javascript "access plus 1 day"
-  ExpiresByType application/x-javascript "access plus 1 day"
-  ExpiresByType application/x-shockwave-flash "access plus 1 day"
-  ExpiresByType image/x-icon "access plus 1 week"
+  ExpiresByType image/jpg "access plus 1 month"
+  ExpiresByType image/jpeg "access plus 1 month"
+  ExpiresByType image/gif "access plus 1 month"
+  ExpiresByType image/png "access plus 1 month"
+  ExpiresByType image/svg+xml "access plus 1 month"
+  ExpiresByType text/css "access plus 1 week"
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType text/x-javascript "access plus 1 week"
+  ExpiresByType application/javascript "access plus 1 week"
+  ExpiresByType application/x-javascript "access plus 1 week"
+  ExpiresByType image/x-icon "access plus 1 month"
   ExpiresByType font/ttf "access plus 1 month"
   ExpiresByType font/woff "access plus 1 month"
   ExpiresByType font/woff2 "access plus 1 month"
-  ExpiresDefault "access plus 0 seconds"
+  ExpiresDefault "access plus 1 day"
 </IfModule>
 
-# Desactivar caché para archivos CSS (solo descomenta si necesitas desarrollo activo)
-# <FilesMatch "\.(css)$">
-#    Header set Cache-Control "no-cache, no-store, must-revalidate"
-#    Header set Pragma "no-cache"
-#    Header set Expires 0
-# </FilesMatch>
-
-# Proteger archivos críticos pero permitir acceso a recursos necesarios
+# Proteger archivos críticos
 <FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php)">
-    Order Allow,Deny
-    Deny from all
+  Order Allow,Deny
+  Deny from all
 </FilesMatch>
 
-# IMPORTANTE: NO bloquear conexion.php ya que es necesario para la aplicación
-# <FilesMatch "^(conexion\.php)">
-#    Order Allow,Deny
-#    Deny from all
-# </FilesMatch>
-
-# Proteger las carpetas sensibles
+# Proteger carpetas sensibles
 <DirectoryMatch "^/.git/">
-    Order Deny,Allow
-    Deny from all
+  Order Deny,Allow
+  Deny from all
 </DirectoryMatch>
 
-# Permitir parámetros GET en restablecer-password
+# Proteger directorio backend excepto para solicitudes locales
 <IfModule mod_rewrite.c>
-    RewriteCond %{QUERY_STRING} ^token=([a-zA-Z0-9]+)$
-    RewriteRule ^restablecer-password$ frontend/restablecer-password.php [L]
+  RewriteCond %{REMOTE_ADDR} !^127\.0\.0\.1$
+  RewriteCond %{REMOTE_ADDR} !^::1$
+  RewriteRule ^backend/(.*)$ - [F,L]
 </IfModule>
 
-# Medidas básicas de seguridad
+# Medidas de seguridad
 <IfModule mod_headers.c>
-    # Prevenir clickjacking
-    Header always append X-Frame-Options SAMEORIGIN
-    # Habilitar la protección XSS en navegadores modernos
-    Header always set X-XSS-Protection "1; mode=block"
-    # Prevenir el sniffing de tipo MIME
-    Header always set X-Content-Type-Options "nosniff"
-    # Referrer Policy
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # Prevenir clickjacking
+  Header always append X-Frame-Options SAMEORIGIN
+  # Protección XSS
+  Header always set X-XSS-Protection "1; mode=block"
+  # Prevenir sniffing de MIME
+  Header always set X-Content-Type-Options "nosniff"
+  # Política de referrer
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+  # Content Security Policy básica
+  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; img-src 'self' data:; font-src 'self' https://cdnjs.cloudflare.com data:; connect-src 'self';"
 </IfModule>
 
-# Configuración CORS para fuentes si es necesario
+# Configuración CORS para fuentes
 <IfModule mod_headers.c>
-    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font\.css)$">
-        Header set Access-Control-Allow-Origin "*"
-    </FilesMatch>
+  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font\.css)$">
+    Header set Access-Control-Allow-Origin "*"
+  </FilesMatch>
 </IfModule>
 
-# DESHABILITAR prevención de hotlinking para que las imágenes funcionen correctamente
+# Forzar HTTPS (descomenta si tienes SSL)
 # <IfModule mod_rewrite.c>
-#    RewriteCond %{HTTP_REFERER} !^$
-#    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?tusitio\.com [NC]
-#    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google\.com [NC]
-#    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook\.com [NC]
-#    RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+#   RewriteCond %{HTTPS} off
+#   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
 # </IfModule>
-RewriteRule ^recuperar-password-simple$ frontend/recuperar-password-simple.php [L]
-RewriteRule ^recuperar-password-simple/$ frontend/recuperar-password-simple.php [L]
+
+# Bloquear acceso a archivos sensibles
+<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
+  Order Allow,Deny
+  Deny from all
+  Satisfy All
+</FilesMatch>
+
+# Prevenir ataques de inyección PHP
+<IfModule mod_rewrite.c>
+  RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+  RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+  RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+  RewriteRule .* index.php [F,L]
+</IfModule>
+
+# Limitar métodos HTTP
+<LimitExcept GET POST HEAD>
+  Order Allow,Deny
+  Deny from all
+</LimitExcept>
