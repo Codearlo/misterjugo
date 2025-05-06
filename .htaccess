@@ -124,3 +124,5 @@ ErrorDocument 404 /frontend/404.php
 #    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook\.com [NC]
 #    RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
 # </IfModule>
+RewriteRule ^recuperar-password-simple$ frontend/recuperar-password-simple.php [L]
+RewriteRule ^recuperar-password-simple/$ frontend/recuperar-password-simple.php [L]
