@@ -5,29 +5,14 @@ session_start();
 // Incluir archivo de conexión a la base de datos
 require_once 'conexion.php';
 
-// Función para registrar errores (para depuración)
-function registrar_error($mensaje) {
-    // Crear un archivo de log en la carpeta backend
-    $log_file = __DIR__ . '/error_restablecer_log.txt';
-    $fecha = date('Y-m-d H:i:s');
-    $mensaje_log = "[$fecha] $mensaje\n";
-    
-    // Escribir en el archivo
-    file_put_contents($log_file, $mensaje_log, FILE_APPEND);
-}
-
 // Verificar si se ha enviado el formulario
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    
-    registrar_error("Inicio de proceso de restablecimiento");
     
     // Obtener y limpiar datos
     $token = isset($_POST['token']) ? trim($_POST['token']) : '';
     $email = isset($_POST['email']) ? trim($_POST['email']) : '';
     $password = isset($_POST['password']) ? trim($_POST['password']) : '';
     $confirm_password = isset($_POST['confirm_password']) ? trim($_POST['confirm_password']) : '';
-    
-    registrar_error("Datos recibidos: token=" . substr($token, 0, 10) . "..., email=$email");
     
     // Validar datos
     if (empty($token) || empty($email) || empty($password) || empty($confirm_password)) {
@@ -68,8 +53,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $stmt = $conn->prepare("UPDATE recuperacion_password SET usado = 1 WHERE token = ?");
             $stmt->execute([$token]);
             
-            registrar_error("Contraseña actualizada para $email");
-            
             // Guardar mensaje de éxito
             $_SESSION['exito_login'] = "¡Tu contraseña ha sido actualizada correctamente! Ya puedes iniciar sesión con tu nueva contraseña.";
             
@@ -80,18 +63,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             header("Location: ../login.php");
             exit;
         } else {
-            registrar_error("Token inválido o expirado: $token para $email");
             $_SESSION['error_login'] = "El enlace de recuperación no es válido o ha expirado.";
             header("Location: ../login.php");
             exit;
         }
-    } catch (PDOException $e) {
-        registrar_error("Error PDO: " . $e->getMessage());
-        $_SESSION['error_restablecer'] = "Ha ocurrido un error. Por favor, intenta nuevamente más tarde.";
-        header("Location: ../restablecer-password.php?token=$token");
-        exit;
     } catch (Exception $e) {
-        registrar_error("Error general: " . $e->getMessage());
         $_SESSION['error_restablecer'] = "Ha ocurrido un error. Por favor, intenta nuevamente más tarde.";
         header("Location: ../restablecer-password.php?token=$token");
         exit;

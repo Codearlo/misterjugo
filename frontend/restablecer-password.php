@@ -7,6 +7,7 @@ require_once 'backend/conexion.php';
 
 // Verificar si se proporcionó un token
 if (!isset($_GET['token']) || empty($_GET['token'])) {
+    $_SESSION['error_login'] = "Enlace de recuperación inválido.";
     header("Location: login.php");
     exit;
 }
@@ -26,9 +27,9 @@ try {
         $email = $resultado['email'];
         $token_valido = true;
     }
-} catch (PDOException $e) {
-    // Registrar el error
-    error_log("Error al verificar token: " . $e->getMessage());
+} catch (Exception $e) {
+    // Token inválido
+    $token_valido = false;
 }
 
 // Si el token no es válido, redirigir al login
