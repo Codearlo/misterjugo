@@ -213,7 +213,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['password']) && isset($
                 </form>
             <?php else: ?>
                 <!-- Formulario para solicitar recuperación -->
-                <form action="recuperar-password-simple.php" method="POST" class="auth-form">
+                <form action="recuperar-password-simple" method="POST" class="auth-form">
                     <div class="form-group">
                         <div class="input-with-icon">
                             <i class="fas fa-envelope"></i>
