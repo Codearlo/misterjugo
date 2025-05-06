@@ -23,7 +23,7 @@ unset($_SESSION['exito_perfil']);
 unset($_SESSION['error_perfil']);
 
 // Obtener datos del usuario
-$stmt = $conn->prepare("SELECT id, nombre, email, telefono FROM usuarios WHERE id = ?");
+$stmt = $conn->prepare("SELECT id, nombre, email FROM usuarios WHERE id = ?");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
@@ -128,10 +128,6 @@ include 'includes/header.php';
                             <span class="info-label">Email:</span>
                             <span class="info-value"><?php echo htmlspecialchars($usuario['email']); ?></span>
                         </div>
-                        <div class="info-group">
-                            <span class="info-label">Teléfono:</span>
-                            <span class="info-value"><?php echo isset($usuario['telefono']) ? htmlspecialchars($usuario['telefono']) : 'No especificado'; ?></span>
-                        </div>
                     </div>
                     
                     <div class="section-content hidden" id="personal-info-edit">
@@ -143,10 +139,6 @@ include 'includes/header.php';
                             <div class="form-group">
                                 <label for="email">Email</label>
                                 <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($usuario['email']); ?>" required>
-                            </div>
-                            <div class="form-group">
-                                <label for="telefono">Teléfono</label>
-                                <input type="tel" id="telefono" name="telefono" value="<?php echo isset($usuario['telefono']) ? htmlspecialchars($usuario['telefono']) : ''; ?>" placeholder="Ingresa tu número de teléfono">
                             </div>
                             <div class="form-actions">
                                 <button type="button" class="btn-cancel" id="btn-cancel-personal">Cancelar</button>
