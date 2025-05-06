@@ -74,46 +74,54 @@ if ($result_productos && $result_productos->num_rows > 0) {
 <div class="productos-page">
     <div class="main-content">
         <div class="container">
-            <!-- Filtros y búsqueda -->
-            <div class="filter-section">
-                <div class="category-tabs">
-                    <a href="/productos" class="category-tab <?php echo ($categoria_id == 0) ? 'active' : ''; ?>">Todos</a>
-                    <?php foreach($categorias as $cat): ?>
-                        <a href="/productos?categoria=<?php echo $cat['id']; ?>" class="category-tab <?php echo ($categoria_id == $cat['id']) ? 'active' : ''; ?>">
-                            <?php echo htmlspecialchars($cat['nombre']); ?>
-                        </a>
-                    <?php endforeach; ?>
-                </div>
-                
-                <form class="filter-form" action="" method="GET">
-                    <?php if($categoria_id > 0): ?>
-                        <input type="hidden" name="categoria" value="<?php echo $categoria_id; ?>">
-                    <?php endif; ?>
-                    
-                    <div class="filter-group">
-                        <label for="orden">Ordenar por:</label>
-                        <select name="orden" id="orden" onchange="this.form.submit()">
-                            <option value="nombre_asc" <?php echo ($orden == 'nombre_asc') ? 'selected' : ''; ?>>Nombre (A-Z)</option>
-                            <option value="nombre_desc" <?php echo ($orden == 'nombre_desc') ? 'selected' : ''; ?>>Nombre (Z-A)</option>
-                            <option value="precio_asc" <?php echo ($orden == 'precio_asc') ? 'selected' : ''; ?>>Precio (menor a mayor)</option>
-                            <option value="precio_desc" <?php echo ($orden == 'precio_desc') ? 'selected' : ''; ?>>Precio (mayor a menor)</option>
-                        </select>
-                    </div>
-                    
-                    <div class="search-group">
-                        <input type="text" name="buscar" id="buscar" placeholder="Buscar productos..." value="<?php echo htmlspecialchars($busqueda); ?>">
-                        <button type="submit" class="btn-search">
-                            <i class="fas fa-search"></i>
-                        </button>
-                    </div>
-                    
-                    <?php if(!empty($busqueda)): ?>
-                        <a href="<?php echo $categoria_id > 0 ? '/productos?categoria='.$categoria_id : '/productos'; ?>" class="btn-clear-filters">
-                            <i class="fas fa-times"></i> Limpiar búsqueda
-                        </a>
-                    <?php endif; ?>
-                </form>
-            </div>
+<!-- Filtros y búsqueda -->
+<div class="category-navigation">
+    <div class="category-slider">
+        <a href="/productos" class="category-tab <?php echo ($categoria_id == 0) ? 'active' : ''; ?>">Todos</a>
+        <?php foreach($categorias as $cat): ?>
+            <a href="/productos?categoria=<?php echo $cat['id']; ?>" class="category-tab <?php echo ($categoria_id == $cat['id']) ? 'active' : ''; ?>">
+                <?php echo htmlspecialchars($cat['nombre']); ?>
+            </a>
+        <?php endforeach; ?>
+        <button class="slider-arrow prev" id="slider-prev">
+            <i class="fas fa-chevron-left"></i>
+        </button>
+        <button class="slider-arrow next" id="slider-next">
+            <i class="fas fa-chevron-right"></i>
+        </button>
+    </div>
+</div>
+
+<div class="filter-section">
+    <form class="filter-form" action="" method="GET">
+        <?php if($categoria_id > 0): ?>
+            <input type="hidden" name="categoria" value="<?php echo $categoria_id; ?>">
+        <?php endif; ?>
+        
+        <div class="filter-group">
+            <label for="orden">Ordenar por:</label>
+            <select name="orden" id="orden" onchange="this.form.submit()">
+                <option value="nombre_asc" <?php echo ($orden == 'nombre_asc') ? 'selected' : ''; ?>>Nombre (A-Z)</option>
+                <option value="nombre_desc" <?php echo ($orden == 'nombre_desc') ? 'selected' : ''; ?>>Nombre (Z-A)</option>
+                <option value="precio_asc" <?php echo ($orden == 'precio_asc') ? 'selected' : ''; ?>>Precio (menor a mayor)</option>
+                <option value="precio_desc" <?php echo ($orden == 'precio_desc') ? 'selected' : ''; ?>>Precio (mayor a menor)</option>
+            </select>
+        </div>
+        
+        <div class="search-group">
+            <input type="text" name="buscar" id="buscar" placeholder="Buscar productos..." value="<?php echo htmlspecialchars($busqueda); ?>">
+            <button type="submit" class="btn-search">
+                <i class="fas fa-search"></i>
+            </button>
+        </div>
+        
+        <?php if(!empty($busqueda)): ?>
+            <a href="<?php echo $categoria_id > 0 ? '/productos?categoria='.$categoria_id : '/productos'; ?>" class="btn-clear-filters">
+                <i class="fas fa-times"></i> Limpiar búsqueda
+            </a>
+        <?php endif; ?>
+    </form>
+</div>
             
             <!-- Sección de productos -->
             <div class="productos-section">
@@ -121,18 +129,17 @@ if ($result_productos && $result_productos->num_rows > 0) {
                     <div class="productos-grid">
                         <?php foreach($productos as $producto): ?>
                             <div class="producto-card">
+                                <div class="categoria-badge"><?php echo htmlspecialchars($producto['categoria_nombre']); ?></div>
                                 <div class="producto-image">
                                     <?php if(!empty($producto['imagen'])): ?>
                                         <img src="<?php echo htmlspecialchars($producto['imagen']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>">
                                     <?php else: ?>
                                         <img src="/images/producto-default.jpg" alt="Imagen no disponible">
                                     <?php endif; ?>
-                                    <div class="categoria-badge"><?php echo htmlspecialchars($producto['categoria_nombre']); ?></div>
                                 </div>
                                 
                                 <div class="producto-info">
                                     <h3 class="producto-name"><?php echo htmlspecialchars($producto['nombre']); ?></h3>
-                                    <p class="producto-description"><?php echo htmlspecialchars(substr($producto['descripcion'], 0, 100)) . (strlen($producto['descripcion']) > 100 ? '...' : ''); ?></p>
                                     <div class="producto-price">S/<?php echo number_format($producto['precio'], 2); ?></div>
                                 </div>
                                 
@@ -233,6 +240,24 @@ if ($result_productos && $result_productos->num_rows > 0) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Código anterior...
+    
+    // Funcionalidad de slider de categorías
+    const categorySlider = document.querySelector('.category-slider');
+    const prevBtn = document.getElementById('slider-prev');
+    const nextBtn = document.getElementById('slider-next');
+    
+    if (categorySlider && prevBtn && nextBtn) {
+        // Botones de navegación del slider
+        prevBtn.addEventListener('click', function() {
+            categorySlider.scrollBy({ left: -200, behavior: 'smooth' });
+        });
+        
+        nextBtn.addEventListener('click', function() {
+            categorySlider.scrollBy({ left: 200, behavior: 'smooth' });
+        });
+    }
+    
     // Referencias a elementos DOM
     const productoDetailsModal = document.getElementById('producto-details-modal');
     const closeModal = document.querySelector('.close-modal');
@@ -264,7 +289,12 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Cargar los detalles del producto mediante AJAX
         fetch(`/backend/obtener_detalles_producto.php?id=${productoId}`)
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error en la respuesta del servidor');
+                }
+                return response.json();
+            })
             .then(data => {
                 if (data.success) {
                     modalTitle.textContent = data.producto.nombre;
