@@ -22,7 +22,7 @@ RewriteRule ^restablecer-password$ frontend/restablecer-password.php [L]
 # Permitir URLs con o sin barra final
 RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones|recuperar-password|restablecer-password)/$ frontend/$1.php [L]
 
-# Redireccionar recursos estáticos
+# Redireccionar recursos estáticos (IMPORTANTE: mantener estas reglas exactamente así)
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
@@ -32,8 +32,6 @@ Options -Indexes
 
 # Configurar página de errores personalizada
 ErrorDocument 404 /frontend/404.php
-ErrorDocument 403 /frontend/403.php
-ErrorDocument 500 /frontend/500.php
 
 # Prevenir el almacenamiento en caché para páginas dinámicas
 <FilesMatch "\.(php)$">
@@ -68,18 +66,24 @@ ErrorDocument 500 /frontend/500.php
   ExpiresDefault "access plus 0 seconds"
 </IfModule>
 
-# Desactivar caché para archivos CSS
-<FilesMatch "\.(css)$">
-    Header set Cache-Control "no-cache, no-store, must-revalidate"
-    Header set Pragma "no-cache"
-    Header set Expires 0
-</FilesMatch>
+# Desactivar caché para archivos CSS (solo descomenta si necesitas desarrollo activo)
+# <FilesMatch "\.(css)$">
+#    Header set Cache-Control "no-cache, no-store, must-revalidate"
+#    Header set Pragma "no-cache"
+#    Header set Expires 0
+# </FilesMatch>
 
-# Proteger archivos críticos
-<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php|conexion\.php)">
+# Proteger archivos críticos pero permitir acceso a recursos necesarios
+<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php)">
     Order Allow,Deny
     Deny from all
 </FilesMatch>
+
+# IMPORTANTE: NO bloquear conexion.php ya que es necesario para la aplicación
+# <FilesMatch "^(conexion\.php)">
+#    Order Allow,Deny
+#    Deny from all
+# </FilesMatch>
 
 # Proteger las carpetas sensibles
 <DirectoryMatch "^/.git/">
@@ -105,18 +109,18 @@ ErrorDocument 500 /frontend/500.php
     Header always set Referrer-Policy "strict-origin-when-cross-origin"
 </IfModule>
 
-# Configuración CORS si es necesario
+# Configuración CORS para fuentes si es necesario
 <IfModule mod_headers.c>
     <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font\.css)$">
         Header set Access-Control-Allow-Origin "*"
     </FilesMatch>
 </IfModule>
 
-# Prevenir hotlinking de imágenes (opcional)
-<IfModule mod_rewrite.c>
-    RewriteCond %{HTTP_REFERER} !^$
-    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?tusitio\.com [NC]
-    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google\.com [NC]
-    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook\.com [NC]
-    RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
-</IfModule>
+# DESHABILITAR prevención de hotlinking para que las imágenes funcionen correctamente
+# <IfModule mod_rewrite.c>
+#    RewriteCond %{HTTP_REFERER} !^$
+#    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?tusitio\.com [NC]
+#    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google\.com [NC]
+#    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook\.com [NC]
+#    RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+# </IfModule>
