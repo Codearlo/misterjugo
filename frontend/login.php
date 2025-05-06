@@ -11,7 +11,7 @@ $registro_exitoso = isset($_GET['registro']) && $_GET['registro'] === 'exitoso';
 
 // Obtener el email guardado en la sesión (si existe)
 $email = isset($_SESSION['email']) ? $_SESSION['email'] : '';
-unset($_SESSION['email']); // Limpiar después de usar
+unset($_SESSION['email']);
 ?>
 
 <!DOCTYPE html>

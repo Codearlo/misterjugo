@@ -15,8 +15,12 @@ RewriteRule ^carrito$ frontend/cart.php [L]
 RewriteRule ^productos$ frontend/productos.php [L]
 RewriteRule ^direcciones$ frontend/direcciones.php [L]
 
+# Agregar reglas para recuperación de contraseña
+RewriteRule ^recuperar-password$ frontend/recuperar-password.php [L]
+RewriteRule ^restablecer-password$ frontend/restablecer-password.php [L]
+
 # Permitir URLs con o sin barra final
-RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones)/$ frontend/$1.php [L]
+RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones|recuperar-password|restablecer-password)/$ frontend/$1.php [L]
 
 # Redireccionar recursos estáticos
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
@@ -28,6 +32,8 @@ Options -Indexes
 
 # Configurar página de errores personalizada
 ErrorDocument 404 /frontend/404.php
+ErrorDocument 403 /frontend/403.php
+ErrorDocument 500 /frontend/500.php
 
 # Prevenir el almacenamiento en caché para páginas dinámicas
 <FilesMatch "\.(php)$">
@@ -36,12 +42,12 @@ ErrorDocument 404 /frontend/404.php
   Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
 </FilesMatch>
 
-# Comprimir archivos para mejorar el rendimiento (opcional)
+# Comprimir archivos para mejorar el rendimiento
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
 </IfModule>
 
-# Cache de navegador para archivos estáticos (permitir caché solo para recursos)
+# Cache de navegador para archivos estáticos
 <IfModule mod_expires.c>
   ExpiresActive On
   ExpiresByType image/jpg "access plus 1 week"
@@ -56,6 +62,9 @@ ErrorDocument 404 /frontend/404.php
   ExpiresByType application/x-javascript "access plus 1 day"
   ExpiresByType application/x-shockwave-flash "access plus 1 day"
   ExpiresByType image/x-icon "access plus 1 week"
+  ExpiresByType font/ttf "access plus 1 month"
+  ExpiresByType font/woff "access plus 1 month"
+  ExpiresByType font/woff2 "access plus 1 month"
   ExpiresDefault "access plus 0 seconds"
 </IfModule>
 
@@ -65,3 +74,49 @@ ErrorDocument 404 /frontend/404.php
     Header set Pragma "no-cache"
     Header set Expires 0
 </FilesMatch>
+
+# Proteger archivos críticos
+<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php|conexion\.php)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Proteger las carpetas sensibles
+<DirectoryMatch "^/.git/">
+    Order Deny,Allow
+    Deny from all
+</DirectoryMatch>
+
+# Permitir parámetros GET en restablecer-password
+<IfModule mod_rewrite.c>
+    RewriteCond %{QUERY_STRING} ^token=([a-zA-Z0-9]+)$
+    RewriteRule ^restablecer-password$ frontend/restablecer-password.php [L]
+</IfModule>
+
+# Medidas básicas de seguridad
+<IfModule mod_headers.c>
+    # Prevenir clickjacking
+    Header always append X-Frame-Options SAMEORIGIN
+    # Habilitar la protección XSS en navegadores modernos
+    Header always set X-XSS-Protection "1; mode=block"
+    # Prevenir el sniffing de tipo MIME
+    Header always set X-Content-Type-Options "nosniff"
+    # Referrer Policy
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Configuración CORS si es necesario
+<IfModule mod_headers.c>
+    <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font\.css)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
+</IfModule>
+
+# Prevenir hotlinking de imágenes (opcional)
+<IfModule mod_rewrite.c>
+    RewriteCond %{HTTP_REFERER} !^$
+    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?tusitio\.com [NC]
+    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?google\.com [NC]
+    RewriteCond %{HTTP_REFERER} !^http(s)?://(www\.)?facebook\.com [NC]
+    RewriteRule \.(jpg|jpeg|png|gif)$ - [NC,F,L]
+</IfModule>
