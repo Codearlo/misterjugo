@@ -1,7 +1,6 @@
 /* Estilos para la página de Productos - MisterJugo
- * CSS mejorado con posicionamiento correcto del menú y productos
- * Con encapsulamiento específico para evitar conflictos
- * Versión optimizada con 4 productos por fila
+ * CSS completamente optimizado con navegación superior y productos centrados
+ * Versión optimizada para móviles con grid de 4 productos
  */
 
 /* Estilo específico para la página Productos */
@@ -41,8 +40,7 @@
   position: relative;
 }
 
-/* ========== NUEVA NAVEGACIÓN SUPERIOR ========== */
-/* Barra superior con navegación y filtros */
+/* ========== BARRA DE NAVEGACIÓN SUPERIOR ========== */
 .productos-page .top-nav-bar {
   background-color: var(--productos-primary);
   position: sticky;
@@ -119,6 +117,8 @@
   z-index: 2;
   transition: all 0.3s ease;
   position: absolute;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 .productos-page .nav-arrow:hover {
@@ -157,6 +157,9 @@
   transition: all 0.3s ease;
   opacity: 0.8;
   border-radius: 20px;
+  min-height: 36px;
+  display: flex;
+  align-items: center;
 }
 
 .productos-page .category-btn.active {
@@ -190,11 +193,12 @@
 .productos-page .search-input-group input {
   width: 100%;
   padding: 8px 15px;
-  padding-right: 40px;
+  padding-right: 45px;
   border: none;
   border-radius: 6px;
   background-color: rgba(255, 255, 255, 0.2);
   color: var(--productos-white);
+  min-height: 36px;
 }
 
 .productos-page .search-input-group input::placeholder {
@@ -219,6 +223,8 @@
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 .productos-page .clear-search {
@@ -234,13 +240,15 @@
   height: 28px;
   border-radius: 50%;
   transition: background-color 0.2s ease;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 .productos-page .clear-search:hover {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-/* Sección de productos */
+/* ========== GRID DE PRODUCTOS ========== */
 .productos-page .productos-section {
   margin-top: 30px;
 }
@@ -345,6 +353,7 @@
   justify-content: center;
   gap: 6px;
   flex: 1;
+  min-height: 36px;
 }
 
 .productos-page .btn-add-cart {
@@ -423,6 +432,7 @@
   text-decoration: none;
   transition: all 0.3s ease;
   margin-top: 10px;
+  min-height: 44px;
 }
 
 .productos-page .btn-try-again:hover,
@@ -432,7 +442,7 @@
   box-shadow: var(--productos-shadow-md);
 }
 
-/* Carrito lateral */
+/* ========== CARRITO LATERAL ========== */
 .cart-sidebar {
   position: fixed;
   top: 0;
@@ -491,6 +501,11 @@
   cursor: pointer;
   color: var(--productos-text-medium);
   transition: color 0.2s ease;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .btn-close-cart:hover {
@@ -575,6 +590,8 @@
   font-size: 0.8rem;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 36px;
+  min-width: 36px;
 }
 
 .cart-quantity-btn:hover {
@@ -598,6 +615,11 @@
   cursor: pointer;
   transition: color 0.2s ease;
   font-size: 0.9rem;
+  min-height: 36px;
+  min-width: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .cart-item-remove:hover {
@@ -638,6 +660,7 @@
   align-items: center;
   justify-content: center;
   gap: 5px;
+  min-height: 44px;
 }
 
 .btn-view-cart {
@@ -704,7 +727,7 @@
   justify-content: center;
 }
 
-/* Modal de detalles de producto */
+/* ========== MODAL DE DETALLES ========== */
 .productos-page .modal {
   display: none;
   position: fixed;
@@ -774,6 +797,11 @@
   transition: color 0.2s ease;
   padding: 0;
   line-height: 1;
+  min-height: 44px;
+  min-width: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .productos-page .close-modal:hover {
@@ -869,6 +897,7 @@
   font-weight: 500;
   cursor: pointer;
   transition: all 0.2s ease;
+  min-height: 44px;
 }
 
 .productos-page .quantity-btn.minus {
@@ -921,6 +950,7 @@
   gap: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
+  min-height: 44px;
 }
 
 .productos-page .btn-add-cart-modal:hover {
@@ -929,6 +959,7 @@
   box-shadow: var(--productos-shadow-sm);
 }
 
+/* ========== ESTADOS Y NOTIFICACIONES ========== */
 /* Estados de carga y error */
 .productos-page .loading,
 .productos-page .error-message {
@@ -986,9 +1017,292 @@
   opacity: 1;
 }
 
-/* Media Queries */
+/* ========== MEDIA QUERIES - RESPONSIVE ========== */
+/* Escritorio grande a mediano */
 @media (max-width: 1200px) {
   .productos-page .productos-grid {
     grid-template-columns: repeat(3, 1fr);
+    gap: 20px;
+  }
+}
+
+/* Tablets y pantallas medianas */
+@media (max-width: 992px) {
+  .productos-page .productos-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+  }
+  
+  .productos-page .nav-controls {
+    grid-template-columns: 1fr 2fr 1fr;
+  }
+  
+  .productos-page .producto-modal-content {
+    grid-template-columns: 1fr;
+  }
+  
+  .productos-page .producto-modal-image {
+    height: 300px;
+  }
+  
+  .cart-sidebar {
+    width: 320px;
+  }
+}
+
+/* Tablets pequeñas y móviles grandes */
+@media (max-width: 768px) {
+  .productos-page .productos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+  }
+  
+  .productos-page .top-nav-bar {
+    position: sticky;
+    top: 0;
+    z-index: 999;
+  }
+  
+  .productos-page .nav-controls {
+    display: flex;
+    flex-direction: column;
+    padding: 10px 0;
+    gap: 12px;
+  }
+  
+  .productos-page .order-control {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .productos-page .order-form {
+    width: 100%;
+    justify-content: center;
+  }
+  
+  .productos-page .categories-nav {
+    width: 100%;
+  }
+  
+  .productos-page .search-control {
+    width: 100%;
+  }
+  
+  .productos-page .producto-image {
+    height: 160px;
+  }
+  
+  .cart-sidebar {
+    width: 100%;
+    right: -100%;
+  }
+  
+  .cart-float-btn {
+    transform: scale(1);
+  }
+  
+  /* Optimizar la interacción táctil */
+  .productos-page .btn-add-cart,
+  .productos-page .btn-view-details,
+  .productos-page .quantity-btn,
+  .productos-page .nav-arrow,
+  .productos-page .btn-add-cart-modal,
+  .cart-quantity-btn,
+  .btn-close-cart,
+  .cart-item-remove,
+  .cart-float-btn {
+    min-height: 44px;
+  }
+  
+  /* Reducir animaciones que pueden causar problemas de rendimiento */
+  .productos-page .producto-card:hover {
+    transform: translateY(-5px);
+  }
+  
+  .productos-page .producto-card:hover .producto-image img {
+    transform: scale(1.05);
+  }
+}
+
+/* Móviles medianos */
+@media (max-width: 576px) {
+  .productos-page .productos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .productos-page .container {
+    padding: 0 15px;
+  }
+  
+  .productos-page .top-nav-bar {
+    padding: 0;
+  }
+  
+  .productos-page .nav-controls {
+    padding: 10px 0;
+  }
+  
+  .productos-page .categories-scroll {
+    margin: 0 30px;
+  }
+  
+  .productos-page .category-btn {
+    padding: 8px 12px;
+    font-size: 0.9rem;
+  }
+  
+  .productos-page .producto-image {
+    height: 140px;
+  }
+  
+  .productos-page .producto-info {
+    padding: 10px;
+  }
+  
+  .productos-page .producto-name {
+    font-size: 0.95rem;
+    margin-bottom: 8px;
+  }
+  
+  .productos-page .producto-price {
+    font-size: 1.1rem;
+  }
+  
+  .productos-page .producto-actions {
+    padding: 10px;
+    gap: 5px;
+  }
+  
+  .productos-page .btn-add-cart,
+  .productos-page .btn-view-details {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .productos-page .modal-content {
+    width: 95%;
+    max-height: 85vh;
+  }
+  
+  .productos-page .modal-header {
+    padding: 15px;
+  }
+  
+  .productos-page .modal-body {
+    padding: 15px;
+  }
+  
+  .productos-page .producto-modal-image {
+    height: 200px;
+  }
+  
+  .notification {
+    left: 15px;
+    right: 15px;
+    max-width: unset;
+    padding: 12px 15px;
+    bottom: 15px;
+  }
+}
+
+/* Móviles pequeños */
+@media (max-width: 480px) {
+  .productos-page .productos-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 8px;
+  }
+  
+  .productos-page .container {
+    padding: 0 10px;
+  }
+  
+  .productos-page .order-form label {
+    font-size: 0.8rem;
+  }
+  
+  .productos-page .order-form select {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+  }
+  
+  .productos-page .nav-arrow {
+    width: 25px;
+    height: 25px;
+  }
+  
+  .productos-page .categories-scroll {
+    margin: 0 25px;
+  }
+  
+  .productos-page .category-btn {
+    padding: 6px 10px;
+    font-size: 0.85rem;
+  }
+  
+  .productos-page .producto-info {
+    padding: 8px;
+  }
+  
+  .productos-page .producto-name {
+    font-size: 0.85rem;
+    margin-bottom: 5px;
+  }
+  
+  .productos-page .producto-price {
+    font-size: 1rem;
+  }
+  
+  .productos-page .producto-actions {
+    padding: 8px;
+    gap: 4px;
+  }
+  
+  .productos-page .btn-add-cart,
+  .productos-page .btn-view-details {
+    padding: 6px;
+    font-size: 0.75rem;
+    gap: 3px;
+  }
+  
+  .productos-page .btn-add-cart i,
+  .productos-page .btn-view-details i {
+    font-size: 0.8rem;
+  }
+  
+  .productos-page .price-value {
+    font-size: 1.6rem;
+  }
+  
+  .cart-header h3 {
+    font-size: 1.1rem;
+  }
+  
+  .cart-item-image {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .cart-item-name {
+    font-size: 0.9rem;
+  }
+  
+  .cart-float-btn {
+    width: 48px;
+    height: 48px;
+    right: 15px;
+    bottom: 15px;
+  }
+}
+
+/* Mejoras para pantallas muy pequeñas */
+@media (max-width: 360px) {
+  .productos-page .productos-grid {
+    grid-template-columns: 1fr;
+    gap: 15px;
+  }
+  
+  .productos-page .producto-image {
+    height: 180px;
   }
 }
