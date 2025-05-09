@@ -697,7 +697,7 @@
   box-shadow: 0 4px 10px rgba(0,0,0,0.2);
   border: none;
   cursor: pointer;
-  z-index: 999;
+  z-index: 95; /* Reducido para evitar solapamientos con elementos importantes */
   transition: all 0.3s ease;
   transform: scale(0);
 }
@@ -1127,8 +1127,8 @@
 /* Móviles medianos */
 @media (max-width: 576px) {
   .productos-page .productos-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 10px;
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
   
   .productos-page .container {
@@ -1153,7 +1153,7 @@
   }
   
   .productos-page .producto-image {
-    height: 140px;
+    height: 180px;
   }
   
   .productos-page .producto-info {
@@ -1204,13 +1204,22 @@
     padding: 12px 15px;
     bottom: 15px;
   }
+  
+  /* Ajuste del carrito flotante para evitar solapamientos */
+  .cart-float-btn {
+    width: 50px;
+    height: 50px;
+    right: 15px;
+    bottom: 65px; /* Aumentar la distancia desde abajo */
+    z-index: 95; /* Asegurar que no tape contenido importante */
+  }
 }
 
 /* Móviles pequeños */
 @media (max-width: 480px) {
   .productos-page .productos-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 8px;
+    grid-template-columns: 1fr;
+    gap: 15px;
   }
   
   .productos-page .container {
@@ -1245,29 +1254,30 @@
   }
   
   .productos-page .producto-name {
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     margin-bottom: 5px;
   }
   
   .productos-page .producto-price {
-    font-size: 1rem;
+    font-size: 1.1rem;
   }
   
   .productos-page .producto-actions {
-    padding: 8px;
-    gap: 4px;
+    padding: 12px 8px;
+    gap: 8px;
+    flex-direction: row; /* Asegurar que los botones estén en fila */
   }
   
   .productos-page .btn-add-cart,
   .productos-page .btn-view-details {
-    padding: 6px;
-    font-size: 0.75rem;
-    gap: 3px;
+    padding: 10px;
+    font-size: 0.85rem;
+    gap: 6px;
   }
   
   .productos-page .btn-add-cart i,
   .productos-page .btn-view-details i {
-    font-size: 0.8rem;
+    font-size: 0.9rem;
   }
   
   .productos-page .price-value {
@@ -1287,11 +1297,18 @@
     font-size: 0.9rem;
   }
   
+  /* Ajuste carrito flotante para pantallas pequeñas */
   .cart-float-btn {
-    width: 48px;
-    height: 48px;
-    right: 15px;
-    bottom: 15px;
+    width: 46px;
+    height: 46px;
+    right: 10px;
+    bottom: 70px;
+  }
+  
+  .cart-count {
+    width: 20px;
+    height: 20px;
+    font-size: 0.7rem;
   }
 }
 
@@ -1304,5 +1321,36 @@
   
   .productos-page .producto-image {
     height: 180px;
+  }
+  
+  /* Ajustes para mejorar layout en pantallas pequeñas */
+  .productos-page .order-form {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .productos-page .order-form select {
+    width: 100%;
+  }
+  
+  /* Asegurar que los botones tengan buen tamaño */
+  .productos-page .btn-add-cart,
+  .productos-page .btn-view-details {
+    padding: 10px 8px;
+    font-size: 0.85rem;
+  }
+  
+  /* Ajustar carrito para evitar problemas */
+  .cart-sidebar {
+    width: 100%;
+  }
+  
+  .cart-sidebar.active {
+    right: 0;
+  }
+  
+  .cart-float-btn {
+    bottom: 75px;
   }
 }
