@@ -640,9 +640,3 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicializar UI del carrito al cargar la página
     actualizarCarritoUI();
 });
-</script>
-
-<?php
-// Incluir el footer
-include 'includes/footer.php';
-?>
