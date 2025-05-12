@@ -1,3 +1,114 @@
+<?php
+// Definir variables para el header
+$titulo_pagina = "Dashboard Administrativo";
+$breadcrumbs = [
+    ['texto' => 'Dashboard']
+];
+
+// Incluir el header
+require_once 'includes/admin_header.php';
+
+// Obtener estadísticas para el dashboard
+// Usuarios totales
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuarios");
+$stmt->execute();
+$usuarios_total = $stmt->get_result()->fetch_assoc()['total'];
+
+// Productos totales
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM productos");
+$stmt->execute();
+$productos_total = $stmt->get_result()->fetch_assoc()['total'];
+
+// Pedidos totales
+$stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos");
+$stmt->execute();
+$pedidos_total = $stmt->get_result()->fetch_assoc()['total'];
+
+// Ingresos totales
+$stmt = $conn->prepare("SELECT SUM(total) as total FROM pedidos WHERE estado != 'cancelado'");
+$stmt->execute();
+$ingresos_total = $stmt->get_result()->fetch_assoc()['total'] ?? 0;
+
+// Estadísticas de pedidos por estado
+$stmt = $conn->prepare("SELECT estado, COUNT(*) as total FROM pedidos GROUP BY estado");
+$stmt->execute();
+$result = $stmt->get_result();
+$estados_pedidos = [];
+while ($row = $result->fetch_assoc()) {
+    $estados_pedidos[$row['estado']] = $row['total'];
+}
+
+// Pedidos recientes (últimos 5)
+$stmt = $conn->prepare("
+    SELECT p.id, p.fecha_pedido, p.total, p.estado, u.nombre as usuario
+    FROM pedidos p
+    JOIN usuarios u ON p.usuario_id = u.id
+    ORDER BY p.fecha_pedido DESC
+    LIMIT 5
+");
+$stmt->execute();
+$result = $stmt->get_result();
+$pedidos_recientes = [];
+while ($row = $result->fetch_assoc()) {
+    $pedidos_recientes[] = $row;
+}
+
+// Productos más vendidos
+$stmt = $conn->prepare("
+    SELECT p.id, p.nombre, p.precio, COUNT(dp.id) as vendidos
+    FROM productos p
+    JOIN detalle_pedidos dp ON p.id = dp.producto_id
+    JOIN pedidos ped ON dp.pedido_id = ped.id
+    WHERE ped.estado != 'cancelado'
+    GROUP BY p.id
+    ORDER BY vendidos DESC
+    LIMIT 5
+");
+$stmt->execute();
+$result = $stmt->get_result();
+$productos_populares = [];
+while ($row = $result->fetch_assoc()) {
+    $productos_populares[] = $row;
+}
+
+// Función para formatear fecha
+function formatearFecha($fecha) {
+    return date('d/m/Y H:i', strtotime($fecha));
+}
+
+// Función para formatear estado
+function formatearEstado($estado) {
+    switch ($estado) {
+        case 'pendiente':
+            return 'Pendiente';
+        case 'procesando':
+            return 'En proceso';
+        case 'completado':
+            return 'Completado';
+        case 'cancelado':
+            return 'Cancelado';
+        default:
+            return ucfirst($estado);
+    }
+}
+
+// Función para obtener clase CSS según estado del pedido
+function getEstadoClass($estado) {
+    switch ($estado) {
+        case 'pendiente':
+            return 'warning';
+        case 'procesando':
+            return 'info';
+        case 'completado':
+            return 'success';
+        case 'cancelado':
+            return 'danger';
+        default:
+            return 'secondary';
+    }
+}
+?>
+
 <!-- Tarjetas de estadísticas -->
 <div class="card-grid">
     <div class="card">
@@ -180,3 +291,8 @@
         </div>
     </div>
 </div>
+
+<?php
+// Incluir el footer
+require_once 'includes/admin_footer.php';
+?>
