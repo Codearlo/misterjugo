@@ -1,198 +1,239 @@
 <?php
-// Iniciar sesión si no está activa
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
+
+include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/no_cache.php';
+// Comprobar si el usuario está logueado
+session_start();
+$isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
+$userName = $isLoggedIn ? $_SESSION['user_name'] : '';
+$isAdminLoggedIn = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
+$adminName = $isAdminLoggedIn ? $_SESSION['admin_name'] : '';
+
+// Verificar si hay un mensaje de cierre de sesión
+$logoutMessage = '';
+if(isset($_COOKIE['logout_message'])) {
+    $logoutMessage = $_COOKIE['logout_message'];
+    // Eliminar la cookie inmediatamente después de leerla
+    setcookie('logout_message', '', time() - 3600, '/');
 }
-
-// Verificar si el usuario está logueado como administrador
-if (!isset($_SESSION['admin_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
-    $_SESSION['admin_error'] = "Debes iniciar sesión como administrador para acceder";
-    header("Location: index.php");
-    exit;
-}
-
-// Incluir conexión a la base de datos
-require_once __DIR__ . '/../conexion.php';
-
-// Obtener cantidad de pedidos pendientes para notificación
-$pedidos_pendientes = 0;
-try {
-    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE estado = 'pendiente'");
-    $stmt->execute();
-    $result = $stmt->get_result();
-    $pedidos_pendientes = $result->fetch_assoc()['total'];
-} catch (Exception $e) {
-    // Registrar el error pero continuar
-    error_log("Error al obtener pedidos pendientes: " . $e->getMessage());
-}
-
-// Definir variables para breadcrumbs y título si no están definidas
-if (!isset($titulo_pagina)) {
-    $titulo_pagina = "Panel de Administración";
-}
-
-if (!isset($breadcrumbs)) {
-    $breadcrumbs = [];
-}
-
-// Determinar la página actual basado en el nombre del archivo
-$pagina_actual = basename($_SERVER['PHP_SELF'], '.php');
 ?>
 <!DOCTYPE html>
 <html lang="es">
+<script src="/js/cache_control.js"></script>
+<script src="/js/loader.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $titulo_pagina; ?> - MisterJugo Admin</title>
-    <!-- Archivos CSS -->
+    <title>MisterJugo - Panel de Administración</title>
+    <link rel="stylesheet" href="/css/styles.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="css/admin-styles.css">
+    <style>
+        /* Estilos para las animaciones del menú lateral */
+        .menu-item-animated {
+            transition: all var(--transition-normal);
+            position: relative;
+        }
+
+        .menu-item-animated:hover {
+            padding-left: 10px;
+            color: var(--primary-color);
+            transform: translateX(5px);
+        }
+
+        .menu-item-animated::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--primary-color);
+            transition: width var(--transition-normal);
+        }
+
+        .menu-item-animated:hover::after {
+            width: 100%;
+        }
+
+        /* Estilo para mensajes de notificación */
+        .notification-message {
+            position: fixed;
+            top: 80px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: var(--primary-color);
+            color: var(--text-light);
+            padding: 12px 25px;
+            border-radius: 8px;
+            box-shadow: var(--shadow-medium);
+            z-index: 1000;
+            animation: slideDown 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
+            text-align: center;
+            font-weight: 500;
+            min-width: 280px;
+        }
+
+        @keyframes slideDown {
+            from {
+                top: -50px;
+                opacity: 0;
+            }
+            to {
+                top: 80px;
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeOut {
+            from {
+                opacity: 1;
+            }
+            to {
+                opacity: 0;
+                visibility: hidden;
+            }
+        }
+    </style>
 </head>
 <body class="admin-panel">
-    <div class="admin-container">
-        <!-- Sidebar -->
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <img src="../../images/logo_mrjugo.png" alt="MisterJugo Logo" class="logo">
-                <h2>Panel Admin</h2>
-                <button id="close-sidebar" class="btn-close-sidebar">
-                    <i class="fas fa-times"></i>
-                </button>
+    <?php if (!empty($logoutMessage)): ?>
+    <div class="notification-message" id="notification-message">
+        <?php echo htmlspecialchars($logoutMessage); ?>
+    </div>
+    <?php endif; ?>
+
+    <header class="header">
+        <div class="container">
+            <div class="logo-container">
+                <a href="/backend/admin/dashboard.php">
+                    <img src="/images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
+                </a>
+                <h1 class="company-name"><a href="/backend/admin/dashboard.php">MISTER JUGO ADMIN</a></h1>
             </div>
-            
-            <div class="admin-profile">
-                <div class="admin-avatar">
-                    <i class="fas fa-user-shield"></i>
-                </div>
-                <div class="admin-info">
-                    <p class="admin-name"><?php echo $_SESSION['admin_name']; ?></p>
-                    <p class="admin-role">Administrador</p>
-                </div>
-            </div>
-            
-            <nav class="sidebar-nav">
-                <ul>
-                    <li class="<?php echo $pagina_actual === 'dashboard' ? 'active' : ''; ?>">
-                        <a href="dashboard.php">
-                            <i class="fas fa-tachometer-alt"></i>
-                            <span>Dashboard</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo $pagina_actual === 'pedidos' || $pagina_actual === 'ver_pedido' ? 'active' : ''; ?>">
-                        <a href="pedidos.php">
-                            <i class="fas fa-shopping-basket"></i>
-                            <span>Pedidos</span>
-                            <?php if ($pedidos_pendientes > 0): ?>
-                                <span class="badge"><?php echo $pedidos_pendientes; ?></span>
-                            <?php endif; ?>
-                        </a>
-                    </li>
-                    <li class="<?php echo $pagina_actual === 'productos' || $pagina_actual === 'editar_producto' ? 'active' : ''; ?>">
-                        <a href="productos.php">
-                            <i class="fas fa-carrot"></i>
-                            <span>Productos</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo $pagina_actual === 'categorias' || $pagina_actual === 'editar_categoria' ? 'active' : ''; ?>">
-                        <a href="categorias.php">
-                            <i class="fas fa-tags"></i>
-                            <span>Categorías</span>
-                        </a>
-                    </li>
-                    <li class="<?php echo $pagina_actual === 'usuarios' ? 'active' : ''; ?>">
-                        <a href="usuarios.php">
-                            <i class="fas fa-users"></i>
-                            <span>Usuarios</span>
-                        </a>
-                    </li>
-                    <li class="separator"></li>
-                    <li>
-                        <a href="cerrar_sesion.php" class="logout">
-                            <i class="fas fa-sign-out-alt"></i>
-                            <span>Cerrar Sesión</span>
-                        </a>
-                    </li>
-                </ul>
-            </nav>
-        </aside>
-        
-        <!-- Contenido principal -->
-        <main class="main-content">
-            <header class="top-header">
-                <div class="toggle-sidebar" id="toggle-sidebar">
-                    <i class="fas fa-bars"></i>
-                </div>
-                <h1 class="page-title"><?php echo $titulo_pagina; ?></h1>
-                <div class="actions">
-                    <a href="/" class="visit-site" target="_blank">
-                        <i class="fas fa-external-link-alt"></i>
-                        <span>Ver Sitio</span>
-                    </a>
-                    <div class="admin-dropdown">
-                        <button class="dropdown-toggle">
-                            <i class="fas fa-user-circle"></i>
-                        </button>
-                        <div class="dropdown-menu">
-                            <a href="#">
-                                <i class="fas fa-user-cog"></i>
-                                <span>Mi Perfil</span>
-                            </a>
-                            <a href="cerrar_sesion.php">
-                                <i class="fas fa-sign-out-alt"></i>
-                                <span>Cerrar Sesión</span>
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </header>
-            
-            <div class="content-wrapper">
-                <!-- Breadcrumbs -->
-                <div class="breadcrumbs">
-                    <a href="dashboard.php">
-                        <i class="fas fa-home"></i>
-                    </a>
-                    <span class="separator">
-                        <i class="fas fa-chevron-right"></i>
-                    </span>
-                    <?php if (isset($breadcrumbs) && is_array($breadcrumbs)): ?>
-                        <?php foreach($breadcrumbs as $index => $crumb): ?>
-                            <?php if ($index > 0): ?>
-                                <span class="separator">
-                                    <i class="fas fa-chevron-right"></i>
-                                </span>
-                            <?php endif; ?>
-                            
-                            <?php if (isset($crumb['url'])): ?>
-                                <a href="<?php echo $crumb['url']; ?>">
-                                    <?php echo $crumb['texto']; ?>
-                                </a>
-                            <?php else: ?>
-                                <span class="active">
-                                    <?php echo $crumb['texto']; ?>
-                                </span>
-                            <?php endif; ?>
-                        <?php endforeach; ?>
+
+            <nav class="main-nav" id="main-nav">
+                </nav>
+
+            <div class="actions">
+                <span class="admin-label">Panel de Administración</span>
+
+                <div class="user-icon" id="user-menu-toggle">
+                    <?php if ($isAdminLoggedIn): ?>
+                        <div class="user-avatar"><?php echo substr($adminName, 0, 1); ?></div>
+                    <?php else: ?>
+                        <img src="/images/profile-icon.png" alt="Cuenta">
                     <?php endif; ?>
                 </div>
-                
-                <!-- Contenido de la página -->
-                <div class="content-container">
-                <?php
-                // Mostrar mensajes de éxito/error si existen
-                if (isset($_SESSION['admin_exito'])): 
-                ?>
-                    <div class="notification success">
-                        <i class="fas fa-check-circle"></i>
-                        <span><?php echo $_SESSION['admin_exito']; ?></span>
-                    </div>
-                    <?php unset($_SESSION['admin_exito']); ?>
+            </div>
+        </div>
+
+        <div class="side-menu admin-side-menu" id="side-menu">
+            <ul>
+                <?php if ($isAdminLoggedIn): ?>
+                    <li class="user-welcome">Hola, <?php echo $adminName; ?></li>
+                    <li><a href="/backend/admin/dashboard.php" class="menu-item-animated"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="/backend/admin/pedidos.php" class="menu-item-animated"><i class="fas fa-shopping-basket"></i> Pedidos</a></li>
+                    <li><a href="/backend/admin/productos.php" class="menu-item-animated"><i class="fas fa-carrot"></i> Productos</a></li>
+                    <li><a href="/backend/admin/categorias.php" class="menu-item-animated"><i class="fas fa-tags"></i> Categorías</a></li>
+                    <li><a href="/backend/admin/usuarios.php" class="menu-item-animated"><i class="fas fa-users"></i> Usuarios</a></li>
+                    <li><a href="/backend/admin/cerrar_sesion.php" class="menu-item-animated logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
+                <?php else: ?>
+                    <li class="user-welcome">No eres administrador.</li>
+                    <li><a href="/" class="menu-item-animated"><i class="fas fa-home"></i> Ir al sitio</a></li>
+                    <li><a href="/login" class="menu-item-animated"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
                 <?php endif; ?>
-                
-                <?php if (isset($_SESSION['admin_error'])): ?>
-                    <div class="notification danger">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <span><?php echo $_SESSION['admin_error']; ?></span>
-                    </div>
-                    <?php unset($_SESSION['admin_error']); ?>
-                <?php endif; ?>
+            </ul>
+            <button class="close-btn" id="close-menu-btn">&times;</button>
+        </div>
+
+        <div class="overlay" id="overlay"></div>
+    </header>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Manejo del menú lateral de usuario
+            const userMenuToggle = document.getElementById('user-menu-toggle');
+            const sideMenu = document.getElementById('side-menu');
+            const closeMenuBtn = document.getElementById('close-menu-btn');
+            const overlay = document.getElementById('overlay');
+
+            if (userMenuToggle && sideMenu && closeMenuBtn && overlay) {
+                userMenuToggle.addEventListener('click', function() {
+                    sideMenu.classList.add('active');
+                    overlay.classList.add('active');
+                    document.body.style.overflow = 'hidden'; // Evitar scroll
+                });
+
+                function closeMenu() {
+                    sideMenu.classList.remove('active');
+                    overlay.classList.remove('active');
+                    document.body.style.overflow = ''; // Restaurar scroll
+                }
+
+                closeMenuBtn.addEventListener('click', closeMenu);
+                overlay.addEventListener('click', closeMenu);
+            }
+
+            // Manejo del cierre de sesión - MEJORADO (adaptado para la ruta de admin)
+            const logoutLinks = document.querySelectorAll('.logout');
+            logoutLinks.forEach(logoutLink => {
+                if (logoutLink) {
+                    logoutLink.addEventListener('click', function(e) {
+                        // Mostrar un indicador visual de carga
+                        const icon = this.querySelector('i');
+                        if (icon) {
+                            icon.className = 'fas fa-spinner fa-spin';
+                        }
+
+                        // Cerrar el menú lateral
+                        const sideMenu = document.getElementById('side-menu');
+                        const overlay = document.getElementById('overlay');
+                        if (sideMenu) sideMenu.classList.remove('active');
+                        if (overlay) overlay.classList.remove('active');
+
+                        // Cerrar sesión usando formulario
+                        const form = document.createElement('form');
+                        form.method = 'POST';
+                        form.action = '/backend/cerrar_sesion.php';
+
+                        // Agregar un campo oculto para indicar que no es AJAX
+                        const isAjaxField = document.createElement('input');
+                        isAjaxField.type = 'hidden';
+                        isAjaxField.name = 'redirect';
+                        isAjaxField.value = 'true';
+                        form.appendChild(isAjaxField);
+
+                        document.body.appendChild(form);
+                        form.submit();
+                    });
+                }
+            });
+
+            // Mejorar las animaciones para todos los elementos del menú lateral
+            const sideMenuLinks = document.querySelectorAll('.side-menu ul li a');
+            sideMenuLinks.forEach((link, index) => {
+                // Asegurarse de que todos los enlaces tengan la clase menu-item-animated
+                if (!link.classList.contains('menu-item-animated')) {
+                    link.classList.add('menu-item-animated');
+                }
+
+                // Agregar un efecto de rebote sutil al hacer clic
+                link.addEventListener('click', function(e) {
+                    if (!this.classList.contains('logout')) { // No aplicar animación al cerrar sesión
+                        this.style.transform = 'scale(0.95)';
+                        setTimeout(() => {
+                            this.style.transform = '';
+                        }, 150);
+                    }
+                });
+            });
+
+            // Auto-ocultar notificaciones después de 5 segundos
+            const notification = document.getElementById('notification-message');
+            if (notification) {
+                setTimeout(function() {
+                    notification.style.display = 'none';
+                }, 5000);
+            }
+        });
+    </script>
+</body>
