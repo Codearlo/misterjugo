@@ -43,30 +43,6 @@ if ($userLoggedIn) {
     }
 }
 
-// Función para obtener detalles de los productos desde la base de datos
-function obtenerDetallesProductos($ids, $conn) {
-    if (empty($ids)) {
-        return [];
-    }
-
-    // Sanear IDs
-    $idsStr = implode(',', array_map('intval', $ids));
-
-    // Consulta SQL
-    $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
-    $result = $conn->query($query);
-
-    if (!$result) {
-        return [];
-    }
-
-    $productos = [];
-    while ($row = $result->fetch_assoc()) {
-        $productos[$row['id']] = $row;
-    }
-    return $productos;
-}
-
 // Calcular total
 $totalPedido = 0;
 $productosDetalles = [];
@@ -82,12 +58,24 @@ if (isset(reset($_SESSION['carrito'])['id'])) {
 else {
     // Obtener IDs de los productos en el carrito
     $productosIds = array_keys($_SESSION['carrito']);
-    $productosDetalles = obtenerDetallesProductos($productosIds, $conn);
     
-    // Calcular total
-    foreach ($_SESSION['carrito'] as $id => $cantidad) {
-        if (isset($productosDetalles[$id])) {
-            $totalPedido += $productosDetalles[$id]['precio'] * $cantidad;
+    // Consulta SQL para obtener detalles de productos
+    if (!empty($productosIds)) {
+        $idsStr = implode(',', array_map('intval', $productosIds));
+        $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
+        $result = $conn->query($query);
+        
+        if ($result) {
+            while ($row = $result->fetch_assoc()) {
+                $productosDetalles[$row['id']] = $row;
+            }
+            
+            // Calcular total
+            foreach ($_SESSION['carrito'] as $id => $cantidad) {
+                if (isset($productosDetalles[$id])) {
+                    $totalPedido += $productosDetalles[$id]['precio'] * $cantidad;
+                }
+            }
         }
     }
 }
@@ -145,102 +133,152 @@ include 'includes/header.php';
         </table>
     </div>
 
-    <!-- Formulario de datos de entrega -->
-    <div class="customer-info">
-        <h2>Datos de Entrega</h2>
-        
-        <?php if (!$userLoggedIn): ?>
-            <div class="login-prompt">
-                <p>¿Ya tienes una cuenta? <a href="/login?redirect=/checkout">Iniciar sesión</a> para usar tus direcciones guardadas.</p>
-            </div>
-        <?php endif; ?>
-        
-        <form action="/backend/procesar_pedido.php" method="POST">
-            <div class="form-group">
-                <label for="nombre">Nombre completo:</label>
-                <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($userName); ?>" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="telefono">Teléfono de contacto:</label>
-                <input type="tel" id="telefono" name="telefono" value="<?php echo $direccionPredeterminada ? htmlspecialchars($direccionPredeterminada['telefono']) : ''; ?>" required>
-            </div>
-            
-            <?php if ($userLoggedIn && count($direcciones) > 0): ?>
-                <div class="form-group">
-                    <label for="direccion_id">Selecciona una dirección:</label>
-                    <select id="direccion_id" name="direccion_id" class="address-select">
-                        <?php foreach ($direcciones as $dir): ?>
-                            <option value="<?php echo $dir['id']; ?>" 
-                                <?php echo ($direccionPredeterminada && $direccionPredeterminada['id'] == $dir['id']) ? 'selected' : ''; ?>
-                                data-calle="<?php echo htmlspecialchars($dir['calle']); ?>"
-                                data-ciudad="<?php echo htmlspecialchars($dir['ciudad']); ?>"
-                                data-estado="<?php echo htmlspecialchars($dir['estado']); ?>"
-                                data-codigo="<?php echo htmlspecialchars($dir['codigo_postal']); ?>"
-                                data-telefono="<?php echo htmlspecialchars($dir['telefono']); ?>"
-                                data-instrucciones="<?php echo htmlspecialchars($dir['instrucciones']); ?>">
-                                <?php echo htmlspecialchars($dir['calle']); ?> 
-                                (<?php echo $dir['es_predeterminada'] ? 'Predeterminada' : 'Alternativa'; ?>)
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
+    <?php if (!$userLoggedIn): ?>
+        <!-- Mensaje para usuarios no logueados -->
+        <div class="login-required-message">
+            <div class="message-icon"><i class="fas fa-user-lock"></i></div>
+            <div class="message-content">
+                <h3>Inicia sesión para continuar</h3>
+                <p>Para realizar un pedido, debes iniciar sesión en tu cuenta primero.</p>
+                <div class="message-actions">
+                    <a href="/login?redirect=/checkout" class="btn-login">Iniciar sesión</a>
+                    <a href="/registro?redirect=/checkout" class="btn-register">Registrarse</a>
                 </div>
-                
-                <div class="selected-address">
-                    <div class="address-details">
-                        <p id="address-display">
-                            <?php if ($direccionPredeterminada): ?>
-                                <?php echo htmlspecialchars($direccionPredeterminada['calle']); ?>, 
-                                <?php echo htmlspecialchars($direccionPredeterminada['ciudad']); ?>, 
-                                <?php echo htmlspecialchars($direccionPredeterminada['estado']); ?>, 
-                                CP: <?php echo htmlspecialchars($direccionPredeterminada['codigo_postal']); ?>
-                            <?php endif; ?>
-                        </p>
+            </div>
+        </div>
+    <?php else: ?>
+        <!-- Formulario para usuarios logueados -->
+        <div class="customer-info">
+            <h2>Datos de Entrega</h2>
+            
+            <?php if (empty($direcciones)): ?>
+                <!-- Mensaje para usuarios sin direcciones -->
+                <div class="address-required-message">
+                    <div class="message-icon"><i class="fas fa-map-marker-alt"></i></div>
+                    <div class="message-content">
+                        <h3>No tienes direcciones guardadas</h3>
+                        <p>Para continuar con tu pedido, primero debes agregar una dirección de entrega.</p>
+                        <div class="message-actions">
+                            <a href="/direcciones" class="btn-add-address">
+                                <i class="fas fa-plus"></i> Agregar dirección
+                            </a>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="form-group">
-                    <label for="instrucciones">Instrucciones para el repartidor:</label>
-                    <textarea id="instrucciones" name="instrucciones"><?php echo $direccionPredeterminada ? htmlspecialchars($direccionPredeterminada['instrucciones']) : ''; ?></textarea>
-                </div>
-                
-                <input type="hidden" name="direccion" id="direccion_completa" value="<?php 
-                    echo $direccionPredeterminada ? 
-                        htmlspecialchars($direccionPredeterminada['calle'] . ', ' . 
-                                        $direccionPredeterminada['ciudad'] . ', ' . 
-                                        $direccionPredeterminada['estado'] . ', CP: ' . 
-                                        $direccionPredeterminada['codigo_postal']) : ''; 
-                ?>">
             <?php else: ?>
-                <div class="form-group">
-                    <label for="direccion">Dirección de entrega:</label>
-                    <textarea id="direccion" name="direccion" required></textarea>
-                </div>
-                
-                <div class="form-group">
-                    <label for="instrucciones">Instrucciones para el repartidor:</label>
-                    <textarea id="instrucciones" name="instrucciones"></textarea>
-                </div>
+                <!-- Formulario para usuarios con direcciones -->
+                <form action="/backend/procesar_pedido.php" method="POST">
+                    <!-- Selector de direcciones (primero) -->
+                    <div class="form-group address-selector">
+                        <label for="direccion_id">Selecciona una dirección de entrega:</label>
+                        <select id="direccion_id" name="direccion_id" class="address-select" required>
+                            <?php foreach ($direcciones as $dir): ?>
+                                <option value="<?php echo $dir['id']; ?>" 
+                                    <?php echo ($direccionPredeterminada && $direccionPredeterminada['id'] == $dir['id']) ? 'selected' : ''; ?>
+                                    data-calle="<?php echo htmlspecialchars($dir['calle']); ?>"
+                                    data-ciudad="<?php echo htmlspecialchars($dir['ciudad']); ?>"
+                                    data-estado="<?php echo htmlspecialchars($dir['estado']); ?>"
+                                    data-codigo="<?php echo htmlspecialchars($dir['codigo_postal']); ?>"
+                                    data-telefono="<?php echo htmlspecialchars($dir['telefono']); ?>"
+                                    data-instrucciones="<?php echo htmlspecialchars($dir['instrucciones']); ?>">
+                                    <?php echo htmlspecialchars($dir['calle']); ?> 
+                                    (<?php echo $dir['es_predeterminada'] ? 'Predeterminada' : 'Alternativa'; ?>)
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                        
+                        <div class="address-actions">
+                            <a href="/direcciones" class="btn-manage-addresses">
+                                <i class="fas fa-cog"></i> Gestionar direcciones
+                            </a>
+                        </div>
+                    </div>
+                    
+                    <!-- Detalles de la dirección seleccionada (no modificables) -->
+                    <div class="selected-address">
+                        <h3>Detalles de entrega</h3>
+                        <div class="address-details">
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="fas fa-map-marker-alt"></i> Dirección:</div>
+                                <div class="detail-value" id="address-display">
+                                    <?php if ($direccionPredeterminada): ?>
+                                        <?php echo htmlspecialchars($direccionPredeterminada['calle']); ?>, 
+                                        <?php echo htmlspecialchars($direccionPredeterminada['ciudad']); ?>, 
+                                        <?php echo htmlspecialchars($direccionPredeterminada['estado']); ?>, 
+                                        CP: <?php echo htmlspecialchars($direccionPredeterminada['codigo_postal']); ?>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-row">
+                                <div class="detail-label"><i class="fas fa-phone"></i> Teléfono:</div>
+                                <div class="detail-value" id="phone-display">
+                                    <?php echo $direccionPredeterminada ? htmlspecialchars($direccionPredeterminada['telefono']) : ''; ?>
+                                </div>
+                            </div>
+                            
+                            <div class="detail-row" id="instructions-row" style="<?php echo empty($direccionPredeterminada['instrucciones']) ? 'display:none;' : ''; ?>">
+                                <div class="detail-label"><i class="fas fa-info-circle"></i> Instrucciones:</div>
+                                <div class="detail-value" id="instructions-display">
+                                    <?php echo $direccionPredeterminada && !empty($direccionPredeterminada['instrucciones']) ? htmlspecialchars($direccionPredeterminada['instrucciones']) : ''; ?>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Nombre del cliente -->
+                    <div class="form-group">
+                        <label for="nombre">Nombre para el pedido:</label>
+                        <input type="text" id="nombre" name="nombre" value="<?php echo htmlspecialchars($userName); ?>" required>
+                        <div class="field-note">Nombre que aparecerá en tu pedido</div>
+                    </div>
+                    
+                    <!-- Instrucciones adicionales -->
+                    <div class="form-group">
+                        <label for="instrucciones_adicionales">Instrucciones adicionales para este pedido (opcional):</label>
+                        <textarea id="instrucciones_adicionales" name="instrucciones_adicionales" placeholder="Ej: Tocar el timbre, dejar con el portero, etc."></textarea>
+                    </div>
+                    
+                    <!-- Campos ocultos con la información de la dirección -->
+                    <input type="hidden" name="telefono" id="telefono_hidden" value="<?php echo $direccionPredeterminada ? htmlspecialchars($direccionPredeterminada['telefono']) : ''; ?>">
+                    <input type="hidden" name="direccion_completa" id="direccion_completa" value="<?php 
+                        echo $direccionPredeterminada ? 
+                            htmlspecialchars($direccionPredeterminada['calle'] . ', ' . 
+                                            $direccionPredeterminada['ciudad'] . ', ' . 
+                                            $direccionPredeterminada['estado'] . ', CP: ' . 
+                                            $direccionPredeterminada['codigo_postal']) : ''; 
+                    ?>">
+                    <input type="hidden" name="instrucciones" id="instrucciones_hidden" value="<?php echo $direccionPredeterminada ? htmlspecialchars($direccionPredeterminada['instrucciones']) : ''; ?>">
+                    <input type="hidden" name="total" value="<?php echo $totalPedido; ?>">
+                    
+                    <!-- Botones de acción -->
+                    <div class="form-actions">
+                        <a href="/carrito" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Volver al carrito
+                        </a>
+                        <button type="submit" class="btn-submit">
+                            <i class="fas fa-check"></i> Realizar Pedido
+                        </button>
+                    </div>
+                </form>
             <?php endif; ?>
-            
-            <input type="hidden" name="total" value="<?php echo $totalPedido; ?>">
-            
-            <div class="form-actions">
-                <a href="/carrito" class="btn-back">Volver al carrito</a>
-                <button type="submit" class="btn-submit">Realizar Pedido</button>
-            </div>
-        </form>
-    </div>
+        </div>
+    <?php endif; ?>
 </div>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     // Solo inicializar si existe el selector de direcciones
     const direccionSelect = document.getElementById('direccion_id');
-    const direccionCompleta = document.getElementById('direccion_completa');
     const addressDisplay = document.getElementById('address-display');
-    const telefonoInput = document.getElementById('telefono');
-    const instruccionesInput = document.getElementById('instrucciones');
+    const phoneDisplay = document.getElementById('phone-display');
+    const instructionsDisplay = document.getElementById('instructions-display');
+    const instructionsRow = document.getElementById('instructions-row');
+    
+    // Campos ocultos
+    const telefonoHidden = document.getElementById('telefono_hidden');
+    const direccionCompleta = document.getElementById('direccion_completa');
+    const instruccionesHidden = document.getElementById('instrucciones_hidden');
     
     if (direccionSelect) {
         direccionSelect.addEventListener('change', function() {
@@ -254,13 +292,20 @@ document.addEventListener('DOMContentLoaded', function() {
             
             // Actualizar la dirección mostrada
             addressDisplay.textContent = `${calle}, ${ciudad}, ${estado}, CP: ${codigo}`;
+            phoneDisplay.textContent = telefono;
             
-            // Actualizar campo oculto con la dirección completa
+            // Actualizar campos ocultos
+            telefonoHidden.value = telefono;
             direccionCompleta.value = `${calle}, ${ciudad}, ${estado}, CP: ${codigo}`;
+            instruccionesHidden.value = instrucciones || '';
             
-            // Actualizar teléfono e instrucciones
-            telefonoInput.value = telefono;
-            instruccionesInput.value = instrucciones || '';
+            // Mostrar/ocultar instrucciones según si existen o no
+            if (instrucciones && instrucciones.trim() !== '') {
+                instructionsDisplay.textContent = instrucciones;
+                instructionsRow.style.display = 'flex';
+            } else {
+                instructionsRow.style.display = 'none';
+            }
         });
     }
 });
