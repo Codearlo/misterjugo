@@ -4,7 +4,8 @@ session_start();
 
 // Redirigir si ya está logueado
 if (isset($_SESSION['admin_id'])) {
-    header("Location: dashboard");
+    header("Location: /backend/admin/dashboard.php");
+
     exit;
 }
 
