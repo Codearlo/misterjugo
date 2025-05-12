@@ -46,7 +46,7 @@ foreach ($productosCarrito as $id => $cantidad) {
 $mensaje .= "\nTotal: $ {$totalPedido}";
 
 // Número de WhatsApp destino (sin espacios ni guiones)
-$numeroDestino = "+51970846395"; // Reemplaza con tu número de WhatsApp
+$numeroDestino = "+51970846395"; // Reemplaza con tu número de WhatsApp real
 
 // Generar la URL de WhatsApp
 $whatsappUrl = "https://wa.me/ $numeroDestino?text=" . urlencode($mensaje);
