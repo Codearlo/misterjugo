@@ -2,6 +2,9 @@
 // Incluir la conexión a la base de datos
 require_once __DIR__ . '/../conexion.php';
 
+error_log("Dashboard - Estado de la sesión antes del header: " . print_r($_SESSION, true));
+
+
 // Incluir el header de administración
 require_once 'includes/admin_header.php';
 
