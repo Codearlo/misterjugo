@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Recibir producto desde JS
 $producto = json_decode(file_get_contents('php://input'), true);
 
 if (!$producto || !isset($producto['id'], $producto['nombre'], $producto['precio'])) {
@@ -17,12 +16,10 @@ if ($id <= 0 || $cantidad <= 0) {
     exit;
 }
 
-// Iniciar carrito si no existe
 if (!isset($_SESSION['carrito'])) {
     $_SESSION['carrito'] = [];
 }
 
-// Buscar si ya existe el producto
 $found = false;
 foreach ($_SESSION['carrito'] as &$item) {
     if ($item['id'] == $id) {
@@ -31,9 +28,7 @@ foreach ($_SESSION['carrito'] as &$item) {
         break;
     }
 }
-
 if (!$found) {
-    $producto['cantidad'] = $cantidad;
     $_SESSION['carrito'][] = $producto;
 }
 

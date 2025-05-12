@@ -290,7 +290,7 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.success) {
                 mostrarNotificacion(`${nombre} agregado al carrito`);
-                actualizarCarritoUI(); // Actualizar UI
+                actualizarCarritoUI(); // Actualizar UI desde sesión
                 openCartSidebar(); // Abrir carrito automáticamente
             } else {
                 alert('Error al agregar el producto al carrito.');
@@ -323,10 +323,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 const nombre = this.getAttribute('data-nombre');
                 const precio = this.getAttribute('data-precio');
                 const imagen = this.getAttribute('data-imagen');
-                const cantidad = document.getElementById('modal-quantity').value;
+                const cantidad = document.getElementById('modal-quantity')?.value || 1;
                 addToCart(id, nombre, precio, imagen, cantidad);
             });
-        });
+        }
     }
 
     // Cargar el carrito desde el servidor
@@ -434,7 +434,7 @@ document.addEventListener('DOMContentLoaded', function () {
         document.body.style.overflow = ''; // Restaurar scroll
     }
 
-    // Eventos de apertura/cierre
+    // Eventos del carrito
     if (cartFloatBtn) {
         cartFloatBtn.addEventListener('click', openCartSidebar);
     }
