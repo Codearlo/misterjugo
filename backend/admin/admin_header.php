@@ -1,239 +1,75 @@
 <?php
-
-include_once $_SERVER['DOCUMENT_ROOT'] . '/includes/no_cache.php';
-// Comprobar si el usuario está logueado
-session_start();
-$isLoggedIn = isset($_SESSION['user_id']) && !empty($_SESSION['user_id']);
-$userName = $isLoggedIn ? $_SESSION['user_name'] : '';
-$isAdminLoggedIn = isset($_SESSION['is_admin']) && $_SESSION['is_admin'] === true;
-$adminName = $isAdminLoggedIn ? $_SESSION['admin_name'] : '';
-
-// Verificar si hay un mensaje de cierre de sesión
-$logoutMessage = '';
-if(isset($_COOKIE['logout_message'])) {
-    $logoutMessage = $_COOKIE['logout_message'];
-    // Eliminar la cookie inmediatamente después de leerla
-    setcookie('logout_message', '', time() - 3600, '/');
+// Iniciar sesión si no está activa
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
+
+// Verificar si el usuario está logueado como administrador
+if (!isset($_SESSION['admin_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] !== true) {
+    // Si no es administrador, redirigir a la página de inicio de sesión
+    $_SESSION['admin_error'] = "Acceso denegado. Debes iniciar sesión como administrador.";
+    header("Location: /backend/admin/index.php");
+    exit;
+}
+
+// Incluir conexión a la base de datos (asumiendo que existe y está configurada)
+require_once __DIR__ . '/../conexion.php';
+
+// Definir un título básico para la página
+$titulo_pagina = "Panel de Administración";
 ?>
+
 <!DOCTYPE html>
 <html lang="es">
-<script src="/js/cache_control.js"></script>
-<script src="/js/loader.js"></script>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MisterJugo - Panel de Administración</title>
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Estilos para las animaciones del menú lateral */
-        .menu-item-animated {
-            transition: all var(--transition-normal);
-            position: relative;
-        }
+    <title><?php echo $titulo_pagina; ?></title>
+    </head>
+<body>
+    <div class="admin-container">
+        <header class="admin-header">
+            <h1><?php echo $titulo_pagina; ?></h1>
+            <p>Bienvenido, Administrador <?php echo $_SESSION['admin_name'] ?? 'Desconocido'; ?></p>
+            </header>
 
-        .menu-item-animated:hover {
-            padding-left: 10px;
-            color: var(--primary-color);
-            transform: translateX(5px);
-        }
+        <div class="admin-content">
+            ```
 
-        .menu-item-animated::after {
-            content: '';
-            position: absolute;
-            bottom: -2px;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--primary-color);
-            transition: width var(--transition-normal);
-        }
+**Archivo: `backend/admin/dashboard.php`**
 
-        .menu-item-animated:hover::after {
-            width: 100%;
-        }
+```php
+<?php
+// Incluir el header de administración
+require_once 'includes/admin_header.php';
+?>
 
-        /* Estilo para mensajes de notificación */
-        .notification-message {
-            position: fixed;
-            top: 80px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: var(--primary-color);
-            color: var(--text-light);
-            padding: 12px 25px;
-            border-radius: 8px;
-            box-shadow: var(--shadow-medium);
-            z-index: 1000;
-            animation: slideDown 0.5s ease, fadeOut 0.5s ease 4.5s forwards;
-            text-align: center;
-            font-weight: 500;
-            min-width: 280px;
-        }
+    <h2>Dashboard Principal</h2>
 
-        @keyframes slideDown {
-            from {
-                top: -50px;
-                opacity: 0;
-            }
-            to {
-                top: 80px;
-                opacity: 1;
-            }
-        }
+    <div class="dashboard-stats">
+        <?php
+        try {
+            // Ejemplo básico: contar el número de usuarios
+            $stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuarios");
+            $stmt->execute();
+            $usuarios_total = $stmt->get_result()->fetch_assoc()['total'];
+            echo "<p>Total de usuarios: " . $usuarios_total . "</p>";
 
-        @keyframes fadeOut {
-            from {
-                opacity: 1;
-            }
-            to {
-                opacity: 0;
-                visibility: hidden;
-            }
+            // Ejemplo básico: contar el número de productos
+            $stmt = $conn->prepare("SELECT COUNT(*) as total FROM productos");
+            $stmt->execute();
+            $productos_total = $stmt->get_result()->fetch_assoc()['total'];
+            echo "<p>Total de productos: " . $productos_total . "</p>";
+
+            // ... Aquí podrías añadir más estadísticas del dashboard
+        } catch (Exception $e) {
+            echo "<p>Error al obtener datos: " . $e->getMessage() . "</p>";
         }
-    </style>
-</head>
-<body class="admin-panel">
-    <?php if (!empty($logoutMessage)): ?>
-    <div class="notification-message" id="notification-message">
-        <?php echo htmlspecialchars($logoutMessage); ?>
+        ?>
     </div>
-    <?php endif; ?>
 
-    <header class="header">
-        <div class="container">
-            <div class="logo-container">
-                <a href="/backend/admin/dashboard.php">
-                    <img src="/images/logo_mrjugo.png" alt="Logo MisterJugo" class="logo">
-                </a>
-                <h1 class="company-name"><a href="/backend/admin/dashboard.php">MISTER JUGO ADMIN</a></h1>
-            </div>
-
-            <nav class="main-nav" id="main-nav">
-                </nav>
-
-            <div class="actions">
-                <span class="admin-label">Panel de Administración</span>
-
-                <div class="user-icon" id="user-menu-toggle">
-                    <?php if ($isAdminLoggedIn): ?>
-                        <div class="user-avatar"><?php echo substr($adminName, 0, 1); ?></div>
-                    <?php else: ?>
-                        <img src="/images/profile-icon.png" alt="Cuenta">
-                    <?php endif; ?>
-                </div>
-            </div>
-        </div>
-
-        <div class="side-menu admin-side-menu" id="side-menu">
-            <ul>
-                <?php if ($isAdminLoggedIn): ?>
-                    <li class="user-welcome">Hola, <?php echo $adminName; ?></li>
-                    <li><a href="/backend/admin/dashboard.php" class="menu-item-animated"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-                    <li><a href="/backend/admin/pedidos.php" class="menu-item-animated"><i class="fas fa-shopping-basket"></i> Pedidos</a></li>
-                    <li><a href="/backend/admin/productos.php" class="menu-item-animated"><i class="fas fa-carrot"></i> Productos</a></li>
-                    <li><a href="/backend/admin/categorias.php" class="menu-item-animated"><i class="fas fa-tags"></i> Categorías</a></li>
-                    <li><a href="/backend/admin/usuarios.php" class="menu-item-animated"><i class="fas fa-users"></i> Usuarios</a></li>
-                    <li><a href="/backend/admin/cerrar_sesion.php" class="menu-item-animated logout"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
-                <?php else: ?>
-                    <li class="user-welcome">No eres administrador.</li>
-                    <li><a href="/" class="menu-item-animated"><i class="fas fa-home"></i> Ir al sitio</a></li>
-                    <li><a href="/login" class="menu-item-animated"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
-                <?php endif; ?>
-            </ul>
-            <button class="close-btn" id="close-menu-btn">&times;</button>
-        </div>
-
-        <div class="overlay" id="overlay"></div>
-    </header>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // Manejo del menú lateral de usuario
-            const userMenuToggle = document.getElementById('user-menu-toggle');
-            const sideMenu = document.getElementById('side-menu');
-            const closeMenuBtn = document.getElementById('close-menu-btn');
-            const overlay = document.getElementById('overlay');
-
-            if (userMenuToggle && sideMenu && closeMenuBtn && overlay) {
-                userMenuToggle.addEventListener('click', function() {
-                    sideMenu.classList.add('active');
-                    overlay.classList.add('active');
-                    document.body.style.overflow = 'hidden'; // Evitar scroll
-                });
-
-                function closeMenu() {
-                    sideMenu.classList.remove('active');
-                    overlay.classList.remove('active');
-                    document.body.style.overflow = ''; // Restaurar scroll
-                }
-
-                closeMenuBtn.addEventListener('click', closeMenu);
-                overlay.addEventListener('click', closeMenu);
-            }
-
-            // Manejo del cierre de sesión - MEJORADO (adaptado para la ruta de admin)
-            const logoutLinks = document.querySelectorAll('.logout');
-            logoutLinks.forEach(logoutLink => {
-                if (logoutLink) {
-                    logoutLink.addEventListener('click', function(e) {
-                        // Mostrar un indicador visual de carga
-                        const icon = this.querySelector('i');
-                        if (icon) {
-                            icon.className = 'fas fa-spinner fa-spin';
-                        }
-
-                        // Cerrar el menú lateral
-                        const sideMenu = document.getElementById('side-menu');
-                        const overlay = document.getElementById('overlay');
-                        if (sideMenu) sideMenu.classList.remove('active');
-                        if (overlay) overlay.classList.remove('active');
-
-                        // Cerrar sesión usando formulario
-                        const form = document.createElement('form');
-                        form.method = 'POST';
-                        form.action = '/backend/cerrar_sesion.php';
-
-                        // Agregar un campo oculto para indicar que no es AJAX
-                        const isAjaxField = document.createElement('input');
-                        isAjaxField.type = 'hidden';
-                        isAjaxField.name = 'redirect';
-                        isAjaxField.value = 'true';
-                        form.appendChild(isAjaxField);
-
-                        document.body.appendChild(form);
-                        form.submit();
-                    });
-                }
-            });
-
-            // Mejorar las animaciones para todos los elementos del menú lateral
-            const sideMenuLinks = document.querySelectorAll('.side-menu ul li a');
-            sideMenuLinks.forEach((link, index) => {
-                // Asegurarse de que todos los enlaces tengan la clase menu-item-animated
-                if (!link.classList.contains('menu-item-animated')) {
-                    link.classList.add('menu-item-animated');
-                }
-
-                // Agregar un efecto de rebote sutil al hacer clic
-                link.addEventListener('click', function(e) {
-                    if (!this.classList.contains('logout')) { // No aplicar animación al cerrar sesión
-                        this.style.transform = 'scale(0.95)';
-                        setTimeout(() => {
-                            this.style.transform = '';
-                        }, 150);
-                    }
-                });
-            });
-
-            // Auto-ocultar notificaciones después de 5 segundos
-            const notification = document.getElementById('notification-message');
-            if (notification) {
-                setTimeout(function() {
-                    notification.style.display = 'none';
-                }, 5000);
-            }
-        });
-    </script>
-</body>
+<?php
+// Aquí podrías incluir un footer básico más adelante
+?>
+        </div> </div> </body>
+</html>
