@@ -90,21 +90,21 @@ ErrorDocument 500 /frontend/error.php
 </DirectoryMatch>
 
 # Seguridad de cabeceras HTTP
-<IfModule mod_headers.c>
-    Header always append X-Frame-Options SAMEORIGIN
-    Header always set X-XSS-Protection "1; mode=block"
-    Header always set X-Content-Type-Options "nosniff"
-    Header always set Referrer-Policy "strict-origin-when-cross-origin"
-    
-    # Content-Security-Policy flexible para desarrollo y CDN externo
-    Header always set Content-Security-Policy "default-src 'self'; \
-        script-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline' 'unsafe-eval'; \
-        style-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline'; \
-        img-src 'self' data: https://*.cloudflare.com https://*.whatsapp.net; \
-        font-src 'self' https://cdnjs.cloudflare.com  data:; \
-        connect-src 'self'; \
-        frame-src 'none';"
-</IfModule>
+# <IfModule mod_headers.c>
+#     Header always append X-Frame-Options SAMEORIGIN
+#     Header always set X-XSS-Protection "1; mode=block"
+#     Header always set X-Content-Type-Options "nosniff"
+#     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+#
+#     # Content-Security-Policy flexible para desarrollo y CDN externo
+#     Header always set Content-Security-Policy "default-src 'self'; \
+#         script-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline' 'unsafe-eval'; \
+#         style-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline'; \
+#         img-src 'self' data: https://*.cloudflare.com https://*.whatsapp.net; \
+#         font-src 'self' https://cdnjs.cloudflare.com  data:; \
+#         connect-src 'self'; \
+#         frame-src 'none';"
+# </IfModule>
 
 # Configuración CORS para fuentes
 <IfModule mod_headers.c>
