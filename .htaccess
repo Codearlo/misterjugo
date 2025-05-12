@@ -5,6 +5,7 @@ RewriteEngine On
 RewriteRule ^$ frontend/index.php [L]
 
 # Rutas comunes - Frontend
+RewriteRule ^checkout/?$ frontend/checkout.php [L]
 RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
 RewriteRule ^login/?$ frontend/login.php [L]
 RewriteRule ^registro/?$ frontend/registro.php [L]
@@ -137,3 +138,4 @@ ErrorDocument 500 /frontend/error.php
     Order Deny,Allow
     Deny from all
 </LimitExcept>
+
