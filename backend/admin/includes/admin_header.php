@@ -1,5 +1,5 @@
 <?php
-// Iniciar la sesión si no está activa
+// Iniciar sesión si no está activa
 if (session_status() == PHP_SESSION_NONE) {
     session_start();
 }
@@ -12,11 +12,9 @@ if (!isset($_SESSION['admin_id']) || !isset($_SESSION['is_admin']) || $_SESSION[
     exit;
 }
 
-// Incluir la conexión a la base de datos (asumiendo que existe en el directorio padre)
-require_once __DIR__ . '/../conexion.php';
+// Incluir conexión a la base de datos (asumiendo que existe en el directorio backend/)
+require_once __DIR__ . '/../../conexion.php';
 
-// Definir un título básico para la página (puedes modificar esto en cada página si lo prefieres)
-$titulo_pagina = "Panel de Administración";
 ?>
 
 <!DOCTYPE html>
@@ -24,56 +22,93 @@ $titulo_pagina = "Panel de Administración";
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $titulo_pagina; ?></title>
+    <title>Panel de Administración</title>
 </head>
 <body>
     <div class="admin-container">
         <header class="admin-header">
-            <h1><?php echo $titulo_pagina; ?></h1>
+            <h1>Panel de Administración</h1>
             <p>Bienvenido, Administrador <?php echo $_SESSION['admin_name'] ?? 'Desconocido'; ?></p>
         </header>
 
         <div class="admin-content">
             ```
 
-**Explicación de este header básico:**
+**Archivo: `backend/admin/validar_admin.php` (con ruta verificada - debería ser correcta si `conexion.php` está en `backend/`):**
 
-1.  **`<?php`**: Abre el bloque de código PHP.
-2.  **`if (session_status() == PHP_SESSION_NONE) { session_start(); }`**: Inicia la sesión de PHP si aún no está activa. Esto es crucial para acceder a las variables de sesión (`$_SESSION`).
-3.  **Verificación de administrador**:
-    * `!isset($_SESSION['admin_id'])`: Comprueba si la variable `admin_id` no está definida en la sesión.
-    * `!isset($_SESSION['is_admin'])`: Comprueba si la variable `is_admin` no está definida.
-    * `$_SESSION['is_admin'] !== true`: Comprueba si la variable `is_admin` no es igual a `true`.
-    * Si alguna de estas condiciones es verdadera, significa que el usuario no está logueado como administrador.
-    * `$_SESSION['admin_error'] = ...`: Establece un mensaje de error en la sesión.
-    * `header("Location: /backend/admin/index.php");`: Redirige al usuario a la página de inicio de sesión del administrador. **Asegúrate de que esta ruta sea correcta para tu proyecto.**
-    * `exit;`: Detiene la ejecución del script para asegurar que la página actual no se siga cargando.
-4.  **`require_once __DIR__ . '/../conexion.php';`**: Incluye el archivo que contiene la conexión a tu base de datos. **Asumo que tienes un archivo `conexion.php` en el directorio padre (`backend/admin/`) que establece la conexión y define la variable `$conn`.**
-5.  **`$titulo_pagina = "Panel de Administración";`**: Define una variable para el título de la página. Puedes modificarla en archivos específicos si lo deseas.
-6.  **`<!DOCTYPE html>` y la estructura HTML básica**: Comienza la estructura HTML con un título básico que utiliza la variable `$titulo_pagina`.
-7.  **`<div class="admin-container">`**: Un contenedor principal para el contenido del panel de administración.
-8.  **`<header class="admin-header">`**: Un header para la parte superior del panel, mostrando el título y un saludo al administrador (si el nombre está en la sesión).
-9.  **`<div class="admin-content">`**: Un div donde se insertará el contenido específico de cada página (como el dashboard, la lista de pedidos, etc.). El cierre de este `div` y del `body` y `html` se realizaría en un archivo de footer si lo tuvieras, o directamente en cada página después de su contenido.
+```php
+<?php
+// Iniciar la sesión si no está activa
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
-**Para usar este header:**
+// Incluir la conexión a la base de datos
+require_once __DIR__ . '/../conexion.php';
 
-1.  Guarda este código como `backend/admin/includes/admin_header.php`.
-2.  Asegúrate de tener un archivo `backend/admin/conexion.php` con tu conexión a la base de datos.
-3.  En tu archivo `backend/admin/dashboard.php` (y otras páginas del panel), incluye este header al principio:
+// Verificar si se han enviado datos por POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Registrar los datos POST para depuración
+    error_log("Datos POST recibidos en validar_admin.php: " . print_r($_POST, true));
 
-    ```php
-    <?php
-    require_once 'includes/admin_header.php';
-    ?>
+    // Obtener los datos del formulario
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'] ?? ''; // Obtener la contraseña, usar '' si no está definida
 
-    <h2>Contenido del Dashboard</h2>
-    <p>...</p>
+    // Validar que los campos no estén vacíos
+    if (empty($email) || empty($password)) {
+        $_SESSION['admin_error'] = "Por favor, introduce tu email y contraseña.";
+        header("Location: index.php");
+        exit;
+    }
 
-    <?php
-    // Si tienes un footer, inclúyelo aquí
-    ?>
-        </div> </div> </body>
-</html>
-    ```
+    try {
+        // Preparar la consulta para buscar al administrador por email
+        $stmt = $conn->prepare("SELECT id, nombre, password, is_admin FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-Este es un header funcional básico con la verificación de sesión. Si al incluir este header en `dashboard.php` sigues teniendo el error 500, el problema podría estar en el archivo `conexion.php` o en una configuración más fundamental del servidor. Avísame si esto resuelve el problema o si el error persiste.
+        if ($result->num_rows == 1) {
+            $admin = $result->fetch_assoc();
+
+            // Verificar la contraseña
+            if (password_verify($password, $admin['password']) && $admin['is_admin'] == 1) {
+                // La contraseña es correcta y el usuario es administrador
+                $_SESSION['admin_id'] = $admin['id'];
+                $_SESSION['admin_name'] = $admin['nombre'];
+                $_SESSION['is_admin'] = true;
+
+                // Redirigir al panel de administración (dashboard)
+                header("Location: dashboard.php");
+                exit;
+            } else {
+                // Contraseña incorrecta o no es administrador
+                $_SESSION['admin_error'] = "Credenciales incorrectas. Por favor, inténtalo de nuevo.";
+                header("Location: index.php");
+                exit;
+            }
+        } else {
+            // No se encontró ningún usuario con ese email
+            $_SESSION['admin_error'] = "Credenciales incorrectas. Por favor, inténtalo de nuevo.";
+            header("Location: index.php");
+            exit;
+        }
+
+        $stmt->close();
+    } catch (Exception $e) {
+        // Error al realizar la consulta
+        $_SESSION['admin_error'] = "Ocurrió un error al intentar iniciar sesión. Por favor, inténtalo más tarde.";
+        error_log("Error en validar_admin.php: " . $e->getMessage());
+        header("Location: index.php");
+        exit;
+    }
+} else {
+    // Si se intenta acceder a este script por GET, redirigir al formulario de inicio de sesión
+    header("Location: index.php");
+    exit;
+}
+
+// Cerrar la conexión a la base de datos
+$conn->close();
+?>
