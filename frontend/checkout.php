@@ -5,7 +5,7 @@ require_once '../backend/conexion.php';
 // Obtener los productos del carrito (suponiendo que estén almacenados en la sesión)
 session_start();
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
-    header("Location: index.php");
+    header("Location: checkout");
     exit();
 }
 
