@@ -15,7 +15,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validar datos
     if (empty($usuario) || empty($password)) {
         $_SESSION['admin_error'] = "Por favor, completa todos los campos";
-        header("Location: index.php");
+        header("Location: admin");
         exit;
     }
     
@@ -58,5 +58,5 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Si no es POST, redirigir a la página de login
-header("Location: index.php");
+header("Location: admin");
 exit;
