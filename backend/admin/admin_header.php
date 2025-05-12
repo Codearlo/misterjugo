@@ -12,7 +12,7 @@ if (!isset($_SESSION['admin_id']) || !isset($_SESSION['is_admin']) || $_SESSION[
 }
 
 // Incluir conexión a la base de datos
-require_once '../conexion.php';
+require_once __DIR__ . '/../conexion.php';
 
 // Obtener cantidad de pedidos pendientes para notificación
 $pedidos_pendientes = 0;
