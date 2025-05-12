@@ -1,9 +1,8 @@
 <?php
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-// Iniciar sesión
+
 session_start();
+
+require_once '../backend/conexion.php';
 
 // Verificar si hay productos en el carrito
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
@@ -11,10 +10,6 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
     exit;
 }
 
-// Conexión a la base de datos
-require_once '../backend/conexion.php';
-
-// Función para obtener detalles de los productos desde la base de datos
 function obtenerDetallesProductos($ids) {
     global $conexion;
 
