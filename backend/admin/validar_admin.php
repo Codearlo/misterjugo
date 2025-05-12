@@ -1,117 +1,72 @@
 <?php
-// Prevenir caché
-header("Cache-Control: no-store, no-cache, must-revalidate, max-age=0");
-header("Cache-Control: post-check=0, pre-check=0", false);
-header("Pragma: no-cache");
-
-// Mostrar errores (quitar en producción)
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Iniciar sesión
-session_start();
-
-// Registrar actividad para depuración
-error_log("Validar Admin - Inicio del script");
-
-// Incluir el archivo de conexión a la base de datos con ruta absoluta
-try {
-    require_once __DIR__ . '/../conexion.php';
-    error_log("Conexión incluida correctamente");
-} catch (Exception $e) {
-    error_log("Error al incluir conexión: " . $e->getMessage());
-    die("Error al incluir el archivo de conexión. Contacte al administrador.");
+// Iniciar la sesión si no está activa
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
 
-// Verificar conexión a la base de datos
-if (!isset($conn) || $conn->connect_error) {
-    error_log("Error de conexión a la base de datos: " . (isset($conn) ? $conn->connect_error : "No definida"));
-    die("Error de conexión a la base de datos. Contacte al administrador.");
-}
+// Incluir la conexión a la base de datos
+require_once __DIR__ . '/../conexion.php';
 
-// Verificar si es una solicitud POST
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    error_log("Método POST detectado");
-    error_log("POST data: " . print_r($_POST, true));
-    
-    // Obtener datos del formulario
-    $usuario = isset($_POST['usuario']) ? trim($_POST['usuario']) : '';
-    $password = isset($_POST['password']) ? $_POST['password'] : '';
-    
-    // Validar datos
-    if (empty($usuario) || empty($password)) {
-        error_log("Datos incompletos: usuario o contraseña vacíos");
-        $_SESSION['admin_error'] = "Por favor, completa todos los campos";
+// Verificar si se han enviado datos por POST
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Obtener los datos del formulario
+    $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
+    $password = $_POST['password'] ?? ''; // Obtener la contraseña, usar '' si no está definida
+
+    // Validar que los campos no estén vacíos
+    if (empty($email) || empty($password)) {
+        $_SESSION['admin_error'] = "Por favor, introduce tu email y contraseña.";
         header("Location: index.php");
         exit;
     }
-    
+
     try {
-        // Buscar el usuario en la base de datos
-        error_log("Buscando usuario: " . $usuario);
-        
-        // Comprobar si existe la tabla administradores
-        $tabla_admin_existe = false;
-        try {
-            $tabla_admin_existe = $conn->query("SHOW TABLES LIKE 'administradores'")->num_rows > 0;
-            error_log("Tabla administradores existe: " . ($tabla_admin_existe ? "Sí" : "No"));
-        } catch (Exception $e) {
-            error_log("Error al verificar tabla administradores: " . $e->getMessage());
-            $tabla_admin_existe = false;
-        }
-        
-        if ($tabla_admin_existe) {
-            error_log("Usando tabla administradores");
-            $stmt = $conn->prepare("SELECT id, nombre, usuario, password FROM administradores WHERE usuario = ?");
-            $stmt->bind_param("s", $usuario);
-        } else {
-            error_log("Usando tabla usuarios con is_admin=1");
-            $stmt = $conn->prepare("SELECT id, nombre, email, password FROM usuarios WHERE email = ? AND is_admin = 1");
-            $stmt->bind_param("s", $usuario);
-        }
-        
+        // Preparar la consulta para buscar al administrador por email
+        $stmt = $conn->prepare("SELECT id, nombre, password, is_admin FROM usuarios WHERE email = ?");
+        $stmt->bind_param("s", $email);
         $stmt->execute();
         $result = $stmt->get_result();
-        
-        error_log("Número de resultados: " . $result->num_rows);
-        
-        if ($result->num_rows === 1) {
+
+        if ($result->num_rows == 1) {
             $admin = $result->fetch_assoc();
-            error_log("Usuario encontrado: " . $admin['nombre']);
-            
-            // Verificar contraseña
-            if (password_verify($password, $admin['password'])) {
-                error_log("Contraseña correcta para usuario: " . $usuario);
-                // Establecer datos de sesión
+
+            // Verificar la contraseña
+            if (password_verify($password, $admin['password']) && $admin['is_admin'] == 1) {
+                // La contraseña es correcta y el usuario es administrador
                 $_SESSION['admin_id'] = $admin['id'];
                 $_SESSION['admin_name'] = $admin['nombre'];
-                $_SESSION['admin_user'] = $admin['usuario'] ?? $admin['email'];
                 $_SESSION['is_admin'] = true;
-                
-                // Redirigir al dashboard
-                error_log("Redirigiendo a dashboard.php");
+
+                // Redirigir al panel de administración (dashboard)
                 header("Location: dashboard.php");
                 exit;
             } else {
-                error_log("Contraseña incorrecta para usuario: " . $usuario);
-                $_SESSION['admin_error'] = "Contraseña incorrecta";
+                // Contraseña incorrecta o no es administrador
+                $_SESSION['admin_error'] = "Credenciales incorrectas. Por favor, inténtalo de nuevo.";
+                header("Location: index.php");
+                exit;
             }
         } else {
-            error_log("Usuario no encontrado o no es administrador: " . $usuario);
-            $_SESSION['admin_error'] = "Usuario no encontrado o no tienes permisos de administrador";
+            // No se encontró ningún usuario con ese email
+            $_SESSION['admin_error'] = "Credenciales incorrectas. Por favor, inténtalo de nuevo.";
+            header("Location: index.php");
+            exit;
         }
+
+        $stmt->close();
     } catch (Exception $e) {
-        error_log("Error durante la autenticación: " . $e->getMessage());
-        $_SESSION['admin_error'] = "Error del sistema: " . $e->getMessage();
+        // Error al realizar la consulta
+        $_SESSION['admin_error'] = "Ocurrió un error al intentar iniciar sesión. Por favor, inténtalo más tarde.";
+        error_log("Error en validar_admin.php: " . $e->getMessage());
+        header("Location: index.php");
+        exit;
     }
-    
-    error_log("Redirigiendo a index.php por error o fallo de autenticación");
+} else {
+    // Si se intenta acceder a este script por GET, redirigir al formulario de inicio de sesión
     header("Location: index.php");
     exit;
 }
 
-// Si no es POST, redirigir a la página de login
-error_log("Método no POST, redirigiendo a index.php");
-header("Location: index.php");
-exit;
+// Cerrar la conexión a la base de datos
+$conn->close();
+?>
