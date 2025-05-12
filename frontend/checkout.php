@@ -1,14 +1,17 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
 // Iniciar sesión
 session_start();
 
 // Verificar si hay productos en el carrito
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
-    echo "<h2>El carrito está vacío.</h8>";
+    echo "<h2>El carrito está vacío.</h2>";
     exit;
 }
 
-// Conexión a la base de datos (ajustamos la ruta)
+// Conexión a la base de datos
 require_once '../backend/conexion.php';
 
 // Función para obtener detalles de los productos desde la base de datos

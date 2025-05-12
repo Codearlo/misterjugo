@@ -12,7 +12,7 @@ $direccion = htmlspecialchars(trim($_POST['direccion']));
 $total = floatval($_POST['total']);
 
 // Conexión a la base de datos
-require_once 'conexion.php'; // Asegúrate de que este archivo exista en /backend
+require_once 'conexion.php'; // Asegúrate de que este archivo exista
 
 // Obtener detalles de los productos
 $productosIds = array_keys($_SESSION['carrito']);
