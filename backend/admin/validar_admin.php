@@ -9,6 +9,9 @@ require_once __DIR__ . '/../conexion.php';
 
 // Verificar si se han enviado datos por POST
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    // Registrar los datos POST para depuración
+    error_log("Datos POST recibidos en validar_admin.php: " . print_r($_POST, true));
+
     // Obtener los datos del formulario
     $email = filter_input(INPUT_POST, 'email', FILTER_SANITIZE_EMAIL);
     $password = $_POST['password'] ?? ''; // Obtener la contraseña, usar '' si no está definida

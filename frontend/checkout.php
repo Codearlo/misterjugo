@@ -4,19 +4,24 @@ session_start();
 
 // Verificar si hay productos en el carrito
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
-    echo "<h2>El carrito está vacío.</h2>";
+    echo "<h2>El carrito está vacío.</h8>";
     exit;
 }
 
-// Conexión a la base de datos
+// Conexión a la base de datos (ajustamos la ruta)
 require_once '../backend/conexion.php';
 
 // Función para obtener detalles de los productos desde la base de datos
 function obtenerDetallesProductos($ids) {
     global $conexion;
-    $idsStr = implode(',', array_map('intval', $ids)); // Sanear IDs
+
+    // Sanear IDs
+    $idsStr = implode(',', array_map('intval', $ids));
+
+    // Consulta SQL
     $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
     $result = mysqli_query($conexion, $query);
+
     $productos = [];
     while ($row = mysqli_fetch_assoc($result)) {
         $productos[$row['id']] = $row;
@@ -27,16 +32,6 @@ function obtenerDetallesProductos($ids) {
 // Obtener IDs de los productos en el carrito
 $productosIds = array_keys($_SESSION['carrito']);
 $detallesProductos = obtenerDetallesProductos($productosIds);
-
-// Calcular total del pedido
-$totalPedido = 0;
-foreach ($_SESSION['carrito'] as $id => $cantidad) {
-    if (isset($detallesProductos[$id])) {
-        $producto = $detallesProductos[$id];
-        $totalProducto = $producto['precio'] * $cantidad;
-        $totalPedido += $totalProducto;
-    }
-}
 ?>
 
 <!DOCTYPE html>
@@ -52,7 +47,8 @@ foreach ($_SESSION['carrito'] as $id => $cantidad) {
 <div class="checkout-container">
     <h1>Resumen de tu Pedido</h1>
 
-    <form action="procesar_pedido.php" method="POST">
+    <!-- Formulario -->
+    <form action="../backend/procesar_pedido.php" method="POST">
         <!-- Tabla de productos -->
         <table>
             <thead>
@@ -64,20 +60,25 @@ foreach ($_SESSION['carrito'] as $id => $cantidad) {
                 </tr>
             </thead>
             <tbody>
-                <?php foreach ($_SESSION['carrito'] as $id => $cantidad): ?>
-                    <?php if (isset($detallesProductos[$id])): 
+                <?php
+                $totalPedido = 0;
+                foreach ($_SESSION['carrito'] as $id => $cantidad):
+                    if (isset($detallesProductos[$id])):
                         $producto = $detallesProductos[$id];
                         $precioUnitario = floatval($producto['precio']);
                         $totalProducto = $precioUnitario * $cantidad;
-                    ?>
+                        $totalPedido += $totalProducto;
+                ?>
                     <tr>
                         <td><?= htmlspecialchars($producto['nombre']) ?></td>
                         <td>S/ <?= number_format($precioUnitario, 2) ?></td>
                         <td><?= $cantidad ?></td>
                         <td>S/ <?= number_format($totalProducto, 2) ?></td>
                     </tr>
-                    <?php endif; ?>
-                <?php endforeach; ?>
+                <?php
+                    endif;
+                endforeach;
+                ?>
             </tbody>
             <tfoot>
                 <tr>
@@ -87,7 +88,7 @@ foreach ($_SESSION['carrito'] as $id => $cantidad) {
             </tfoot>
         </table>
 
-        <!-- Datos del cliente -->
+        <!-- Campos del cliente -->
         <label for="nombre">Nombre:</label>
         <input type="text" id="nombre" name="nombre" required><br>
 
@@ -100,7 +101,7 @@ foreach ($_SESSION['carrito'] as $id => $cantidad) {
         <!-- Campo oculto con el total -->
         <input type="hidden" name="total" value="<?= $totalPedido ?>">
 
-        <!-- Botón para enviar -->
+        <!-- Botón para enviar formulario -->
         <button type="submit">Confirmar Pedido</button>
     </form>
 </div>
