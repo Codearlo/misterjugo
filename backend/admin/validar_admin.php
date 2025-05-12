@@ -78,3 +78,30 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         if ($usuario_encontrado && password_verify($password, $password_hash)) {
             // Establecer datos de sesión
             $_SESSION['admin_id'] = $id;
+            $_SESSION['admin_name'] = $nombre;
+            $_SESSION['admin_user'] = $usuario_admin ?? $usuario;
+            $_SESSION['is_admin'] = true;
+            
+            // Redirigir al dashboard
+            header("Location: dashboard.php");
+            exit;
+        } else {
+            if (!$usuario_encontrado) {
+                $_SESSION['admin_error'] = "El usuario no existe o no tiene permisos de administrador";
+            } else {
+                $_SESSION['admin_error'] = "Contraseña incorrecta";
+            }
+            header("Location: index.php");
+            exit;
+        }
+    } catch (Exception $e) {
+        $_SESSION['admin_error'] = "Error del sistema: " . $e->getMessage();
+        header("Location: index.php");
+        exit;
+    }
+} else {
+    // Si no es POST, redirigir a la página de login
+    header("Location: index.php");
+    exit;
+}
+?>
