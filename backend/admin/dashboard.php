@@ -1,6 +1,5 @@
 <?php
 // Incluir el header de administración
-require_once '/includes/admin_header.php';
 ?>
 
     <h2>Dashboard Principal</h2>
