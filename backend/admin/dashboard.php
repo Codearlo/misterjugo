@@ -1,4 +1,12 @@
 <?php
+// Asegúrate de que la ruta a conexion.php sea correcta
+// Si conexion.php está un nivel arriba de la carpeta 'includes', usa:
+require_once __DIR__ . '/../conexion.php';
+// Si conexion.php está en la misma carpeta que dashboard.php, usa:
+// require_once __DIR__ . '/conexion.php';
+// Si conexion.php está en la raíz del proyecto, usa:
+// require_once $_SERVER['DOCUMENT_ROOT'] . '/conexion.php';
+
 // Incluir el header de administración
 require_once 'includes/admin_header.php';
 
@@ -317,7 +325,6 @@ function getEstadoClass($estado) {
 
 <?php
 // Incluir el footer (si tienes uno específico para el admin)
-// Si no tienes un footer específico, puedes omitir esta línea o crear un admin_footer.php
 // require_once 'includes/admin_footer.php';
 ?>
 </body>
