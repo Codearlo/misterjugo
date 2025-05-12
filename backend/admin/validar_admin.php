@@ -3,7 +3,7 @@
 session_start();
 
 // Incluir el archivo de conexión a la base de datos
-require_once '../conexion.php';
+require_once '../backend/conexion.php';
 
 // Verificar si es una solicitud POST
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -19,10 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
     
-    // Buscar el usuario en la base de datos (tabla de administradores)
-    // IMPORTANTE: Primero verifica si existe una tabla 'administradores'. Si no, puedes usar la tabla 'usuarios' con is_admin = 1
-    
-    // Si existe tabla administradores
+    // Buscar el usuario en la base de datos
     if ($conn->query("SHOW TABLES LIKE 'administradores'")->num_rows > 0) {
         $stmt = $conn->prepare("SELECT id, nombre, usuario, password FROM administradores WHERE usuario = ?");
         $stmt->bind_param("s", $usuario);
@@ -38,7 +35,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($result->num_rows === 1) {
         $admin = $result->fetch_assoc();
         
-        // Verificar contraseña (asumiendo hash bcrypt)
+        // Verificar contraseña
         if (password_verify($password, $admin['password'])) {
             // Establecer datos de sesión
             $_SESSION['admin_id'] = $admin['id'];
