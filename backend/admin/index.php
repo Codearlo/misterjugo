@@ -4,7 +4,7 @@ session_start();
 
 // Redirigir si ya está logueado
 if (isset($_SESSION['admin_id'])) {
-    header("Location: dashboard.php");
+    header("Location: dashboard");
     exit;
 }
 
@@ -172,7 +172,7 @@ unset($_SESSION['admin_error']);
             </div>
         <?php endif; ?>
         
-        <form class="login-form" action="validar_admin.php" method="POST">
+        <form class="login-form" action="/backend/admin/validar_admin.php" method="POST">
             <div class="form-group">
                 <label for="usuario">Usuario</label>
                 <div class="input-group">
