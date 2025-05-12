@@ -14,7 +14,7 @@ if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
 // Función para obtener detalles de los productos desde la base de datos
 function obtenerDetallesProductos($ids) {
     global $conexion;
-    $idsStr = implode(',', $ids);
+    $idsStr = implode(',', array_map('intval', $ids)); // Asegurar que sean enteros
     $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
     $result = mysqli_query($conexion, $query);
     $productos = [];
@@ -28,6 +28,8 @@ function obtenerDetallesProductos($ids) {
 $productosIds = array_keys($_SESSION['carrito']);
 $detallesProductos = obtenerDetallesProductos($productosIds);
 
+$totalPedido = 0;
+
 ?>
 
 <!DOCTYPE html>
@@ -36,13 +38,12 @@ $detallesProductos = obtenerDetallesProductos($productosIds);
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Checkout</title>
-    <link rel="stylesheet" href="css/checkout.css">
+    <link rel="stylesheet" href="/css/checkout.css">
 </head>
 <body>
     <div class="checkout-container">
         <h1>Resumen de tu Pedido</h1>
         <form action="procesar_pedido.php" method="POST">
-            <input type="hidden" name="total" value="<?php echo isset($totalPedido) ? $totalPedido : 0; ?>">
             <table>
                 <thead>
                     <tr>
@@ -53,31 +54,26 @@ $detallesProductos = obtenerDetallesProductos($productosIds);
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    $totalPedido = 0;
-                    foreach ($_SESSION['carrito'] as $id => $cantidad) {
-                        if (isset($detallesProductos[$id])) {
+                    <?php foreach ($_SESSION['carrito'] as $id => $cantidad): ?>
+                        <?php if (isset($detallesProductos[$id])): 
                             $producto = $detallesProductos[$id];
-                            $precioUnitario = $producto['precio'];
+                            $precioUnitario = floatval($producto['precio']);
                             $totalProducto = $precioUnitario * $cantidad;
                             $totalPedido += $totalProducto;
-
-                            echo "
-                            <tr>
-                                <td>{$producto['nombre']}</td>
-                                <td>$ {$precioUnitario}</td>
-                                <td>$cantidad</td>
-                                <td>$ {$totalProducto}</td>
-                            </tr>
-                            ";
-                        }
-                    }
-                    ?>
+                        ?>
+                        <tr>
+                            <td><?= htmlspecialchars($producto['nombre']) ?></td>
+                            <td>S/ <?= number_format($precioUnitario, 2) ?></td>
+                            <td><?= $cantidad ?></td>
+                            <td>S/ <?= number_format($totalProducto, 2) ?></td>
+                        </tr>
+                        <?php endif; ?>
+                    <?php endforeach; ?>
                 </tbody>
                 <tfoot>
                     <tr>
-                        <td colspan="3">Total:</td>
-                        <td>$ {$totalPedido}</td>
+                        <td colspan="3"><strong>Total:</strong></td>
+                        <td><strong>S/ <?= number_format($totalPedido, 2) ?></strong></td>
                     </tr>
                 </tfoot>
             </table>
@@ -91,6 +87,8 @@ $detallesProductos = obtenerDetallesProductos($productosIds);
 
             <label for="direccion">Dirección:</label>
             <textarea id="direccion" name="direccion" required></textarea><br>
+
+            <input type="hidden" name="total" value="<?= $totalPedido ?>">
 
             <button type="submit">Confirmar Pedido</button>
         </form>
