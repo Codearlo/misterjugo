@@ -44,7 +44,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $_SESSION['is_admin'] = true;
             
             // Redirigir al dashboard
-            header("Location: dashboard.php");
+            header("Location: dashboard");
             exit;
         } else {
             $_SESSION['admin_error'] = "Contraseña incorrecta";
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $_SESSION['admin_error'] = "Usuario no encontrado o no tienes permisos de administrador";
     }
     
-    header("Location: index.php");
+    header("Location: admin");
     exit;
 }
 
