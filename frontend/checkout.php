@@ -2,14 +2,11 @@
 // Incluir la conexión a la base de datos
 require_once '../backend/conexion.php';
 
-// Obtener los productos del carrito (suponiendo que tienes una sesión o variable global con los productos)
+// Iniciar sesión
 session_start();
-if (!isset($_SESSION['carrito'])) {
-    $_SESSION['carrito'] = [];
-}
 
 // Verificar si hay productos en el carrito
-if (empty($_SESSION['carrito'])) {
+if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
     echo "<h2>El carrito está vacío.</h2>";
     exit;
 }
@@ -45,6 +42,7 @@ $detallesProductos = obtenerDetallesProductos($productosIds);
     <div class="checkout-container">
         <h1>Resumen de tu Pedido</h1>
         <form action="procesar_pedido.php" method="POST">
+            <input type="hidden" name="total" value="<?php echo isset($totalPedido) ? $totalPedido : 0; ?>">
             <table>
                 <thead>
                     <tr>

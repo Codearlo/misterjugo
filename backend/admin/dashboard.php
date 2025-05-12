@@ -9,6 +9,7 @@ $breadcrumbs = [
 require_once 'includes/admin_header.php';
 
 // Obtener estadísticas para el dashboard
+/*
 try {
     // Usuarios totales
     $stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuarios");
@@ -56,8 +57,6 @@ try {
         $pedidos_recientes[] = $row;
     }
 
-    // **COMENTANDO COMPLETAMENTE LA SECCIÓN DE PRODUCTOS MÁS VENDIDOS**
-    /*
     // Productos más vendidos
     $stmt = $conn->prepare("
         SELECT p.id, p.nombre, p.precio, COUNT(dp.id) as vendidos
@@ -75,8 +74,6 @@ try {
     while ($row = $result->fetch_assoc()) {
         $productos_populares[] = $row;
     }
-    */
-    $productos_populares = []; // Aseguramos que la variable esté definida aunque esté comentada la lógica
 } catch (Exception $e) {
     // Si hay algún error, asignar valores por defecto
     $usuarios_total = 0;
@@ -90,6 +87,15 @@ try {
     // Opcional: Registrar el error (si tienes acceso a logs)
     error_log("Error en dashboard.php: " . $e->getMessage());
 }
+*/
+// Asignación de valores por defecto (si el bloque try está comentado)
+$usuarios_total = 0;
+$productos_total = 0;
+$pedidos_total = 0;
+$ingresos_total = 0;
+$estados_pedidos = [];
+$pedidos_recientes = [];
+$productos_populares = [];
 
 // Función para formatear fecha
 function formatearFecha($fecha) {
@@ -180,6 +186,7 @@ function getEstadoClass($estado) {
 </div>
 
 <div class="row" style="display: flex; gap: 20px; margin-bottom: 20px;">
+    <?php /* ?>
     <div class="card" style="flex: 1;">
         <div class="card-header">
             <h3 class="card-title">Pedidos Recientes</h3>
@@ -233,6 +240,7 @@ function getEstadoClass($estado) {
             <?php endif; ?>
         </div>
     </div>
+    <?php */ ?>
 
     <div class="card" style="flex: 1;">
         <div class="card-header">
