@@ -3,7 +3,6 @@
 require_once __DIR__ . '/../conexion.php';
 
 // Incluir el header de administración
-require_once 'includes/admin_header.php';
 
 // El resto del código de dashboard.php
 try {
