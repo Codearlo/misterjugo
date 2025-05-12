@@ -258,6 +258,12 @@ if ($result_productos && $result_productos->num_rows > 0) {
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
+    // Elementos del DOM
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const btnCloseCart = document.getElementById('btn-close-cart');
+    const cartFloatBtn = document.getElementById('cart-float-btn');
+
     // Función para agregar al carrito (envía datos al servidor)
     function addToCart(id, nombre, precio, imagen, cantidad = 1) {
         if (!id || !nombre || !precio) {
@@ -273,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function () {
             cantidad: parseInt(cantidad)
         };
 
-        // Enviar el producto al servidor
         fetch('/backend/agregar_al_carrito.php', {
             method: 'POST',
             headers: {
@@ -285,7 +290,8 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(data => {
             if (data.success) {
                 mostrarNotificacion(`${nombre} agregado al carrito`);
-                actualizarCarritoUI(); // Actualizar UI desde sesión
+                actualizarCarritoUI(); // Actualizar UI
+                openCartSidebar(); // Abrir carrito automáticamente
             } else {
                 alert('Error al agregar el producto al carrito.');
             }
@@ -320,7 +326,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 const cantidad = document.getElementById('modal-quantity').value;
                 addToCart(id, nombre, precio, imagen, cantidad);
             });
-        }
+        });
     }
 
     // Cargar el carrito desde el servidor
@@ -340,50 +346,56 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>`;
                     cartTotalAmount.textContent = 'S/0.00';
                     cartCount.textContent = '0';
-                    return;
-                }
 
-                let html = '';
-                let total = 0;
+                    if (cartFloatBtn) cartFloatBtn.classList.remove('active');
+                } else {
+                    let html = '';
+                    let total = 0;
 
-                carrito.forEach(item => {
-                    const subtotal = item.precio * item.cantidad;
-                    total += subtotal;
+                    carrito.forEach(item => {
+                        const subtotal = item.precio * item.cantidad;
+                        total += subtotal;
 
-                    html += `
-                        <div class="cart-item" data-id="${item.id}">
-                            <div class="cart-item-image">
-                                <img src="${item.imagen}" alt="${item.nombre}">
-                            </div>
-                            <div class="cart-item-details">
-                                <h4>${item.nombre}</h4>
-                                <div>S/${parseFloat(item.precio).toFixed(2)}</div>
-                                <div>Cant: ${item.cantidad}</div>
-                            </div>
-                            <div class="cart-item-subtotal">
-                                S/${subtotal.toFixed(2)}
-                                <button class="cart-item-remove" data-id="${item.id}">
-                                    <i class="fas fa-trash-alt"></i>
-                                </button>
-                            </div>
-                        </div>`;
-                });
-
-                cartItems.innerHTML = html;
-                cartTotalAmount.textContent = `S/${total.toFixed(2)}`;
-                cartCount.textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
-
-                // Eventos para eliminar items
-                const removeButtons = document.querySelectorAll('.cart-item-remove');
-                removeButtons.forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const id = this.getAttribute('data-id');
-                        eliminarDelCarrito(id);
+                        html += `
+                            <div class="cart-item" data-id="${item.id}">
+                                <div class="cart-item-image">
+                                    <img src="${item.imagen}" alt="${item.nombre}">
+                                </div>
+                                <div class="cart-item-details">
+                                    <h4>${item.nombre}</h4>
+                                    <div>S/${parseFloat(item.precio).toFixed(2)}</div>
+                                    <div>Cant: ${item.cantidad}</div>
+                                </div>
+                                <div class="cart-item-subtotal">
+                                    S/${subtotal.toFixed(2)}
+                                    <button class="cart-item-remove" data-id="${item.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>`;
                     });
-                });
+
+                    cartItems.innerHTML = html;
+                    cartTotalAmount.textContent = `S/${total.toFixed(2)}`;
+                    cartCount.textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+
+                    if (cartFloatBtn && cartCount.textContent > 0) {
+                        cartFloatBtn.classList.add('active');
+                    }
+
+                    // Eliminar items
+                    const removeButtons = document.querySelectorAll('.cart-item-remove');
+                    removeButtons.forEach(btn => {
+                        btn.addEventListener('click', function () {
+                            const id = this.getAttribute('data-id');
+                            eliminarDelCarrito(id);
+                        });
+                    });
+                }
             });
     }
 
+    // Eliminar del carrito
     function eliminarDelCarrito(id) {
         fetch(`/backend/eliminar_del_carrito.php?id=${id}`, {
             method: 'DELETE'
@@ -393,6 +405,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // Mostrar notificación
     function mostrarNotificacion(mensaje) {
         const notificacion = document.createElement('div');
         notificacion.className = 'notification success-notification';
@@ -403,6 +416,35 @@ document.addEventListener('DOMContentLoaded', function () {
             notificacion.classList.remove('show');
             setTimeout(() => document.body.removeChild(notificacion), 300);
         }, 3000);
+    }
+
+    // Abrir carrito lateral
+    function openCartSidebar() {
+        if (!cartSidebar || !cartOverlay) return;
+        cartSidebar.classList.add('active');
+        cartOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Evitar scroll
+    }
+
+    // Cerrar carrito lateral
+    function closeCartSidebar() {
+        if (!cartSidebar || !cartOverlay) return;
+        cartSidebar.classList.remove('active');
+        cartOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restaurar scroll
+    }
+
+    // Eventos de apertura/cierre
+    if (cartFloatBtn) {
+        cartFloatBtn.addEventListener('click', openCartSidebar);
+    }
+
+    if (btnCloseCart) {
+        btnCloseCart.addEventListener('click', closeCartSidebar);
+    }
+
+    if (cartOverlay) {
+        cartOverlay.addEventListener('click', closeCartSidebar);
     }
 
     // Inicialización
