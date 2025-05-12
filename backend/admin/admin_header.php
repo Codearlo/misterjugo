@@ -15,10 +15,16 @@ if (!isset($_SESSION['admin_id']) || !isset($_SESSION['is_admin']) || $_SESSION[
 require_once '../conexion.php';
 
 // Obtener cantidad de pedidos pendientes para notificación
-$stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE estado = 'pendiente'");
-$stmt->execute();
-$result = $stmt->get_result();
-$pedidos_pendientes = $result->fetch_assoc()['total'];
+$pedidos_pendientes = 0;
+try {
+    $stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE estado = 'pendiente'");
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $pedidos_pendientes = $result->fetch_assoc()['total'];
+} catch (Exception $e) {
+    // Registrar el error pero continuar
+    error_log("Error al obtener pedidos pendientes: " . $e->getMessage());
+}
 
 // Definir variables para breadcrumbs y título si no están definidas
 if (!isset($titulo_pagina)) {
@@ -172,3 +178,21 @@ $pagina_actual = basename($_SERVER['PHP_SELF'], '.php');
                 
                 <!-- Contenido de la página -->
                 <div class="content-container">
+                <?php
+                // Mostrar mensajes de éxito/error si existen
+                if (isset($_SESSION['admin_exito'])): 
+                ?>
+                    <div class="notification success">
+                        <i class="fas fa-check-circle"></i>
+                        <span><?php echo $_SESSION['admin_exito']; ?></span>
+                    </div>
+                    <?php unset($_SESSION['admin_exito']); ?>
+                <?php endif; ?>
+                
+                <?php if (isset($_SESSION['admin_error'])): ?>
+                    <div class="notification danger">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <span><?php echo $_SESSION['admin_error']; ?></span>
+                    </div>
+                    <?php unset($_SESSION['admin_error']); ?>
+                <?php endif; ?>
