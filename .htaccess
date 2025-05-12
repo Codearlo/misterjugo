@@ -124,3 +124,14 @@ ErrorDocument 500 /frontend/error.php
   Order Allow,Deny
   Deny from all
 </LimitExcept>
+
+
+# Redirigir solicitudes al panel de administración
+RewriteRule ^admin$ backend/admin/index.php [L]
+RewriteRule ^admin/$ backend/admin/index.php [L]
+RewriteRule ^admin/(.*)$ backend/admin/$1 [L]
+
+# Redireccionar recursos estáticos de admin
+RewriteRule ^admin/css/(.*)$ backend/admin/css/$1 [L]
+RewriteRule ^admin/js/(.*)$ backend/admin/js/$1 [L]
+RewriteRule ^admin/images/(.*)$ backend/admin/images/$1 [L]
