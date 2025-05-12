@@ -1,16 +1,11 @@
 <?php
-// Asegúrate de que la ruta a conexion.php sea correcta
-// Si conexion.php está un nivel arriba de la carpeta 'includes', usa:
+// Incluir la conexión a la base de datos
 require_once __DIR__ . '/../conexion.php';
-// Si conexion.php está en la misma carpeta que dashboard.php, usa:
-// require_once __DIR__ . '/conexion.php';
-// Si conexion.php está en la raíz del proyecto, usa:
-// require_once $_SERVER['DOCUMENT_ROOT'] . '/conexion.php';
 
 // Incluir el header de administración
 require_once 'includes/admin_header.php';
 
-// Obtener estadísticas para el dashboard
+// El resto del código de dashboard.php
 try {
     // Usuarios totales
     $stmt = $conn->prepare("SELECT COUNT(*) as total FROM usuarios");
