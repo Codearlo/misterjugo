@@ -56,6 +56,8 @@ try {
         $pedidos_recientes[] = $row;
     }
 
+    // **COMENTANDO COMPLETAMENTE LA SECCIÓN DE PRODUCTOS MÁS VENDIDOS**
+    /*
     // Productos más vendidos
     $stmt = $conn->prepare("
         SELECT p.id, p.nombre, p.precio, COUNT(dp.id) as vendidos
@@ -73,6 +75,8 @@ try {
     while ($row = $result->fetch_assoc()) {
         $productos_populares[] = $row;
     }
+    */
+    $productos_populares = []; // Aseguramos que la variable esté definida aunque esté comentada la lógica
 } catch (Exception $e) {
     // Si hay algún error, asignar valores por defecto
     $usuarios_total = 0;
@@ -82,8 +86,8 @@ try {
     $estados_pedidos = [];
     $pedidos_recientes = [];
     $productos_populares = [];
-    
-    // Opcional: Registrar el error
+
+    // Opcional: Registrar el error (si tienes acceso a logs)
     error_log("Error en dashboard.php: " . $e->getMessage());
 }
 
@@ -125,7 +129,6 @@ function getEstadoClass($estado) {
 }
 ?>
 
-<!-- Tarjetas de estadísticas -->
 <div class="card-grid">
     <div class="card">
         <div class="stat-card">
@@ -138,7 +141,7 @@ function getEstadoClass($estado) {
             </div>
         </div>
     </div>
-    
+
     <div class="card">
         <div class="stat-card">
             <div class="stat-icon success">
@@ -150,7 +153,7 @@ function getEstadoClass($estado) {
             </div>
         </div>
     </div>
-    
+
     <div class="card">
         <div class="stat-card">
             <div class="stat-icon warning">
@@ -162,7 +165,7 @@ function getEstadoClass($estado) {
             </div>
         </div>
     </div>
-    
+
     <div class="card">
         <div class="stat-card">
             <div class="stat-icon danger">
@@ -176,7 +179,6 @@ function getEstadoClass($estado) {
     </div>
 </div>
 
-<!-- Resumen de pedidos y productos populares -->
 <div class="row" style="display: flex; gap: 20px; margin-bottom: 20px;">
     <div class="card" style="flex: 1;">
         <div class="card-header">
@@ -231,7 +233,7 @@ function getEstadoClass($estado) {
             <?php endif; ?>
         </div>
     </div>
-    
+
     <div class="card" style="flex: 1;">
         <div class="card-header">
             <h3 class="card-title">Productos Más Vendidos</h3>
@@ -275,7 +277,6 @@ function getEstadoClass($estado) {
     </div>
 </div>
 
-<!-- Estado de los pedidos -->
 <div class="card">
     <div class="card-header">
         <h3 class="card-title">Estado de los Pedidos</h3>
@@ -289,17 +290,17 @@ function getEstadoClass($estado) {
                 <h4 style="margin: 0 0 10px 0;">Pendientes</h4>
                 <div style="font-size: 2rem; font-weight: 700;"><?php echo isset($estados_pedidos['pendiente']) ? $estados_pedidos['pendiente'] : 0; ?></div>
             </div>
-            
+
             <div class="status-box" style="flex: 1; min-width: 150px; padding: 15px; border-radius: 8px; background-color: rgba(33, 150, 243, 0.15); color: #2196F3; text-align: center;">
                 <h4 style="margin: 0 0 10px 0;">En Proceso</h4>
                 <div style="font-size: 2rem; font-weight: 700;"><?php echo isset($estados_pedidos['procesando']) ? $estados_pedidos['procesando'] : 0; ?></div>
             </div>
-            
+
             <div class="status-box" style="flex: 1; min-width: 150px; padding: 15px; border-radius: 8px; background-color: rgba(76, 175, 80, 0.15); color: #4CAF50; text-align: center;">
                 <h4 style="margin: 0 0 10px 0;">Completados</h4>
                 <div style="font-size: 2rem; font-weight: 700;"><?php echo isset($estados_pedidos['completado']) ? $estados_pedidos['completado'] : 0; ?></div>
             </div>
-            
+
             <div class="status-box" style="flex: 1; min-width: 150px; padding: 15px; border-radius: 8px; background-color: rgba(244, 67, 54, 0.15); color: #F44336; text-align: center;">
                 <h4 style="margin: 0 0 10px 0;">Cancelados</h4>
                 <div style="font-size: 2rem; font-weight: 700;"><?php echo isset($estados_pedidos['cancelado']) ? $estados_pedidos['cancelado'] : 0; ?></div>

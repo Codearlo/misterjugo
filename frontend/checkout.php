@@ -2,20 +2,35 @@
 // Incluir la conexión a la base de datos
 require_once '../backend/conexion.php';
 
-// Obtener los productos del carrito (suponiendo que estén almacenados en la sesión)
+// Obtener los productos del carrito (suponiendo que tienes una sesión o variable global con los productos)
 session_start();
-if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
-    header("Location: checkout");
-    exit();
+if (!isset($_SESSION['carrito'])) {
+    $_SESSION['carrito'] = [];
 }
 
-$carrito = $_SESSION['carrito'];
-$total = 0;
-
-// Calcular el total del carrito
-foreach ($carrito as $producto) {
-    $total += $producto['precio'] * $producto['cantidad'];
+// Verificar si hay productos en el carrito
+if (empty($_SESSION['carrito'])) {
+    echo "<h2>El carrito está vacío.</h2>";
+    exit;
 }
+
+// Función para obtener detalles de los productos desde la base de datos
+function obtenerDetallesProductos($ids) {
+    global $conexion;
+    $idsStr = implode(',', $ids);
+    $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
+    $result = mysqli_query($conexion, $query);
+    $productos = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $productos[$row['id']] = $row;
+    }
+    return $productos;
+}
+
+// Obtener IDs de los productos en el carrito
+$productosIds = array_keys($_SESSION['carrito']);
+$detallesProductos = obtenerDetallesProductos($productosIds);
+
 ?>
 
 <!DOCTYPE html>
@@ -23,83 +38,64 @@ foreach ($carrito as $producto) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Checkout - Mi Jugo</title>
+    <title>Checkout</title>
     <link rel="stylesheet" href="css/checkout.css">
 </head>
 <body>
-    <?php include '../includes/header.php'; ?>
-
     <div class="checkout-container">
-        <h1>Resumen de tu pedido</h1>
+        <h1>Resumen de tu Pedido</h1>
+        <form action="procesar_pedido.php" method="POST">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Producto</th>
+                        <th>Precio Unitario</th>
+                        <th>Cantidad</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    $totalPedido = 0;
+                    foreach ($_SESSION['carrito'] as $id => $cantidad) {
+                        if (isset($detallesProductos[$id])) {
+                            $producto = $detallesProductos[$id];
+                            $precioUnitario = $producto['precio'];
+                            $totalProducto = $precioUnitario * $cantidad;
+                            $totalPedido += $totalProducto;
 
-        <!-- Mostrar los productos del carrito -->
-        <div class="productos-carrito">
-            <?php foreach ($carrito as $producto): ?>
-                <div class="producto">
-                    <img src="images/<?php echo $producto['imagen']; ?>" alt="<?php echo $producto['nombre']; ?>" width="50">
-                    <div class="detalle-producto">
-                        <p><?php echo $producto['nombre']; ?></p>
-                        <p>Cantidad: <?php echo $producto['cantidad']; ?></p>
-                        <p>Precio unitario: $<?php echo $producto['precio']; ?></p>
-                    </div>
-                </div>
-            <?php endforeach; ?>
-        </div>
+                            echo "
+                            <tr>
+                                <td>{$producto['nombre']}</td>
+                                <td>$ {$precioUnitario}</td>
+                                <td>$cantidad</td>
+                                <td>$ {$totalProducto}</td>
+                            </tr>
+                            ";
+                        }
+                    }
+                    ?>
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="3">Total:</td>
+                        <td>$ {$totalPedido}</td>
+                    </tr>
+                </tfoot>
+            </table>
 
-        <!-- Información del cliente -->
-        <h2>Datos del cliente</h2>
-        <div class="cliente-info">
+            <!-- Campos adicionales para el checkout -->
             <label for="nombre">Nombre:</label>
-            <input type="text" id="nombre" name="nombre" required>
+            <input type="text" id="nombre" name="nombre" required><br>
 
             <label for="telefono">Teléfono:</label>
-            <input type="tel" id="telefono" name="telefono" required>
+            <input type="tel" id="telefono" name="telefono" required><br>
 
             <label for="direccion">Dirección:</label>
-            <textarea id="direccion" name="direccion" required></textarea>
-        </div>
+            <textarea id="direccion" name="direccion" required></textarea><br>
 
-        <!-- Botón para enviar al WhatsApp -->
-        <button onclick="enviarWhatsApp()">Enviar Pedido a WhatsApp</button>
-
-        <!-- Script para generar el enlace de WhatsApp -->
-        <script>
-            function enviarWhatsApp() {
-                // Obtener datos del formulario
-                const nombre = document.getElementById('nombre').value;
-                const telefono = document.getElementById('telefono').value;
-                const direccion = document.getElementById('direccion').value;
-
-                // Datos del carrito
-                const productos = <?php echo json_encode($carrito); ?>;
-                const total = <?php echo $total; ?>;
-
-                // Construir el mensaje
-                let mensaje = "¡Nuevo pedido!\n\n";
-                mensaje += `Cliente: ${nombre}\n`;
-                mensaje += `Teléfono: ${telefono}\n`;
-                mensaje += `Dirección: ${direccion}\n\n`;
-                mensaje += "Productos:\n";
-
-                productos.forEach(producto => {
-                    mensaje += `- ${producto.nombre} x${producto.cantidad} (${producto.precio.toFixed(2)} c/u)\n`;
-                });
-
-                mensaje += `\nTotal: $${total.toFixed(2)}`;
-
-                // Codificar el mensaje para el enlace
-                const encodedMessage = encodeURIComponent(mensaje);
-
-                // Generar el enlace de WhatsApp
-                const whatsappNumber = '+51970846395'; // Reemplaza con tu número de WhatsApp
-                const whatsappLink = `https://wa.me/ ${whatsappNumber}?text=${encodedMessage}`;
-
-                // Abrir el enlace en una nueva ventana
-                window.open(whatsappLink, '_blank');
-            }
-        </script>
+            <button type="submit">Confirmar Pedido</button>
+        </form>
     </div>
-
-    <?php include '../includes/footer.php'; ?>
 </body>
 </html>
