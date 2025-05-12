@@ -1,9 +1,10 @@
+# Activar RewriteEngine
 RewriteEngine On
 
 # Redirigir la página principal
 RewriteRule ^$ frontend/index.php [L]
 
-# Redirigir solicitudes a páginas específicas
+# Rutas comunes - Frontend
 RewriteRule ^nosotros$ frontend/nosotros.php [L]
 RewriteRule ^login$ frontend/login.php [L]
 RewriteRule ^registro$ frontend/registro.php [L]
@@ -16,122 +17,119 @@ RewriteRule ^productos$ frontend/productos.php [L]
 RewriteRule ^direcciones$ frontend/direcciones.php [L]
 
 # Permitir URLs con o sin barra final
-RewriteRule ^(nosotros|login|registro|pedidos|perfil|checkout|cart|carrito|productos|direcciones)/$ frontend/$1.php [L]
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
 
 # Redireccionar recursos estáticos
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
 
+# Panel de administración
+RewriteRule ^admin/?$ backend/admin/index.php [L]
+RewriteRule ^admin/(.+)$ backend/admin/$1 [L]
+
+# Recursos estáticos del admin
+RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
+RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
+RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
+
 # Prevenir listado de directorios
 Options -Indexes
 
-# Configurar página de errores personalizada
+# Manejo de errores personalizados
 ErrorDocument 404 /frontend/404.php
 ErrorDocument 403 /frontend/404.php
 ErrorDocument 500 /frontend/error.php
 
-# Prevenir el almacenamiento en caché para páginas dinámicas
+# Desactivar caché en archivos dinámicos
 <FilesMatch "\.(php)$">
-  Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-  Header set Pragma "no-cache"
-  Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
+    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
+    Header set Pragma "no-cache"
+    Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
 </FilesMatch>
 
-# Comprimir archivos para mejorar el rendimiento
+# Compresión GZIP
 <IfModule mod_deflate.c>
-  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json application/xml
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
 </IfModule>
 
-# Cache de navegador para archivos estáticos
+# Control de caché para recursos estáticos
 <IfModule mod_expires.c>
-  ExpiresActive On
-  ExpiresByType image/jpg "access plus 1 month"
-  ExpiresByType image/jpeg "access plus 1 month"
-  ExpiresByType image/gif "access plus 1 month"
-  ExpiresByType image/png "access plus 1 month"
-  ExpiresByType image/svg+xml "access plus 1 month"
-  ExpiresByType text/css "access plus 1 week"
-  ExpiresByType application/pdf "access plus 1 month"
-  ExpiresByType text/x-javascript "access plus 1 week"
-  ExpiresByType application/javascript "access plus 1 week"
-  ExpiresByType application/x-javascript "access plus 1 week"
-  ExpiresByType image/x-icon "access plus 1 month"
-  ExpiresByType font/ttf "access plus 1 month"
-  ExpiresByType font/woff "access plus 1 month"
-  ExpiresByType font/woff2 "access plus 1 month"
-  ExpiresDefault "access plus 1 day"
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 month"
+    ExpiresByType image/jpeg "access plus 1 month"
+    ExpiresByType image/gif "access plus 1 month"
+    ExpiresByType image/png "access plus 1 month"
+    ExpiresByType image/svg+xml "access plus 1 month"
+    ExpiresByType text/css "access plus 1 week"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/x-javascript "access plus 1 week"
+    ExpiresByType application/javascript "access plus 1 week"
+    ExpiresByType application/x-javascript "access plus 1 week"
+    ExpiresByType font/ttf "access plus 1 month"
+    ExpiresByType font/woff "access plus 1 month"
+    ExpiresByType font/woff2 "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 month"
+    ExpiresDefault "access plus 1 day"
 </IfModule>
 
-# Proteger archivos críticos
-<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php)">
-  Order Allow,Deny
-  Deny from all
+# Protección de archivos sensibles
+<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php|composer\.json|\.travis\.yml)$">
+    Order Allow,Deny
+    Deny from all
 </FilesMatch>
 
-# Proteger carpetas sensibles
 <DirectoryMatch "^/.git/">
-  Order Deny,Allow
-  Deny from all
+    Order Deny,Allow
+    Deny from all
 </DirectoryMatch>
 
-
-
-# Medidas de seguridad
+# Seguridad de cabeceras HTTP
 <IfModule mod_headers.c>
-  # Prevenir clickjacking
-  Header always append X-Frame-Options SAMEORIGIN
-  # Protección XSS
-  Header always set X-XSS-Protection "1; mode=block"
-  # Prevenir sniffing de MIME
-  Header always set X-Content-Type-Options "nosniff"
-  # Política de referrer
-  Header always set Referrer-Policy "strict-origin-when-cross-origin"
-  # Content Security Policy básica
-  Header always set Content-Security-Policy "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; style-src 'self' https://cdnjs.cloudflare.com 'unsafe-inline'; img-src 'self' data:; font-src 'self' https://cdnjs.cloudflare.com data:; connect-src 'self';"
+    Header always append X-Frame-Options SAMEORIGIN
+    Header always set X-XSS-Protection "1; mode=block"
+    Header always set X-Content-Type-Options "nosniff"
+    Header always set Referrer-Policy "strict-origin-when-cross-origin"
+    
+    # Content-Security-Policy flexible para desarrollo y CDN externo
+    Header always set Content-Security-Policy "default-src 'self'; \
+        script-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline' 'unsafe-eval'; \
+        style-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline'; \
+        img-src 'self' data: https://*.cloudflare.com https://*.whatsapp.net; \
+        font-src 'self' https://cdnjs.cloudflare.com  data:; \
+        connect-src 'self'; \
+        frame-src 'none';"
 </IfModule>
 
 # Configuración CORS para fuentes
 <IfModule mod_headers.c>
-  <FilesMatch "\.(ttf|ttc|otf|eot|woff|woff2|font\.css)$">
-    Header set Access-Control-Allow-Origin "*"
-  </FilesMatch>
+    <FilesMatch "\.(ttf|otf|eot|woff|woff2|font\.css)$">
+        Header set Access-Control-Allow-Origin "*"
+    </FilesMatch>
 </IfModule>
 
-# Forzar HTTPS (descomenta si tienes SSL)
-# <IfModule mod_rewrite.c>
-#   RewriteCond %{HTTPS} off
-#   RewriteRule ^ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
-# </IfModule>
+# Forzar HTTPS (descomenta si usas SSL)
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
 
-# Bloquear acceso a archivos sensibles
+# Bloquear acceso a archivos sensibles por extensión
 <FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
-  Order Allow,Deny
-  Deny from all
-  Satisfy All
+    Order Allow,Deny
+    Deny from all
+    Satisfy All
 </FilesMatch>
 
-# Prevenir ataques de inyección PHP
+# Prevenir inyección PHP en parámetros
 <IfModule mod_rewrite.c>
-  RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
-  RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
-  RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
-  RewriteRule .* index.php [F,L]
+    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
+    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
+    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
+    RewriteRule ^(.*)$ index.php? [F,L]
 </IfModule>
 
-# Limitar métodos HTTP
+# Limitar métodos HTTP permitidos
 <LimitExcept GET POST HEAD>
-  Order Allow,Deny
-  Deny from all
+    Order Deny,Allow
+    Deny from all
 </LimitExcept>
-
-
-# Redirigir solicitudes al panel de administración
-RewriteRule ^admin$ backend/admin/index.php [L]
-RewriteRule ^admin/$ backend/admin/index.php [L]
-RewriteRule ^admin/(.*)$ backend/admin/$1 [L]
-
-# Redireccionar recursos estáticos de admin
-RewriteRule ^admin/css/(.*)$ backend/admin/css/$1 [L]
-RewriteRule ^admin/js/(.*)$ backend/admin/js/$1 [L]
-RewriteRule ^admin/images/(.*)$ backend/admin/images/$1 [L]
