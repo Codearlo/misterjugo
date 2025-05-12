@@ -5,29 +5,33 @@ RewriteEngine On
 RewriteRule ^$ frontend/index.php [L]
 
 # Rutas comunes - Frontend
-RewriteRule ^nosotros$ frontend/nosotros.php [L]
-RewriteRule ^login$ frontend/login.php [L]
-RewriteRule ^registro$ frontend/registro.php [L]
-RewriteRule ^pedidos$ frontend/pedidos.php [L]
-RewriteRule ^perfil$ frontend/perfil.php [L]
-RewriteRule ^checkout$ frontend/checkout.php [L]
-RewriteRule ^cart$ frontend/cart.php [L]
-RewriteRule ^carrito$ frontend/cart.php [L]
-RewriteRule ^productos$ frontend/productos.php [L]
-RewriteRule ^direcciones$ frontend/direcciones.php [L]
+RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
+RewriteRule ^login/?$ frontend/login.php [L]
+RewriteRule ^registro/?$ frontend/registro.php [L]
+RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
+RewriteRule ^perfil/?$ frontend/perfil.php [L]
+RewriteRule ^checkout/?$ frontend/checkout.php [L]
+RewriteRule ^cart/?$ frontend/cart.php [L]
+RewriteRule ^carrito/?$ frontend/cart.php [L]
+RewriteRule ^productos/?$ frontend/productos.php [L]
+RewriteRule ^direcciones/?$ frontend/direcciones.php [L]
 
-# Permitir URLs con o sin barra final
-RewriteCond %{REQUEST_FILENAME} !-f
+# Panel de administración
+RewriteRule ^admin/?$ backend/admin/index.php [L]
+RewriteRule ^admin/(.+)$ backend/admin/$1 [L]
+
+# Excluir recursos estáticos (evitar bucles)
+RewriteCond %{REQUEST_FILENAME} -f [OR]
+RewriteCond %{REQUEST_FILENAME} -d
+RewriteRule ^ - [L]
+
+# Redirigir solicitudes al frontend para rutas no encontradas
 RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
 
 # Redireccionar recursos estáticos
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
-
-# Panel de administración
-RewriteRule ^admin/?$ backend/admin/index.php [L]
-RewriteRule ^admin/(.+)$ backend/admin/$1 [L]
 
 # Recursos estáticos del admin
 RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]

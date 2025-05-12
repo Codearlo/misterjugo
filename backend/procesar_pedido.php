@@ -1,61 +1,57 @@
 <?php
 // Incluir la conexión a la base de datos
-require_once 'conexion.php';
+require_once '../backend/conexion.php';
 
 // Obtener los datos del formulario
-$productos = isset($_POST['productos']) ? json_decode($_POST['productos'], true) : [];
-$nombre = $_POST['nombre'];
-$telefono = $_POST['telefono'];
-$direccion = $_POST['direccion'];
-$total = $_POST['total'];
+$nombre = htmlspecialchars(trim($_POST['nombre']));
+$telefono = htmlspecialchars(trim($_POST['telefono']));
+$direccion = htmlspecialchars(trim($_POST['direccion']));
+$totalPedido = isset($_POST['total']) ? floatval($_POST['total']) : 0;
 
-// Validar que los datos no estén vacíos
-if (empty($productos) || empty($nombre) || empty($telefono) || empty($direccion) || empty($total)) {
-    die("Error: Datos incompletos.");
-}
+// Obtener los productos del carrito
+session_start();
+$productosCarrito = $_SESSION['carrito'];
 
-// Guardar el pedido en la base de datos (opcional)
-try {
-    // Preparar la consulta SQL para insertar el pedido
-    $stmt = $conn->prepare("INSERT INTO pedidos (nombre, telefono, direccion, total, productos) VALUES (?, ?, ?, ?, ?)");
-    $stmt->execute([$nombre, $telefono, $direccion, $total, json_encode($productos)]);
-
-    // Enviar los datos a WhatsApp
-    $mensaje_whatsapp = "Nuevo pedido:\n\n";
-    $mensaje_whatsapp .= "Nombre: $nombre\n";
-    $mensaje_whatsapp .= "Teléfono: $telefono\n";
-    $mensaje_whatsapp .= "Dirección: $direccion\n\n";
-    $mensaje_whatsapp .= "Productos:\n";
-
-    foreach ($productos as $producto) {
-        $mensaje_whatsapp .= "- {$producto['nombre']} x {$producto['cantidad']} ({$producto['precio']} x {$producto['cantidad']} = ${$producto['precio'] * $producto['cantidad']})\n";
+// Obtener detalles de los productos
+function obtenerDetallesProductos($ids) {
+    global $conexion;
+    $idsStr = implode(',', $ids);
+    $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
+    $result = mysqli_query($conexion, $query);
+    $productos = [];
+    while ($row = mysqli_fetch_assoc($result)) {
+        $productos[$row['id']] = $row;
     }
-
-    $mensaje_whatsapp .= "\nTotal: $${$total}";
-
-    // Usar una API de WhatsApp Business para enviar el mensaje
-    // Ejemplo usando Twilio (requiere configuración previa)
-    require 'vendor/autoload.php';
-    use Twilio\Rest\Client;
-
-    $sid = 'TU_TWILIO_ACCOUNT_SID';
-    $token = 'TU_TWILIO_AUTH_TOKEN';
-    $twilio_number = 'TU_NUMERO_TWILIO';
-    $whatsapp_number = 'NUMERO_WHATSAPP_DESTINO';
-
-    $client = new Client($sid, $token);
-    $client->messages->create(
-        "whatsapp:$whatsapp_number",
-        [
-            'from' => "whatsapp:$twilio_number",
-            'body' => $mensaje_whatsapp
-        ]
-    );
-
-    // Redirigir al usuario después de procesar el pedido
-    header("Location: ../frontend/gracias.php?pedido=exitoso");
-    exit();
-} catch (Exception $e) {
-    die("Error al procesar el pedido: " . $e->getMessage());
+    return $productos;
 }
+
+$productosIds = array_keys($productosCarrito);
+$detallesProductos = obtenerDetallesProductos($productosIds);
+
+// Construir el mensaje de WhatsApp
+$mensaje = "Nuevo Pedido:\n\n";
+$mensaje .= "Nombre: $nombre\n";
+$mensaje .= "Teléfono: $telefono\n";
+$mensaje .= "Dirección: $direccion\n\n";
+
+$mensaje .= "Detalles del Pedido:\n";
+foreach ($productosCarrito as $id => $cantidad) {
+    if (isset($detallesProductos[$id])) {
+        $producto = $detallesProductos[$id];
+        $precioUnitario = $producto['precio'];
+        $totalProducto = $precioUnitario * $cantidad;
+        $mensaje .= "- {$producto['nombre']} x $cantidad = $ {$totalProducto}\n";
+    }
+}
+$mensaje .= "\nTotal: $ {$totalPedido}";
+
+// Número de WhatsApp destino (sin espacios ni guiones)
+$numeroDestino = "+51970846395"; // Reemplaza con tu número de WhatsApp
+
+// Generar la URL de WhatsApp
+$whatsappUrl = "https://wa.me/ $numeroDestino?text=" . urlencode($mensaje);
+
+// Redirigir al usuario a la URL de WhatsApp
+header("Location: $whatsappUrl");
+exit;
 ?>
