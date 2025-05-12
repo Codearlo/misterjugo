@@ -6,7 +6,6 @@ $breadcrumbs = [
 ];
 
 // Incluir el header
-require_once 'includes/admin_header.php';
 
 // Obtener estadísticas para el dashboard
 /*
