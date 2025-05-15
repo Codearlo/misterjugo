@@ -42,42 +42,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Obtener estadísticas de pedidos
-$stats = [
-    'total' => 0,
-    'pendientes' => 0,
-    'completados' => 0,
-    'cancelados' => 0
-];
-
-$stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE usuario_id = ?");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$stats['total'] = $row['total'];
-
-$stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE usuario_id = ? AND estado = 'pendiente'");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$stats['pendientes'] = $row['total'];
-
-$stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE usuario_id = ? AND estado = 'completado'");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$stats['completados'] = $row['total'];
-
-$stmt = $conn->prepare("SELECT COUNT(*) as total FROM pedidos WHERE usuario_id = ? AND estado = 'cancelado'");
-$stmt->bind_param("i", $user_id);
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$stats['cancelados'] = $row['total'];
-
 // Incluir el archivo header
 include 'includes/header.php';
 ?>
@@ -150,59 +114,7 @@ include 'includes/header.php';
                 
                 <!-- Sección de cambio de contraseña eliminada -->
                 
-                <!-- SECCIÓN DE ESTADÍSTICAS DE PEDIDOS -->
-                <div class="profile-section stats-section">
-                    <div class="section-header">
-                        <h3><i class="fas fa-chart-pie"></i> Mis Estadísticas</h3>
-                        <a href="/pedidos" class="btn-view-orders btn-action">
-                            <i class="fas fa-list"></i> Ver historial de pedidos
-                        </a>
-                    </div>
-                    
-                    <div class="section-content">
-                        <div class="stats-grid">
-                            <div class="stat-card">
-                                <div class="stat-icon">
-                                    <i class="fas fa-shopping-bag"></i>
-                                </div>
-                                <div class="stat-data">
-                                    <span class="stat-value"><?php echo $stats['total']; ?></span>
-                                    <span class="stat-label">Pedidos Totales</span>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-card">
-                                <div class="stat-icon pending">
-                                    <i class="fas fa-clock"></i>
-                                </div>
-                                <div class="stat-data">
-                                    <span class="stat-value"><?php echo $stats['pendientes']; ?></span>
-                                    <span class="stat-label">Pendientes</span>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-card">
-                                <div class="stat-icon completed">
-                                    <i class="fas fa-check-circle"></i>
-                                </div>
-                                <div class="stat-data">
-                                    <span class="stat-value"><?php echo $stats['completados']; ?></span>
-                                    <span class="stat-label">Completados</span>
-                                </div>
-                            </div>
-                            
-                            <div class="stat-card">
-                                <div class="stat-icon cancelled">
-                                    <i class="fas fa-times-circle"></i>
-                                </div>
-                                <div class="stat-data">
-                                    <span class="stat-value"><?php echo $stats['cancelados']; ?></span>
-                                    <span class="stat-label">Cancelados</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <!-- SECCIÓN DE ESTADÍSTICAS DE PEDIDOS ELIMINADA -->
                 
                 <!-- SECCIÓN DE DIRECCIÓN PREDETERMINADA -->
                 <div class="profile-section addresses-section">
