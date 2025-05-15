@@ -28,7 +28,7 @@
                 <img src="./images/jugos-misterjugo.jpg" alt="Jugos MisterJugo">
             </div>
             <div class="hero-text">
-                <h1>Have you eaten yet?</h1>
+                <h1>¿Ya comiste? Que esperas para ordenar</h1>
                 <p>Descubre nuestros jugos frescos y nutritivos.</p>
                 <button class="btn-order-now">Order Now</button>
             </div>
