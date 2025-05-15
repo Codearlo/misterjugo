@@ -1,64 +1,72 @@
 /* General styles */
-body {
-    font-family: Arial, sans-serif;
+* {
+    box-sizing: border-box;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9;
 }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
     padding: 20px;
 }
 
-/* Header and notifications */
-header {
-    background-color: #FFA500;
-    color: white;
-    padding: 10px 20px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
+a {
+    text-decoration: none;
+    color: inherit;
 }
 
-header h1 {
-    margin: 0;
+/* Container principal */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
 }
 
+/* Notificaciones */
 .notification {
+    padding: 15px;
     margin-bottom: 20px;
-    padding: 10px 15px;
-    border-radius: 5px;
+    border-radius: 8px;
     display: flex;
     align-items: center;
+    font-size: 14px;
+    transition: opacity 0.3s ease;
 }
 
 .notification.success {
     background-color: #d4edda;
     color: #155724;
+    border: 1px solid #c3e6cb;
 }
 
 .notification.danger {
     background-color: #f8d7da;
     color: #721c24;
+    border: 1px solid #f5c6cb;
 }
 
 .notification i {
     margin-right: 10px;
+    font-size: 18px;
 }
 
-/* Welcome message */
+/* Mensaje de bienvenida */
 .welcome-message {
     text-align: center;
     margin-bottom: 30px;
+    padding: 20px;
+    background-color: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .welcome-message h1 {
-    margin-top: 0;
+    font-size: 24px;
+    margin-bottom: 10px;
 }
 
-/* Statistics overview */
+/* Estadísticas */
 .stats-overview {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -68,11 +76,16 @@ header h1 {
 
 .stat-card {
     background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
     display: flex;
     align-items: center;
+    transition: transform 0.2s ease;
+}
+
+.stat-card:hover {
+    transform: translateY(-3px);
 }
 
 .stat-icon {
@@ -90,7 +103,6 @@ header h1 {
 .stat-info {
     display: flex;
     flex-direction: column;
-    justify-content: center;
 }
 
 .stat-value {
@@ -101,31 +113,36 @@ header h1 {
 
 .stat-label {
     font-size: 14px;
-    color: #777;
+    color: #666;
 }
 
-/* Quick actions */
+/* Acciones rápidas */
 .actions-section-title {
-    margin-top: 0;
-    margin-bottom: 20px;
+    font-size: 18px;
+    margin-top: 30px;
+    margin-bottom: 15px;
+    color: #333;
 }
 
 .quick-actions {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: 20px;
+    margin-bottom: 30px;
 }
 
 .action-card {
     background-color: white;
-    border-radius: 5px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
     padding: 20px;
-    text-decoration: none;
-    color: inherit;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+    text-align: center;
+    transition: transform 0.2s ease;
+    cursor: pointer;
+}
+
+.action-card:hover {
+    transform: translateY(-3px);
 }
 
 .action-icon {
@@ -137,22 +154,26 @@ header h1 {
     display: flex;
     justify-content: center;
     align-items: center;
-    margin-bottom: 10px;
+    margin: 0 auto 10px;
 }
 
 .action-title {
-    font-size: 18px;
+    font-size: 16px;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
 .action-description {
-    font-size: 14px;
+    font-size: 13px;
     color: #777;
 }
 
-/* Pending orders section */
+/* Pedidos pendientes */
 .pending-orders-section {
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+    padding: 20px;
     margin-bottom: 30px;
 }
 
@@ -160,16 +181,23 @@ header h1 {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 .section-title {
-    margin: 0;
+    font-size: 18px;
+    color: #333;
 }
 
 .view-all-link {
-    text-decoration: none;
     color: #FFA500;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+}
+
+.view-all-link i {
+    margin-left: 5px;
 }
 
 .orders-table-container {
@@ -179,23 +207,26 @@ header h1 {
 .data-table {
     width: 100%;
     border-collapse: collapse;
+    font-size: 14px;
 }
 
 .data-table th,
 .data-table td {
-    padding: 10px;
+    padding: 12px 15px;
     text-align: left;
-    border-bottom: 1px solid #ddd;
+    border-bottom: 1px solid #eee;
 }
 
 .data-table th {
-    background-color: #f9f9f9;
-    font-weight: bold;
+    background-color: #fafafa;
+    color: #555;
+    font-weight: 600;
 }
 
 .empty-state {
     text-align: center;
-    color: #777;
+    padding: 30px 0;
+    color: #999;
 }
 
 .empty-state i {
@@ -203,32 +234,39 @@ header h1 {
     margin-bottom: 10px;
 }
 
-/* Buttons */
+/* Botones */
 .btn {
     display: inline-block;
-    padding: 5px 10px;
-    border-radius: 5px;
-    text-decoration: none;
-    color: white;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
     transition: all 0.3s ease;
+    cursor: pointer;
 }
 
 .btn-primary {
     background-color: #FFA500;
+    color: white;
+    border: none;
 }
 
 .btn-info {
     background-color: #28a745;
+    color: white;
+    border: none;
 }
 
 .btn-sm {
+    padding: 4px 8px;
     font-size: 12px;
 }
 
 .btn-icon {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     justify-content: center;
     width: 30px;
     height: 30px;
+    border-radius: 50%;
 }
