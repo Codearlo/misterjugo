@@ -37,6 +37,7 @@
 </main>
 
 <!-- Promociones -->
+<!-- Promociones -->
 <section class="promotions">
     <h2>Promociones Especiales</h2>
     <div class="promo-cards">
@@ -65,7 +66,7 @@
 </section>
 
 <!-- Botón de WhatsApp -->
-<a href="https://wa.me/123456789?text=Hola%20MisterJugo ,%20quisiera%20más%20información." 
+<a href="https://wa.me/+51970846395?text=Hola%20MisterJugo ,%20quisiera%20más%20información." 
    target="_blank" 
    class="whatsapp-btn">
     <i class="fab fa-whatsapp"></i>

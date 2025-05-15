@@ -62,9 +62,9 @@
 
 .promo-cards {
     display: flex;
-    justify-content: space-around;
+    justify-content: center; /* Centra las tarjetas horizontalmente */
     flex-wrap: wrap;
-    gap: 20px; /* Espacio entre tarjetas */
+    gap: 20px; /* Reduce el espacio entre tarjetas */
 }
 
 .promo-card {
@@ -72,7 +72,7 @@
     border-radius: 10px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
     overflow: hidden;
-    width: 300px;
+    width: 300px; /* Tamaño uniforme */
     max-width: 100%;
     transition: transform 0.3s ease;
 }
@@ -183,6 +183,15 @@
     color: #f69a47;
     width: 20px;
     text-align: center;
+}
+
+.footer-section ul li a {
+    color: #ccc;
+    text-decoration: none;
+}
+
+.footer-section ul li a:hover {
+    color: #f69a47;
 }
 
 .socials {
