@@ -22,13 +22,13 @@ if ($stmt->num_rows === 0) {
     exit;
 }
 
-// Actualizar estado a "cancelado"
-$stmt = $conn->prepare("UPDATE pedidos SET estado = 'cancelado' WHERE id = ?");
+// Actualizar estado a "completado"
+$stmt = $conn->prepare("UPDATE pedidos SET estado = 'completado' WHERE id = ?");
 $stmt->bind_param("i", $pedido_id);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'pedido_id' => $pedido_id, 'estado' => 'cancelado']);
+    echo json_encode(['success' => true, 'pedido_id' => $pedido_id, 'estado' => 'completado']);
 } else {
-    echo json_encode(['success' => false, 'message' => 'Error al cancelar el pedido']);
+    echo json_encode(['success' => false, 'message' => 'Error al completar el pedido']);
 }
 ?>
