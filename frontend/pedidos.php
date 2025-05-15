@@ -186,7 +186,7 @@ include 'includes/header.php';
 <!-- Fin de la página de pedidos -->
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     // Referencias a elementos DOM
     const btnViewDetails = document.querySelectorAll('.btn-view-details');
     const btnCancelOrders = document.querySelectorAll('.btn-cancel-order');
@@ -198,15 +198,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const btnConfirmCancel = document.querySelector('.btn-confirm-cancel');
     const modalTitle = document.getElementById('modal-title');
     const orderDetailsContent = document.getElementById('order-details-content');
-    
-    // Variable para almacenar el ID del pedido a cancelar
+
     let orderIdToCancel = null;
-    
-    // Detectar si es móvil y añadir clase
-    if (window.innerWidth <= 480) {
-        document.querySelector('.pedidos-page').classList.add('mobile-view');
-    }
-    
+    let orderIdToComplete = null;
+
     // Función para abrir el modal de detalles
     function openDetailsModal(orderId) {
         modalTitle.textContent = `Detalles del Pedido #${orderId}`;
@@ -216,17 +211,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Cargando detalles...</p>
             </div>
         `;
-        
-        // Mostrar el modal
         orderDetailsModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Evitar scroll
-        
-        // Cargar los detalles del pedido mediante AJAX
+        document.body.style.overflow = 'hidden';
+
         fetch(`/backend/obtener_detalles_pedido.php?id=${orderId}`)
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    // Construir el HTML para los detalles del pedido
                     let html = `
                         <div class="order-summary">
                             <div class="order-info-detail">
@@ -238,177 +229,139 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <span class="info-label">Estado:</span>
                                     <span class="info-value status-text ${data.pedido.estado}">${data.pedido.estado_texto}</span>
                                 </div>
-                                <div class="info-group">
-                                    <span class="info-label">Dirección de entrega:</span>
-                                    <span class="info-value">${data.pedido.direccion}</span>
-                                </div>
                             </div>
                         </div>
+                        <div class="order-actions">
+                            ${data.pedido.estado !== 'completado' ? `
+                                <button class="btn-complete-order" data-id="${data.pedido.id}">
+                                    <i class="fas fa-check"></i> Marcar como Completado
+                                </button>
+                            ` : ''}
+                            ${data.pedido.estado === 'pendiente' ? `
+                                <button class="btn-cancel-order-modal" data-id="${data.pedido.id}">
+                                    <i class="fas fa-times"></i> Cancelar Pedido
+                                </button>
+                            ` : ''}
+                        </div>
+                        <!-- Lista de productos -->
                         <div class="order-items">
                             <h4>Productos del pedido</h4>
                             <div class="items-list">
                     `;
-                    
-                    // Agregar cada item del pedido
+
                     data.items.forEach(item => {
                         html += `
                             <div class="order-item">
-                                <div class="item-image">
-                                    <img src="${item.imagen}" alt="${item.nombre}">
-                                </div>
+                                <div class="item-image"><img src="${item.imagen}" alt="${item.nombre}"></div>
                                 <div class="item-details">
-                                    <h5 class="item-name">${item.nombre}</h5>
-                                    <div class="item-meta">
-                                        <span class="item-quantity">Cantidad: ${item.cantidad}</span>
-                                        <span class="item-price">$${Number(item.precio).toFixed(2)} c/u</span>
-                                    </div>
+                                    <h5>${item.nombre}</h5>
+                                    <div>Cantidad: ${item.cantidad}</div>
+                                    <div>Precio: $${Number(item.precio).toFixed(2)}</div>
                                 </div>
-                                <div class="item-total">
-                                    $${Number(item.subtotal).toFixed(2)}
-                                </div>
+                                <div class="item-total">$${Number(item.subtotal).toFixed(2)}</div>
                             </div>
                         `;
                     });
-                    
-                    // Agregar resumen de precios
+
                     html += `
                             </div>
                         </div>
                         <div class="order-totals">
-                            <div class="total-line subtotal">
-                                <span class="total-label">Subtotal:</span>
-                                <span class="total-value">$${Number(data.totales.subtotal).toFixed(2)}</span>
-                            </div>
-                            <div class="total-line shipping">
-                                <span class="total-label">Envío:</span>
-                                <span class="total-value">$${Number(data.totales.envio).toFixed(2)}</span>
-                            </div>
-                            <div class="total-line discount">
-                                <span class="total-label">Descuento:</span>
-                                <span class="total-value">-$${Number(data.totales.descuento).toFixed(2)}</span>
-                            </div>
                             <div class="total-line grand-total">
                                 <span class="total-label">Total:</span>
                                 <span class="total-value">$${Number(data.totales.total).toFixed(2)}</span>
                             </div>
                         </div>
+                    </div>
                     `;
-                    
+
                     orderDetailsContent.innerHTML = html;
+
+                    // Evento para marcar como completado
+                    document.querySelector('.btn-complete-order')?.addEventListener('click', function () {
+                        const idPedido = this.getAttribute('data-id');
+                        if (confirm("¿Estás seguro de marcar este pedido como completado?")) {
+                            window.location.href = `/backend/completar_pedido.php?id=${idPedido}`;
+                        }
+                    });
+
+                    // Evento para cancelar
+                    document.querySelector('.btn-cancel-order-modal')?.addEventListener('click', function () {
+                        const idPedido = this.getAttribute('data-id');
+                        openCancelConfirmationModal(idPedido);
+                    });
+
                 } else {
-                    orderDetailsContent.innerHTML = `
-                        <div class="error-message">
-                            <i class="fas fa-exclamation-circle"></i>
-                            <p>No se pudieron cargar los detalles del pedido</p>
-                        </div>
-                    `;
+                    orderDetailsContent.innerHTML = `<p>No se pudieron cargar los detalles.</p>`;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
-                orderDetailsContent.innerHTML = `
-                    <div class="error-message">
-                        <i class="fas fa-exclamation-circle"></i>
-                        <p>Ocurrió un error al cargar los detalles</p>
-                    </div>
-                `;
+                orderDetailsContent.innerHTML = `<p>Error al cargar los detalles.</p>`;
             });
     }
-    
-    // Función para abrir el modal de confirmación de cancelación
-    function openCancelConfirmationModal(orderId) {
-        orderIdToCancel = orderId;
-        cancelConfirmationModal.classList.add('active');
-        document.body.style.overflow = 'hidden'; // Evitar scroll
-    }
-    
-    // Función para cerrar el modal de detalles
-    function closeDetailsModal() {
-        orderDetailsModal.classList.remove('active');
-        document.body.style.overflow = ''; // Restaurar scroll
-    }
-    
-    // Función para cerrar el modal de confirmación
-    function closeCancelConfirmationModal() {
-        cancelConfirmationModal.classList.remove('active');
-        document.body.style.overflow = ''; // Restaurar scroll
-        orderIdToCancel = null;
-    }
-    
+
     // Eventos para abrir modal de detalles
     btnViewDetails.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation();
+        btn.addEventListener('click', function () {
             const orderId = this.getAttribute('data-id');
             openDetailsModal(orderId);
         });
     });
-    
-    // También permitir que se abra al hacer clic en la tarjeta completa
+
+    // También permitir abrir al hacer clic en la tarjeta
     document.querySelectorAll('.order-card').forEach(card => {
-        card.addEventListener('click', function(e) {
-            // Solo abrir si el clic no fue en un botón
+        card.addEventListener('click', function (e) {
             if (!e.target.closest('button')) {
                 const orderId = this.getAttribute('data-id');
                 openDetailsModal(orderId);
             }
         });
     });
-    
-    // Eventos para mostrar confirmación de cancelación
-    btnCancelOrders.forEach(btn => {
-        btn.addEventListener('click', function(e) {
-            e.stopPropagation(); // Evitar que se abra el modal de detalles
-            const orderId = this.getAttribute('data-id');
-            openCancelConfirmationModal(orderId);
-        });
+
+    // Cerrar modales
+    closeModal.addEventListener('click', () => {
+        orderDetailsModal.classList.remove('active');
+        document.body.style.overflow = '';
     });
-    
-    // Evento para confirmar cancelación
-    btnConfirmCancel.addEventListener('click', function() {
+
+    closeConfirmation.addEventListener('click', () => {
+        cancelConfirmationModal.classList.remove('active');
+        document.body.style.overflow = '';
+        orderIdToCancel = null;
+    });
+
+    btnCancelModal.addEventListener('click', () => {
+        closeCancelConfirmationModal();
+    });
+
+    btnConfirmCancel.addEventListener('click', function () {
         if (orderIdToCancel) {
             window.location.href = `/backend/cancelar_pedido.php?id=${orderIdToCancel}`;
         }
     });
-    
-    // Eventos para cerrar modales
-    closeModal.addEventListener('click', closeDetailsModal);
-    closeConfirmation.addEventListener('click', closeCancelConfirmationModal);
-    btnCancelModal.addEventListener('click', closeCancelConfirmationModal);
-    
-    // Cerrar modal haciendo clic fuera del contenido
-    orderDetailsModal.addEventListener('click', function(e) {
-        if (e.target === orderDetailsModal) {
-            closeDetailsModal();
-        }
-    });
-    
-    cancelConfirmationModal.addEventListener('click', function(e) {
-        if (e.target === cancelConfirmationModal) {
-            closeCancelConfirmationModal();
-        }
-    });
-    
-    // Si hay notificaciones, mostrarlas y ocultarlas después de un tiempo
-    const notifications = document.querySelectorAll('.notification');
-    if (notifications.length > 0) {
-        // Mostrar después de un pequeño retraso para evitar problemas de layout
-        setTimeout(function() {
-            notifications.forEach(notification => {
-                notification.style.opacity = '1';
-            });
-            
-            // Ocultar después de 5 segundos
-            setTimeout(function() {
-                notifications.forEach(notification => {
-                    notification.style.opacity = '0';
-                    setTimeout(() => {
-                        notification.style.display = 'none';
-                    }, 500);
-                });
-            }, 5000);
-        }, 300);
+
+    // Funciones auxiliares
+    function openCancelConfirmationModal(orderId) {
+        orderIdToCancel = orderId;
+        cancelConfirmationModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
     }
+
+    function closeCancelConfirmationModal() {
+        cancelConfirmationModal.classList.remove('active');
+        document.body.style.overflow = '';
+        orderIdToCancel = null;
+    }
+
+    // Cerrar modal haciendo clic fuera
+    orderDetailsModal.addEventListener('click', function (e) {
+        if (e.target === orderDetailsModal) closeDetailsModal();
+    });
+
+    cancelConfirmationModal.addEventListener('click', function (e) {
+        if (e.target === cancelConfirmationModal) closeCancelConfirmationModal();
+    });
 });
 </script>
 
