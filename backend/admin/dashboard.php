@@ -8,6 +8,9 @@ $breadcrumbs = [
 // Incluir el header
 require_once 'includes/admin_header.php';
 
+// Incluir estilos específicos para el dashboard
+echo '<link rel="stylesheet" href="css/dashboard-styles.css">';
+
 // Obtener mensajes de estado si existen
 $exito = isset($_SESSION['admin_exito']) ? $_SESSION['admin_exito'] : '';
 $error = isset($_SESSION['admin_error']) ? $_SESSION['admin_error'] : '';
@@ -53,183 +56,6 @@ try {
 }
 ?>
 
-<!-- Estilos especiales para el dashboard -->
-<style>
-/* Aquí puedes incluir los estilos CSS que te proporcioné anteriormente */
-.stats-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    background-color: #ffffff;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-    padding: 20px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    position: relative;
-    overflow: hidden;
-    display: flex;
-    align-items: center;
-    gap: 20px;
-}
-
-.stat-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.12);
-}
-
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    border-radius: 12px;
-    background-color: rgba(255, 122, 0, 0.1);
-    color: var(--admin-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.5rem;
-}
-
-.stat-icon.users {
-    background-color: rgba(33, 150, 243, 0.1);
-    color: #2196F3;
-}
-
-.stat-icon.products {
-    background-color: rgba(76, 175, 80, 0.1);
-    color: #4CAF50;
-}
-
-.stat-icon.orders {
-    background-color: rgba(255, 152, 0, 0.1);
-    color: #FF9800;
-}
-
-.stat-info {
-    flex: 1;
-}
-
-.stat-value {
-    font-size: 2rem;
-    font-weight: 700;
-    line-height: 1.2;
-    color: var(--admin-dark);
-    margin-bottom: 5px;
-}
-
-.stat-label {
-    font-size: 0.9rem;
-    color: var(--admin-medium);
-    font-weight: 500;
-}
-
-/* Pedidos recientes */
-.recent-orders {
-    margin-bottom: 30px;
-}
-
-.orders-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
-}
-
-.orders-title {
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--admin-dark);
-    margin: 0;
-}
-
-.view-all {
-    font-size: 0.9rem;
-    color: var(--admin-primary);
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    transition: color 0.2s ease;
-}
-
-.view-all:hover {
-    color: var(--admin-primary-dark);
-}
-
-/* Accesos rápidos */
-.quick-actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 15px;
-    margin-bottom: 30px;
-}
-
-.action-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
-    padding: 20px;
-    text-align: center;
-    transition: all 0.3s ease;
-    cursor: pointer;
-    text-decoration: none;
-    display: block;
-}
-
-.action-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 8px 15px rgba(0,0,0,0.12);
-}
-
-.action-icon {
-    width: 50px;
-    height: 50px;
-    border-radius: 50%;
-    background-color: rgba(255, 122, 0, 0.1);
-    color: var(--admin-primary);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 1.3rem;
-    margin: 0 auto 15px;
-}
-
-.action-title {
-    font-size: 1rem;
-    font-weight: 600;
-    color: var(--admin-dark);
-    margin-bottom: 5px;
-}
-
-.action-description {
-    font-size: 0.85rem;
-    color: var(--admin-medium);
-}
-
-@media (max-width: 768px) {
-    .stats-overview {
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    }
-    
-    .stat-card {
-        padding: 15px;
-    }
-    
-    .stat-value {
-        font-size: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .stats-overview {
-        grid-template-columns: 1fr;
-    }
-}
-</style>
-
 <!-- Notificaciones -->
 <?php if (!empty($exito)): ?>
     <div class="notification success">
@@ -246,9 +72,9 @@ try {
 <?php endif; ?>
 
 <!-- Bienvenida al dashboard -->
-<div class="welcome-message" style="margin-bottom: 25px;">
-    <h1 style="font-size: 1.8rem; margin-top: 0; color: var(--admin-dark);">¡Bienvenido al panel de administración!</h1>
-    <p style="color: var(--admin-medium);">Desde aquí puedes gestionar todos los aspectos de tu negocio Mister Jugo.</p>
+<div class="welcome-message">
+    <h1>¡Bienvenido al panel de administración!</h1>
+    <p>Desde aquí puedes gestionar todos los aspectos de tu negocio Mister Jugo.</p>
 </div>
 
 <!-- Tarjetas de estadísticas -->
@@ -284,8 +110,8 @@ try {
     </div>
     
     <div class="stat-card">
-        <div class="stat-icon" style="background-color: rgba(244, 67, 54, 0.1); color: #F44336;">
-            <i class="fas fa-exclamation-circle"></i>
+        <div class="stat-icon pending">
+            <i class="fas fa-clock"></i>
         </div>
         <div class="stat-info">
             <div class="stat-value"><?php echo isset($estados_conteo['pendiente']) ? $estados_conteo['pendiente'] : 0; ?></div>
@@ -294,27 +120,27 @@ try {
     </div>
 </div>
 
-<!-- Accesos rápidos -->
-<h2 style="font-size: 1.4rem; margin-top: 30px; margin-bottom: 15px; color: var(--admin-dark);">Acciones rápidas</h2>
+<!-- Acciones rápidas -->
+<h2 class="actions-section-title">Acciones rápidas</h2>
 <div class="quick-actions">
-    <a href="productos.php" class="action-card">
-        <div class="action-icon">
+    <a href="editar_producto.php" class="action-card">
+        <div class="action-icon add-product">
             <i class="fas fa-plus"></i>
         </div>
         <div class="action-title">Añadir Producto</div>
         <div class="action-description">Crear un nuevo producto en el catálogo</div>
     </a>
     
-    <a href="pedidos.php" class="action-card">
-        <div class="action-icon" style="background-color: rgba(255, 152, 0, 0.1); color: #FF9800;">
-            <i class="fas fa-list"></i>
+    <a href="pedidos.php?estado=pendiente" class="action-card">
+        <div class="action-icon manage-orders">
+            <i class="fas fa-list-alt"></i>
         </div>
         <div class="action-title">Gestionar Pedidos</div>
         <div class="action-description">Ver y procesar los pedidos pendientes</div>
     </a>
     
     <a href="categorias.php" class="action-card">
-        <div class="action-icon" style="background-color: rgba(76, 175, 80, 0.1); color: #4CAF50;">
+        <div class="action-icon categories">
             <i class="fas fa-tags"></i>
         </div>
         <div class="action-title">Categorías</div>
@@ -322,24 +148,24 @@ try {
     </a>
     
     <a href="usuarios.php" class="action-card">
-        <div class="action-icon" style="background-color: rgba(33, 150, 243, 0.1); color: #2196F3;">
-            <i class="fas fa-user"></i>
+        <div class="action-icon users">
+            <i class="fas fa-user-cog"></i>
         </div>
         <div class="action-title">Usuarios</div>
         <div class="action-description">Gestionar usuarios de la plataforma</div>
     </a>
 </div>
 
-<!-- Pedidos recientes -->
-<div class="recent-orders">
-    <div class="orders-header">
-        <h2 class="orders-title">Pedidos Pendientes</h2>
-        <a href="pedidos.php?estado=pendiente" class="view-all">
+<!-- Pedidos Pendientes -->
+<div class="pending-orders-section">
+    <div class="section-header">
+        <h2 class="section-title">Pedidos Pendientes</h2>
+        <a href="pedidos.php?estado=pendiente" class="view-all-link">
             Ver todos <i class="fas fa-arrow-right"></i>
         </a>
     </div>
     
-    <div class="table-responsive">
+    <div class="orders-table-container">
         <table class="data-table">
             <thead>
                 <tr>
@@ -353,9 +179,9 @@ try {
             <tbody>
                 <?php if (empty($pedidos_pendientes)): ?>
                     <tr>
-                        <td colspan="5" style="text-align: center; padding: 20px;">
-                            <i class="fas fa-check-circle" style="font-size: 2rem; color: #4CAF50; margin-bottom: 10px;"></i>
-                            <p style="margin: 0;">¡No hay pedidos pendientes!</p>
+                        <td colspan="5" class="empty-state">
+                            <i class="fas fa-check-circle"></i>
+                            <p>¡No hay pedidos pendientes!</p>
                         </td>
                     </tr>
                 <?php else: ?>
@@ -363,9 +189,9 @@ try {
                         <tr>
                             <td>#<?php echo $pedido['id']; ?></td>
                             <td>
-                                <div class="customer-info">
-                                    <span class="customer-name"><?php echo htmlspecialchars($pedido['usuario_nombre']); ?></span>
-                                    <span class="customer-email"><?php echo htmlspecialchars($pedido['usuario_email']); ?></span>
+                                <div>
+                                    <div style="font-weight: 500;"><?php echo htmlspecialchars($pedido['usuario_nombre']); ?></div>
+                                    <div style="font-size: 0.85rem; color: #777;"><?php echo htmlspecialchars($pedido['usuario_email']); ?></div>
                                 </div>
                             </td>
                             <td><?php echo date('d/m/Y H:i', strtotime($pedido['fecha_pedido'])); ?></td>
