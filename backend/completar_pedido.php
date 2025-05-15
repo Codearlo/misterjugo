@@ -1,34 +1,39 @@
 <?php
 session_start();
 
+// Verificar si el usuario está logueado
 if (!isset($_SESSION['user_id'])) {
     echo json_encode(['success' => false, 'message' => 'Usuario no autenticado']);
     exit;
 }
 
-include '../conexion.php';
+// Conexión a la base de datos
+require_once 'conexion.php';
 
-$pedido_id = intval($_GET['id']);
-$usuario_id = $_SESSION['user_id'];
+// Obtener ID del pedido desde la URL
+$pedido_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-// Verificar que el pedido pertenece al usuario
-$stmt = $conn->prepare("SELECT id FROM pedidos WHERE id = ? AND usuario_id = ?");
-$stmt->bind_param("ii", $pedido_id, $usuario_id);
-$stmt->execute();
-$stmt->store_result();
-
-if ($stmt->num_rows === 0) {
-    echo json_encode(['success' => false, 'message' => 'Pedido no encontrado o no autorizado']);
+if ($pedido_id <= 0) {
+    echo json_encode(['success' => false, 'message' => 'ID de pedido inválido']);
     exit;
 }
 
-// Actualizar estado a "completado"
-$stmt = $conn->prepare("UPDATE pedidos SET estado = 'completado' WHERE id = ?");
-$stmt->bind_param("i", $pedido_id);
+$user_id = $_SESSION['user_id'];
+
+// Actualizar el estado del pedido a "completado"
+$stmt = $conn->prepare("UPDATE pedidos SET estado = 'completado' WHERE id = ? AND usuario_id = ?");
+$stmt->bind_param("ii", $pedido_id, $user_id);
 
 if ($stmt->execute()) {
-    echo json_encode(['success' => true, 'pedido_id' => $pedido_id, 'estado' => 'completado']);
+    echo json_encode([
+        'success' => true,
+        'message' => 'Pedido marcado como completado',
+        'pedido_id' => $pedido_id
+    ]);
 } else {
     echo json_encode(['success' => false, 'message' => 'Error al completar el pedido']);
 }
+
+$stmt->close();
+$conn->close();
 ?>
