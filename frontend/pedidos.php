@@ -7,36 +7,28 @@ if (!isset($_SESSION['user_id'])) {
     header("Location: /login");
     exit;
 }
-
 // Conexión a base de datos
 require_once '../backend/conexion.php';
-
 // Obtener el ID del usuario actual
 $user_id = $_SESSION['user_id'];
 $user_name = $_SESSION['user_name'];
-
 // Verificar si hay mensajes de éxito o error
 $exito_pedido = isset($_SESSION['exito_pedido']) ? $_SESSION['exito_pedido'] : '';
 $error_pedido = isset($_SESSION['error_pedido']) ? $_SESSION['error_pedido'] : '';
-
 // Limpiar mensajes de sesión
 unset($_SESSION['exito_pedido']);
 unset($_SESSION['error_pedido']);
-
 // Obtener pedidos del usuario
 $pedidos = [];
-
 $stmt = $conn->prepare("SELECT * FROM pedidos WHERE usuario_id = ? ORDER BY fecha_pedido DESC");
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
 $result = $stmt->get_result();
-
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $pedidos[] = $row;
     }
 }
-
 // Función para obtener estado formateado
 function getEstadoFormateado($estado) {
     switch ($estado) {
@@ -52,14 +44,11 @@ function getEstadoFormateado($estado) {
             return '<span class="status-badge">' . ucfirst($estado) . '</span>';
     }
 }
-
 // Incluir el archivo header
 include 'includes/header.php';
 ?>
-
 <link rel="stylesheet" href="/css/pedidos.css">
-
-<!-- Inicio de la página de pedidos con la clase específica -->
+<!-- Inicio de la página de pedidos -->
 <div class="pedidos-page">
     <div class="main-content">
         <div class="container">
@@ -68,26 +57,21 @@ include 'includes/header.php';
                 <div class="title-underline"></div>
                 <p class="page-subtitle">Historial de tus pedidos y su estado</p>
             </div>
-            
-            <!-- Notificaciones debajo del título -->
+
+            <!-- Notificaciones -->
             <?php if (!empty($exito_pedido)): ?>
                 <div class="notification success">
                     <i class="fas fa-check-circle"></i>
-                    <div>
-                        <p><?php echo $exito_pedido; ?></p>
-                    </div>
+                    <div><p><?php echo $exito_pedido; ?></p></div>
                 </div>
             <?php endif; ?>
-            
             <?php if (!empty($error_pedido)): ?>
                 <div class="notification error">
                     <i class="fas fa-exclamation-circle"></i>
-                    <div>
-                        <p><?php echo $error_pedido; ?></p>
-                    </div>
+                    <div><p><?php echo $error_pedido; ?></p></div>
                 </div>
             <?php endif; ?>
-            
+
             <div class="section-container">
                 <?php if (count($pedidos) > 0): ?>
                     <div class="card-list">
@@ -146,7 +130,7 @@ include 'includes/header.php';
         </div>
     </div>
 
-    <!-- Modal para ver detalles del pedido -->
+    <!-- Modal: Detalles del pedido -->
     <div class="modal" id="order-details-modal">
         <div class="modal-content">
             <div class="modal-header">
@@ -155,17 +139,13 @@ include 'includes/header.php';
             </div>
             <div class="modal-body">
                 <div id="order-details-content">
-                    <!-- Aquí se cargarán los detalles del pedido mediante AJAX -->
-                    <div class="loading">
-                        <i class="fas fa-spinner fa-spin"></i>
-                        <p>Cargando detalles...</p>
-                    </div>
+                    <div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Cargando detalles...</p></div>
                 </div>
             </div>
         </div>
     </div>
-    
-    <!-- Modal de confirmación para cancelar pedido -->
+
+    <!-- Modal: Confirmación de cancelación -->
     <div class="confirmation-modal" id="cancel-confirmation-modal">
         <div class="confirmation-content">
             <div class="confirmation-header">
@@ -183,11 +163,10 @@ include 'includes/header.php';
         </div>
     </div>
 </div>
-<!-- Fin de la página de pedidos -->
 
+<!-- Script -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
-    // Referencias a elementos DOM
     const btnViewDetails = document.querySelectorAll('.btn-view-details');
     const btnCancelOrders = document.querySelectorAll('.btn-cancel-order');
     const orderDetailsModal = document.getElementById('order-details-modal');
@@ -200,17 +179,10 @@ document.addEventListener('DOMContentLoaded', function () {
     const orderDetailsContent = document.getElementById('order-details-content');
 
     let orderIdToCancel = null;
-    let orderIdToComplete = null;
 
-    // Función para abrir el modal de detalles
     function openDetailsModal(orderId) {
         modalTitle.textContent = `Detalles del Pedido #${orderId}`;
-        orderDetailsContent.innerHTML = `
-            <div class="loading">
-                <i class="fas fa-spinner fa-spin"></i>
-                <p>Cargando detalles...</p>
-            </div>
-        `;
+        orderDetailsContent.innerHTML = `<div class="loading"><i class="fas fa-spinner fa-spin"></i><p>Cargando detalles...</p></div>`;
         orderDetailsModal.classList.add('active');
         document.body.style.overflow = 'hidden';
 
@@ -243,11 +215,9 @@ document.addEventListener('DOMContentLoaded', function () {
                                 </button>
                             ` : ''}
                         </div>
-                        <!-- Lista de productos -->
                         <div class="order-items">
                             <h4>Productos del pedido</h4>
-                            <div class="items-list">
-                    `;
+                            <div class="items-list">`;
 
                     data.items.forEach(item => {
                         html += `
@@ -259,38 +229,27 @@ document.addEventListener('DOMContentLoaded', function () {
                                     <div>Precio: $${Number(item.precio).toFixed(2)}</div>
                                 </div>
                                 <div class="item-total">$${Number(item.subtotal).toFixed(2)}</div>
-                            </div>
-                        `;
+                            </div>`;
                     });
 
-                    html += `
-                            </div>
-                        </div>
-                        <div class="order-totals">
-                            <div class="total-line grand-total">
+                    html += `</div></div><div class="order-totals"><div class="total-line grand-total">
                                 <span class="total-label">Total:</span>
                                 <span class="total-value">$${Number(data.totales.total).toFixed(2)}</span>
-                            </div>
-                        </div>
-                    </div>
-                    `;
+                            </div></div>`;
 
                     orderDetailsContent.innerHTML = html;
 
-                    // Evento para marcar como completado
+                    // Evento: Marcar como completado
                     document.querySelector('.btn-complete-order')?.addEventListener('click', function () {
                         const idPedido = this.getAttribute('data-id');
-                        if (confirm("¿Estás seguro de marcar este pedido como completado?")) {
-                            window.location.href = `/backend/completar_pedido.php?id=${idPedido}`;
-                        }
+                        marcarComoCompletado(idPedido);
                     });
 
-                    // Evento para cancelar
+                    // Evento: Cancelar pedido
                     document.querySelector('.btn-cancel-order-modal')?.addEventListener('click', function () {
                         const idPedido = this.getAttribute('data-id');
                         openCancelConfirmationModal(idPedido);
                     });
-
                 } else {
                     orderDetailsContent.innerHTML = `<p>No se pudieron cargar los detalles.</p>`;
                 }
@@ -301,7 +260,57 @@ document.addEventListener('DOMContentLoaded', function () {
             });
     }
 
-    // Eventos para abrir modal de detalles
+    function marcarComoCompletado(idPedido) {
+        fetch(`/backend/completar_pedido.php?id=${idPedido}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    closeDetailsModal();
+                    mostrarNotificacion("El pedido ha sido marcado como completado.", "success");
+                    document.querySelector(`.order-card[data-id='${data.pedido_id}'] .status-text`).innerHTML =
+                        '<span class="status-badge completed">Completado</span>';
+                } else {
+                    alert("No se pudo completar el pedido.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert("Ocurrió un error al completar el pedido.");
+            });
+    }
+
+    function openCancelConfirmationModal(orderId) {
+        orderIdToCancel = orderId;
+        cancelConfirmationModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeDetailsModal() {
+        orderDetailsModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    function closeCancelConfirmationModal() {
+        cancelConfirmationModal.classList.remove('active');
+        document.body.style.overflow = '';
+        orderIdToCancel = null;
+    }
+
+    function mostrarNotificacion(mensaje, tipo) {
+        const contenedor = document.querySelector('.main-content');
+        const div = document.createElement('div');
+        div.className = `notification ${tipo}`;
+        div.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><div><p>${mensaje}</p></div>`;
+        contenedor.prepend(div);
+
+        setTimeout(() => div.style.opacity = '1', 100);
+        setTimeout(() => {
+            div.style.opacity = '0';
+            setTimeout(() => div.remove(), 500);
+        }, 4000);
+    }
+
+    // Eventos para abrir detalles
     btnViewDetails.forEach(btn => {
         btn.addEventListener('click', function () {
             const orderId = this.getAttribute('data-id');
@@ -309,7 +318,7 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
-    // También permitir abrir al hacer clic en la tarjeta
+    // Abrir detalles al hacer clic en tarjeta
     document.querySelectorAll('.order-card').forEach(card => {
         card.addEventListener('click', function (e) {
             if (!e.target.closest('button')) {
@@ -320,52 +329,40 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // Cerrar modales
-    closeModal.addEventListener('click', () => {
-        orderDetailsModal.classList.remove('active');
-        document.body.style.overflow = '';
-    });
-
-    closeConfirmation.addEventListener('click', () => {
-        cancelConfirmationModal.classList.remove('active');
-        document.body.style.overflow = '';
-        orderIdToCancel = null;
-    });
-
-    btnCancelModal.addEventListener('click', () => {
-        closeCancelConfirmationModal();
-    });
+    closeModal.addEventListener('click', closeDetailsModal);
+    closeConfirmation.addEventListener('click', closeCancelConfirmationModal);
+    btnCancelModal.addEventListener('click', closeCancelConfirmationModal);
 
     btnConfirmCancel.addEventListener('click', function () {
         if (orderIdToCancel) {
-            window.location.href = `/backend/cancelar_pedido.php?id=${orderIdToCancel}`;
+            fetch(`/backend/cancelar_pedido.php?id=${orderIdToCancel}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeCancelConfirmationModal();
+                        closeDetailsModal();
+                        mostrarNotificacion("El pedido ha sido cancelado.", "success");
+                        document.querySelector(`.order-card[data-id='${data.pedido_id}'] .status-text`).innerHTML =
+                            '<span class="status-badge cancelled">Cancelado</span>';
+                    } else {
+                        alert("No se pudo cancelar el pedido.");
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert("Ocurrió un error al cancelar el pedido.");
+                });
         }
     });
 
-    // Funciones auxiliares
-    function openCancelConfirmationModal(orderId) {
-        orderIdToCancel = orderId;
-        cancelConfirmationModal.classList.add('active');
-        document.body.style.overflow = 'hidden';
-    }
-
-    function closeCancelConfirmationModal() {
-        cancelConfirmationModal.classList.remove('active');
-        document.body.style.overflow = '';
-        orderIdToCancel = null;
-    }
-
-    // Cerrar modal haciendo clic fuera
+    // Cerrar modales al hacer clic fuera
     orderDetailsModal.addEventListener('click', function (e) {
         if (e.target === orderDetailsModal) closeDetailsModal();
     });
-
     cancelConfirmationModal.addEventListener('click', function (e) {
         if (e.target === cancelConfirmationModal) closeCancelConfirmationModal();
     });
 });
 </script>
 
-<?php
-// Incluir el footer
-include 'includes/footer.php';
-?>
+<?php include 'includes/footer.php'; ?>
