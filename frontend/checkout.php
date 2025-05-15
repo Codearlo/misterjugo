@@ -257,7 +257,7 @@ include 'includes/header.php';
                             <i class="fas fa-arrow-left"></i> Volver al carrito
                         </a>
                         <button type="submit" class="btn-submit">
-                            <a href="procesar_pedido.php" target="_blank" class="btn btn-primary">Realizar Pedido</a>
+                            <i class="fas fa-check"></i> Realizar Pedido
                         </button>
                     </div>
                 </form>
