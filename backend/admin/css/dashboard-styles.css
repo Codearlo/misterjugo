@@ -1,8 +1,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f6f9;
-    margin: 0;
-    padding: 20px;
+    margin: 20px; /* Add margin around the entire body */
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -12,18 +11,18 @@ body {
     width: 95%;
     max-width: 1200px;
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); /* Responsive columns */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: 20px;
 }
 
-/* Notifications */
+/* Notifications (unchanged for now) */
 .notification {
-    background-color: #e0f7fa; /* Light cyan */
-    color: #00838f; /* Dark cyan */
+    background-color: #fff3e0; /* Light orange */
+    color: #e65100; /* Dark orange */
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 6px;
-    border-left: 5px solid #00acc1; /* Cyan accent */
+    border-left: 5px solid #ff9800; /* Orange accent */
     display: flex;
     align-items: center;
     width: 100%;
@@ -31,14 +30,14 @@ body {
 }
 
 .notification.success {
-    background-color: #e8f5e9; /* Light green */
-    color: #388e3c; /* Dark green */
-    border-left-color: #4caf50; /* Green accent */
+    background-color: #f1f8e9; /* Light green */
+    color: #1b5e20; /* Dark green */
+    border-left-color: #8bc34a; /* Green accent */
 }
 
 .notification.danger {
     background-color: #ffebee; /* Light red */
-    color: #d32f2f; /* Dark red */
+    color: #b71c1c; /* Dark red */
     border-left-color: #f44336; /* Red accent */
 }
 
@@ -86,40 +85,41 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    flex: 1 1 150px; /* Grow, shrink, base width */
+    flex: 1 1 200px; /* Slightly wider base width */
     min-width: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
+    margin-bottom: 15px; /* Add margin below each stat card */
 }
 
 .stat-icon {
-    width: 50px;
-    height: 50px;
+    width: 60px; /* Slightly larger icon */
+    height: 60px; /* Slightly larger icon */
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 1.5em;
+    font-size: 1.8em; /* Slightly larger icon font */
     margin-bottom: 10px;
 }
 
 .stat-icon.users {
-    background-color: #2979ff;
+    background-color: #ff9800; /* Orange */
 }
 
 .stat-icon.products {
-    background-color: #ffb300;
+    background-color: #ffb300; /* Slightly different orange/amber */
 }
 
 .stat-icon.orders {
-    background-color: #4caf50;
+    background-color: #4caf50; /* Green */
 }
 
 .stat-icon.pending {
-    background-color: #f44336;
+    background-color: #f44336; /* Red */
 }
 
 .stat-info {
@@ -127,7 +127,7 @@ body {
 }
 
 .stat-value {
-    font-size: 1.8em;
+    font-size: 2em;
     font-weight: bold;
     color: #333;
     margin-bottom: 5px;
@@ -135,7 +135,7 @@ body {
 
 .stat-label {
     color: #777;
-    font-size: 0.9em;
+    font-size: 0.95em;
 }
 
 /* Quick Actions */
@@ -145,7 +145,7 @@ body {
     margin-bottom: 15px;
     width: 100%;
     box-sizing: border-box;
-    font-size: 1.4em;
+    font-size: 1.6em; /* Slightly larger title */
 }
 
 .quick-actions {
@@ -163,8 +163,8 @@ body {
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 15px;
-    width: calc(20% - 15px); /* Roughly five cards per row */
-    min-width: 150px;
+    width: calc(20% - 15px);
+    min-width: 180px; /* Slightly wider minimum width */
     text-align: center;
     text-decoration: none;
     color: #333;
@@ -173,6 +173,7 @@ body {
     align-items: center;
     justify-content: center;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
+    margin-bottom: 15px; /* Add margin below each action card */
 }
 
 .action-card:hover {
@@ -181,42 +182,43 @@ body {
 }
 
 .action-icon {
-    width: 40px;
-    height: 40px;
+    width: 50px; /* Slightly larger icon */
+    height: 50px; /* Slightly larger icon */
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 1.2em;
+    font-size: 1.4em; /* Slightly larger icon font */
     margin-bottom: 10px;
 }
 
 .action-icon.add-product {
-    background-color: #00c853;
+    background-color: #00c853; /* Green */
 }
 
 .action-icon.manage-orders {
-    background-color: #64b5f6;
+    background-color: #2979ff; /* Blue */
 }
 
 .action-icon.categories {
-    background-color: #ff9800;
+    background-color: #ff9800; /* Orange */
 }
 
 .action-icon.users {
-    background-color: #9c27b0;
+    background-color: #9c27b0; /* Purple */
 }
 
 .action-title {
     font-weight: bold;
-    margin-bottom: 5px;
-    font-size: 1em;
+    margin-bottom: 8px; /* Slightly more margin */
+    font-size: 1.1em; /* Slightly larger title */
 }
 
 .action-description {
     color: #777;
-    font-size: 0.85em;
+    font-size: 0.9em;
+    line-height: 1.4; /* Improve line height for readability */
 }
 
 /* Pending Orders Section */
@@ -241,14 +243,14 @@ body {
 
 .section-title {
     color: #333;
-    font-size: 1.4em;
+    font-size: 1.6em; /* Slightly larger title */
     margin: 0;
 }
 
 .view-all-link {
     color: #1976d2;
     text-decoration: none;
-    font-size: 0.9em;
+    font-size: 0.95em; /* Slightly larger link */
     display: flex;
     align-items: center;
     gap: 5px;
@@ -260,16 +262,20 @@ body {
 
 .orders-table-container {
     overflow-x: auto;
+    margin-top: 10px; /* Add some top margin to the table */
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
+    border: 1px solid #ddd; /* Add a border to the table */
+    border-radius: 6px;
+    overflow: hidden; /* To contain the border-radius */
 }
 
 .data-table th,
 .data-table td {
-    padding: 10px 15px;
+    padding: 12px 15px; /* Slightly more padding */
     text-align: left;
     border-bottom: 1px solid #eee;
 }
@@ -303,7 +309,7 @@ body {
 
 .actions {
     display: flex;
-    gap: 5px;
+    gap: 8px; /* Slightly more gap between action buttons */
     align-items: center;
 }
 
@@ -317,19 +323,20 @@ body {
     font-size: 0.9em;
     cursor: pointer;
     transition: background-color 0.3s ease;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle button shadow */
 }
 
 .btn-primary {
-    background-color: #1976d2;
+    background-color: #ff9800; /* Orange primary color */
 }
 
 .btn-info {
-    background-color: #00acc1;
+    background-color: #64b5f6; /* Blue info color */
 }
 
 .btn-sm {
-    padding: 5px 8px;
-    font-size: 0.8em;
+    padding: 6px 10px; /* Adjust small button padding */
+    font-size: 0.85em;
 }
 
 .btn-icon i {
