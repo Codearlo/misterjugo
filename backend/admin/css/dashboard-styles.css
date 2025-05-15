@@ -15,7 +15,7 @@ body {
     gap: 20px;
 }
 
-/* Notifications */
+/* Notificaciones */
 .notification {
     background-color: #fff3e0;
     color: #e65100;
@@ -46,6 +46,7 @@ body {
     font-size: 1.2em;
 }
 
+/* Bienvenida */
 .welcome-message {
     background-color: #fff;
     padding: 25px;
@@ -69,7 +70,7 @@ body {
     line-height: 1.6;
 }
 
-/* Statistics Overview - Adding Margins and Orange */
+/* Estadísticas */
 .stats-overview {
     display: flex;
     gap: 20px;
@@ -111,21 +112,20 @@ body {
     margin-bottom: 10px;
 }
 
-.stat-icon.users,
-.stat-icon.categories {
-    background-color: #ff9800;
+.stat-icon.users {
+    background-color: #ff9800; /* Naranja */
 }
 
 .stat-icon.products {
-    background-color: #ffb300;
+    background-color: #ffb300; /* Naranja más claro */
 }
 
 .stat-icon.orders {
-    background-color: #4caf50;
+    background-color: #4caf50; /* Verde */
 }
 
 .stat-icon.pending {
-    background-color: #f44336;
+    background-color: #f44336; /* Rojo */
 }
 
 .stat-info {
@@ -144,7 +144,7 @@ body {
     font-size: 0.95em;
 }
 
-/* Quick Actions - Adding Margins */
+/* Acciones rápidas */
 .actions-section-title {
     color: #333;
     margin-top: 25px;
@@ -200,19 +200,19 @@ body {
 }
 
 .action-icon.add-product {
-    background-color: #00c853;
+    background-color: #00c853; /* Verde */
 }
 
 .action-icon.manage-orders {
-    background-color: #2979ff;
+    background-color: #2979ff; /* Azul */
 }
 
 .action-icon.categories {
-    background-color: #ff9800;
+    background-color: #ff9800; /* Naranja */
 }
 
 .action-icon.users {
-    background-color: #9c27b0;
+    background-color: #9c27b0; /* Morado */
 }
 
 .action-title {
@@ -227,7 +227,7 @@ body {
     line-height: 1.4;
 }
 
-/* Pending Orders Section - Adding Margin */
+/* Pedidos Pendientes */
 .pending-orders-section {
     background-color: #fff;
     border-radius: 8px;
@@ -334,11 +334,11 @@ body {
 }
 
 .btn-primary {
-    background-color: #ff9800;
+    background-color: #ff9800; /* Naranja */
 }
 
 .btn-info {
-    background-color: #64b5f6;
+    background-color: #64b5f6; /* Azul */
 }
 
 .btn-sm {
