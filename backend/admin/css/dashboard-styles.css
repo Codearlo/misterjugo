@@ -1,272 +1,209 @@
-/* General styles */
-* {
-    box-sizing: border-box;
+body {
+    font-family: sans-serif; /* A common and clean sans-serif font */
+    background-color: #f7f7f7; /* Light gray background for the body */
     margin: 0;
     padding: 0;
+    display: flex;
+    justify-content: center; /* Center the content horizontally */
 }
 
-body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    padding: 20px;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-/* Container principal */
 .container {
-    max-width: 1200px;
-    margin: 0 auto;
+    width: 80%; /* Adjust as needed for your desired width */
+    max-width: 960px; /* Maximum width of the content area */
+    background-color: #fff; /* White background for the main content area */
+    padding: 20px;
+    margin-top: 20px; /* Add some top margin */
+    border-radius: 8px; /* Slightly rounded corners */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Subtle shadow */
 }
 
-/* Notificaciones */
-.notification {
-    padding: 15px;
+/* Header Styles (assuming you have a header) */
+.header {
+    background-color: #ff9800; /* Orange header background */
+    color: white;
+    padding: 15px 20px;
+    border-radius: 8px 8px 0 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 20px;
-    border-radius: 8px;
+}
+
+.logo {
+    font-size: 1.5em;
+    font-weight: bold;
+}
+
+.user-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.user-actions button,
+.user-actions a {
+    background-color: #f57c00; /* Darker orange for buttons/links */
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 0.9em;
+}
+
+.user-actions button:hover,
+.user-actions a:hover {
+    background-color: #e65100;
+}
+
+/* Section Titles */
+h2 {
+    color: #333;
+    margin-top: 25px;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #eee;
+    font-size: 1.2em;
     display: flex;
     align-items: center;
-    font-size: 14px;
-    transition: opacity 0.3s ease;
+    gap: 8px;
 }
 
-.notification.success {
-    background-color: #d4edda;
-    color: #155724;
-    border: 1px solid #c3e6cb;
+h2 i { /* For potential icons next to the title */
+    color: #ff9800;
 }
 
-.notification.danger {
-    background-color: #f8d7da;
-    color: #721c24;
-    border: 1px solid #f5c6cb;
+/* Information Personal Section */
+.personal-info-section,
+.stats-section,
+.delivery-address-section {
+    background-color: #fff;
+    padding: 15px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
 }
 
-.notification i {
-    margin-right: 10px;
-    font-size: 18px;
-}
-
-/* Mensaje de bienvenida */
-.welcome-message {
-    text-align: center;
-    margin-bottom: 30px;
-    padding: 20px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-
-.welcome-message h1 {
-    font-size: 24px;
+.personal-info-header,
+.stats-header,
+.delivery-address-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     margin-bottom: 10px;
 }
 
-/* Estadísticas */
-.stats-overview {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.stat-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
+.personal-info-header h3,
+.stats-header h3,
+.delivery-address-header h3 {
+    margin: 0;
+    font-size: 1em;
+    color: #555;
     display: flex;
     align-items: center;
-    transition: transform 0.2s ease;
+    gap: 5px;
 }
 
-.stat-card:hover {
-    transform: translateY(-3px);
+.personal-info-header button,
+.delivery-address-header button,
+.stats-header a {
+    background-color: #f0f0f0;
+    color: #555;
+    border: 1px solid #ccc;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.8em;
+    text-decoration: none;
 }
 
-.stat-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #FFA500;
-    color: white;
-    border-radius: 50%;
+.personal-info-header button:hover,
+.delivery-address-header button:hover,
+.stats-header a:hover {
+    background-color: #e0e0e0;
+}
+
+.personal-info-details label {
+    display: block;
+    margin-bottom: 5px;
+    color: #777;
+    font-size: 0.9em;
+}
+
+.personal-info-details span {
+    display: block;
+    margin-bottom: 10px;
+    color: #333;
+    font-size: 1em;
+}
+
+/* Mis Estadisticas Section */
+.stats-grid {
     display: flex;
-    justify-content: center;
+    gap: 15px;
     align-items: center;
-    margin-right: 15px;
 }
 
-.stat-info {
-    display: flex;
-    flex-direction: column;
+.stat-item {
+    text-align: center;
 }
 
 .stat-value {
-    font-size: 24px;
+    font-size: 1.5em;
     font-weight: bold;
     margin-bottom: 5px;
 }
 
 .stat-label {
-    font-size: 14px;
-    color: #666;
+    color: #777;
+    font-size: 0.9em;
 }
 
-/* Acciones rápidas */
-.actions-section-title {
-    font-size: 18px;
-    margin-top: 30px;
-    margin-bottom: 15px;
-    color: #333;
-}
-
-.quick-actions {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 20px;
-    margin-bottom: 30px;
-}
-
-.action-card {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    text-align: center;
-    transition: transform 0.2s ease;
-    cursor: pointer;
-}
-
-.action-card:hover {
-    transform: translateY(-3px);
-}
-
-.action-icon {
-    width: 60px;
-    height: 60px;
-    background-color: #FFA500;
-    color: white;
+.stat-circle {
+    width: 40px;
+    height: 40px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 auto 10px;
-}
-
-.action-title {
-    font-size: 16px;
+    margin: 0 auto 8px;
+    color: white;
+    font-size: 1em;
     font-weight: bold;
-    margin-bottom: 5px;
 }
 
-.action-description {
-    font-size: 13px;
-    color: #777;
+.stat-circle.orange {
+    background-color: #ff9800;
 }
 
-/* Pedidos pendientes */
-.pending-orders-section {
-    background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-    padding: 20px;
-    margin-bottom: 30px;
+.stat-circle.yellow {
+    background-color: #ffc107;
 }
 
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 15px;
+.stat-circle.green {
+    background-color: #4caf50;
 }
 
-.section-title {
-    font-size: 18px;
+.stat-circle.red {
+    background-color: #f44336;
+}
+
+/* Direccion de Entrega Section */
+.delivery-address-details {
     color: #333;
+    font-size: 1em;
+    line-height: 1.6;
 }
 
-.view-all-link {
-    color: #FFA500;
-    font-size: 14px;
-    display: inline-flex;
-    align-items: center;
+.delivery-address-details strong {
+    font-weight: bold;
 }
 
-.view-all-link i {
-    margin-left: 5px;
-}
-
-.orders-table-container {
-    overflow-x: auto;
-}
-
-.data-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-size: 14px;
-}
-
-.data-table th,
-.data-table td {
-    padding: 12px 15px;
-    text-align: left;
-    border-bottom: 1px solid #eee;
-}
-
-.data-table th {
-    background-color: #fafafa;
-    color: #555;
-    font-weight: 600;
-}
-
-.empty-state {
-    text-align: center;
-    padding: 30px 0;
-    color: #999;
-}
-
-.empty-state i {
-    font-size: 30px;
+.delivery-address-details p {
     margin-bottom: 10px;
 }
 
-/* Botones */
-.btn {
-    display: inline-block;
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 13px;
-    font-weight: 500;
-    transition: all 0.3s ease;
-    cursor: pointer;
-}
-
-.btn-primary {
-    background-color: #FFA500;
-    color: white;
-    border: none;
-}
-
-.btn-info {
-    background-color: #28a745;
-    color: white;
-    border: none;
-}
-
-.btn-sm {
-    padding: 4px 8px;
-    font-size: 12px;
-}
-
-.btn-icon {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
+.delivery-address-details .edit-note {
+    color: #777;
+    font-size: 0.85em;
 }
