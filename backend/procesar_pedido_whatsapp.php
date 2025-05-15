@@ -61,6 +61,6 @@ $mensaje .= "\nTotal: $" . number_format($total_pedido, 2);
 $mensaje = urlencode($mensaje);
 
 // Redirigir a WhatsApp
-header("Location: https://wa.me/1234567890?text= $mensaje"); // Reemplaza con tu número
+header("Location: https://wa.me/?text= $mensaje"); // Reemplaza con tu número
 exit;
 ?>
