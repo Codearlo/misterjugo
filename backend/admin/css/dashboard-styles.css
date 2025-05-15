@@ -1,7 +1,7 @@
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     background-color: #f4f6f9;
-    margin: 20px; /* Add margin around the entire body */
+    margin: 20px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -15,14 +15,14 @@ body {
     gap: 20px;
 }
 
-/* Notifications (unchanged for now) */
+/* Notifications */
 .notification {
-    background-color: #fff3e0; /* Light orange */
-    color: #e65100; /* Dark orange */
+    background-color: #fff3e0;
+    color: #e65100;
     padding: 15px;
     margin-bottom: 15px;
     border-radius: 6px;
-    border-left: 5px solid #ff9800; /* Orange accent */
+    border-left: 5px solid #ff9800;
     display: flex;
     align-items: center;
     width: 100%;
@@ -30,15 +30,15 @@ body {
 }
 
 .notification.success {
-    background-color: #f1f8e9; /* Light green */
-    color: #1b5e20; /* Dark green */
-    border-left-color: #8bc34a; /* Green accent */
+    background-color: #f1f8e9;
+    color: #1b5e20;
+    border-left-color: #8bc34a;
 }
 
 .notification.danger {
-    background-color: #ffebee; /* Light red */
-    color: #b71c1c; /* Dark red */
-    border-left-color: #f44336; /* Red accent */
+    background-color: #ffebee;
+    color: #b71c1c;
+    border-left-color: #f44336;
 }
 
 .notification i {
@@ -69,7 +69,7 @@ body {
     line-height: 1.6;
 }
 
-/* Statistics Overview */
+/* Statistics Overview - Adding Margins and Orange */
 .stats-overview {
     display: flex;
     gap: 20px;
@@ -85,33 +85,39 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 20px;
     text-align: center;
-    flex: 1 1 200px; /* Slightly wider base width */
+    flex: 1 1 200px;
     min-width: 200px;
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px; /* Add margin below each stat card */
+    margin-bottom: 15px; /* Margin below each stat card */
+    margin-right: 15px; /* Margin to the right of each stat card */
+}
+
+.stat-card:last-child {
+    margin-right: 0; /* Remove right margin from the last card in the row */
 }
 
 .stat-icon {
-    width: 60px; /* Slightly larger icon */
-    height: 60px; /* Slightly larger icon */
+    width: 60px;
+    height: 60px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 1.8em; /* Slightly larger icon font */
+    font-size: 1.8em;
     margin-bottom: 10px;
 }
 
-.stat-icon.users {
-    background-color: #ff9800; /* Orange */
+.stat-icon.users,
+.stat-icon.categories { /* Applying orange to users and categories based on the first image */
+    background-color: #ff9800;
 }
 
 .stat-icon.products {
-    background-color: #ffb300; /* Slightly different orange/amber */
+    background-color: #ffb300; /* A slightly different orange */
 }
 
 .stat-icon.orders {
@@ -138,14 +144,14 @@ body {
     font-size: 0.95em;
 }
 
-/* Quick Actions */
+/* Quick Actions - Adding Margins */
 .actions-section-title {
     color: #333;
     margin-top: 25px;
     margin-bottom: 15px;
     width: 100%;
     box-sizing: border-box;
-    font-size: 1.6em; /* Slightly larger title */
+    font-size: 1.6em;
 }
 
 .quick-actions {
@@ -164,7 +170,7 @@ body {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     padding: 15px;
     width: calc(20% - 15px);
-    min-width: 180px; /* Slightly wider minimum width */
+    min-width: 180px;
     text-align: center;
     text-decoration: none;
     color: #333;
@@ -173,23 +179,23 @@ body {
     align-items: center;
     justify-content: center;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
-    margin-bottom: 15px; /* Add margin below each action card */
+    margin-bottom: 15px; /* Margin below each action card */
+    margin-right: 15px; /* Margin to the right of each action card */
 }
 
-.action-card:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
-    transform: translateY(-2px);
+.action-card:last-child {
+    margin-right: 0; /* Remove right margin from the last card in the row */
 }
 
 .action-icon {
-    width: 50px; /* Slightly larger icon */
-    height: 50px; /* Slightly larger icon */
+    width: 50px;
+    height: 50px;
     border-radius: 50%;
     display: flex;
     justify-content: center;
     align-items: center;
     color: white;
-    font-size: 1.4em; /* Slightly larger icon font */
+    font-size: 1.4em;
     margin-bottom: 10px;
 }
 
@@ -211,17 +217,17 @@ body {
 
 .action-title {
     font-weight: bold;
-    margin-bottom: 8px; /* Slightly more margin */
-    font-size: 1.1em; /* Slightly larger title */
+    margin-bottom: 8px;
+    font-size: 1.1em;
 }
 
 .action-description {
     color: #777;
     font-size: 0.9em;
-    line-height: 1.4; /* Improve line height for readability */
+    line-height: 1.4;
 }
 
-/* Pending Orders Section */
+/* Pending Orders Section - Adding Margin */
 .pending-orders-section {
     background-color: #fff;
     border-radius: 8px;
@@ -230,6 +236,7 @@ body {
     margin-bottom: 20px;
     width: 100%;
     box-sizing: border-box;
+    margin-top: 15px; /* Add margin above the pending orders section */
 }
 
 .section-header {
@@ -243,14 +250,14 @@ body {
 
 .section-title {
     color: #333;
-    font-size: 1.6em; /* Slightly larger title */
+    font-size: 1.6em;
     margin: 0;
 }
 
 .view-all-link {
     color: #1976d2;
     text-decoration: none;
-    font-size: 0.95em; /* Slightly larger link */
+    font-size: 0.95em;
     display: flex;
     align-items: center;
     gap: 5px;
@@ -262,20 +269,20 @@ body {
 
 .orders-table-container {
     overflow-x: auto;
-    margin-top: 10px; /* Add some top margin to the table */
+    margin-top: 10px;
 }
 
 .data-table {
     width: 100%;
     border-collapse: collapse;
-    border: 1px solid #ddd; /* Add a border to the table */
+    border: 1px solid #ddd;
     border-radius: 6px;
-    overflow: hidden; /* To contain the border-radius */
+    overflow: hidden;
 }
 
 .data-table th,
 .data-table td {
-    padding: 12px 15px; /* Slightly more padding */
+    padding: 12px 15px;
     text-align: left;
     border-bottom: 1px solid #eee;
 }
@@ -309,7 +316,7 @@ body {
 
 .actions {
     display: flex;
-    gap: 8px; /* Slightly more gap between action buttons */
+    gap: 8px;
     align-items: center;
 }
 
@@ -323,19 +330,19 @@ body {
     font-size: 0.9em;
     cursor: pointer;
     transition: background-color 0.3s ease;
-    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); /* Subtle button shadow */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
 }
 
 .btn-primary {
-    background-color: #ff9800; /* Orange primary color */
+    background-color: #ff9800;
 }
 
 .btn-info {
-    background-color: #64b5f6; /* Blue info color */
+    background-color: #64b5f6;
 }
 
 .btn-sm {
-    padding: 6px 10px; /* Adjust small button padding */
+    padding: 6px 10px;
     font-size: 0.85em;
 }
 
