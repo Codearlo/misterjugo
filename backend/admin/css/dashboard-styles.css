@@ -414,3 +414,16 @@ body {
     display: none;
   }
 }
+
+.main-content {
+  flex: 1;
+  margin-left: var(--admin-sidebar-width);
+  transition: all var(--dash-transition);
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--dash-bg-light);
+  background-image:
+    radial-gradient(circle at 10% 10%, rgba(255, 165, 0, 0.03) 0%, transparent 30%),
+    radial-gradient(circle at 90% 90%, rgba(76, 175, 80, 0.03) 0%, transparent 30%);
+}
