@@ -310,6 +310,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 </script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Validación del formulario antes de enviar
+    const checkoutForm = document.getElementById('checkout-form');
+    const submitBtn = document.getElementById('btn-realizar-pedido');
+    
+    if (checkoutForm && submitBtn) {
+        // Deshabilitar el envío múltiple del formulario
+        checkoutForm.addEventListener('submit', function(e) {
+            // Verificar si ya se envió
+            if (this.getAttribute('data-submitting') === 'true') {
+                e.preventDefault();
+                return false;
+            }
+            
+            // Validar que hay una dirección seleccionada
+            const direccionId = document.getElementById('direccion_id');
+            if (!direccionId || !direccionId.value) {
+                e.preventDefault();
+                alert('Por favor selecciona una dirección de entrega');
+                return false;
+            }
+            
+            // Validar que hay un nombre
+            const nombre = document.getElementById('nombre');
+            if (!nombre || !nombre.value.trim()) {
+                e.preventDefault();
+                alert('Por favor ingresa tu nombre para el pedido');
+                return false;
+            }
+            
+            // Marcar como enviando y deshabilitar el botón
+            this.setAttribute('data-submitting', 'true');
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            
+            // Continuar con el envío
+            return true;
+        });
+        
+        // Adicionalmente, manejar el clic en el botón directamente
+        submitBtn.addEventListener('click', function(e) {
+            if (checkoutForm.getAttribute('data-submitting') === 'true') {
+                e.preventDefault();
+                return false;
+            }
+        });
+    }
+});
+</script>
 
 <?php
 // Incluir el footer

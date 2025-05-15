@@ -20,7 +20,7 @@
     });
 </script>
 
-<!-- Hero Section -->
+
 <main class="hero-section">
     <div class="container">
         <div class="hero-content">
@@ -29,15 +29,14 @@
             </div>
             <div class="hero-text">
                 <h1>¿Ya comiste? Que esperas para ordenar</h1>
-                <p>Descubre nuestros jugos frescos y nutritivos.</p>
-                <button class="btn-order-now">Order Now</button>
+                <p>Descubre nuestros jugos y sándwich </p>
+                <button class="btn-order-now">Ordena Ya!!</button>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Promociones -->
-<!-- Promociones -->
+
 <section class="promotions">
     <h2>Promociones Especiales</h2>
     <div class="promo-cards">
