@@ -25,18 +25,17 @@
     <div class="container">
         <div class="hero-content">
             <div class="hero-image">
-                <img src="/images/jugos-misterjugo.jpg" alt="Jugos MisterJugo">
+                <img src="./images/jugos-misterjugo.jpg" alt="Jugos MisterJugo">
             </div>
             <div class="hero-text">
-                <h1>¿Ya comiste? Que esperas para ordenar?</h1>
+                <h1>Have you eaten yet?</h1>
                 <p>Descubre nuestros jugos frescos y nutritivos.</p>
-                <button class="btn-order-now">Ordena ya!!</button>
+                <button class="btn-order-now">Order Now</button>
             </div>
         </div>
     </div>
 </main>
 
-<!-- Promociones -->
 <!-- Promociones -->
 <section class="promotions">
     <h2>Promociones Especiales</h2>
