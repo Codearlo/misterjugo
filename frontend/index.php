@@ -25,7 +25,7 @@
     <div class="container">
         <div class="hero-content">
             <div class="hero-image">
-                <img src="./images/jugos-misterjugo.jpg" alt="Jugos MisterJugo">
+                <img src="/images/jugos-misterjugo.jpg" alt="Jugos MisterJugo">
             </div>
             <div class="hero-text">
                 <h1>Have you eaten yet?</h1>
@@ -41,21 +41,21 @@
     <h2>Promociones Especiales</h2>
     <div class="promo-cards">
         <div class="promo-card">
-            <img src="./images/promo1.jpg" alt="Promoción 1">
+            <img src="/images/promo1.jpg" alt="Promoción 1">
             <div class="content">
                 <h3>Jugo del Día</h3>
                 <p>2x1 en todos los jugos naturales. ¡Solo por hoy!</p>
             </div>
         </div>
         <div class="promo-card">
-            <img src="./images/promo2.jpg" alt="Promoción 2">
+            <img src="/images/promo2.jpg" alt="Promoción 2">
             <div class="content">
                 <h3>Envío Gratis</h3>
                 <p>En compras mayores a $20, recibe gratis en toda la ciudad.</p>
             </div>
         </div>
         <div class="promo-card">
-            <img src="./images/promo3.jpg" alt="Promoción 3">
+            <img src="/images/promo3.jpg" alt="Promoción 3">
             <div class="content">
                 <h3>Membresía VIP</h3>
                 <p>Acumula puntos y canjea descuentos exclusivos cada semana.</p>
