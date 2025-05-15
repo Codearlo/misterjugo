@@ -91,12 +91,12 @@ body {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    margin-bottom: 15px; /* Margin below each stat card */
-    margin-right: 15px; /* Margin to the right of each stat card */
+    margin-bottom: 15px;
+    margin-right: 15px;
 }
 
 .stat-card:last-child {
-    margin-right: 0; /* Remove right margin from the last card in the row */
+    margin-right: 0;
 }
 
 .stat-icon {
@@ -112,20 +112,20 @@ body {
 }
 
 .stat-icon.users,
-.stat-icon.categories { /* Applying orange to users and categories based on the first image */
+.stat-icon.categories {
     background-color: #ff9800;
 }
 
 .stat-icon.products {
-    background-color: #ffb300; /* A slightly different orange */
+    background-color: #ffb300;
 }
 
 .stat-icon.orders {
-    background-color: #4caf50; /* Green */
+    background-color: #4caf50;
 }
 
 .stat-icon.pending {
-    background-color: #f44336; /* Red */
+    background-color: #f44336;
 }
 
 .stat-info {
@@ -179,12 +179,12 @@ body {
     align-items: center;
     justify-content: center;
     transition: box-shadow 0.3s ease, transform 0.3s ease;
-    margin-bottom: 15px; /* Margin below each action card */
-    margin-right: 15px; /* Margin to the right of each action card */
+    margin-bottom: 15px;
+    margin-right: 15px;
 }
 
 .action-card:last-child {
-    margin-right: 0; /* Remove right margin from the last card in the row */
+    margin-right: 0;
 }
 
 .action-icon {
@@ -200,19 +200,19 @@ body {
 }
 
 .action-icon.add-product {
-    background-color: #00c853; /* Green */
+    background-color: #00c853;
 }
 
 .action-icon.manage-orders {
-    background-color: #2979ff; /* Blue */
+    background-color: #2979ff;
 }
 
 .action-icon.categories {
-    background-color: #ff9800; /* Orange */
+    background-color: #ff9800;
 }
 
 .action-icon.users {
-    background-color: #9c27b0; /* Purple */
+    background-color: #9c27b0;
 }
 
 .action-title {
@@ -236,7 +236,7 @@ body {
     margin-bottom: 20px;
     width: 100%;
     box-sizing: border-box;
-    margin-top: 15px; /* Add margin above the pending orders section */
+    margin-top: 15px;
 }
 
 .section-header {
