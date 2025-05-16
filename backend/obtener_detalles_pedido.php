@@ -35,7 +35,7 @@ $pedido = $result_pedido->fetch_assoc();
 
 // Obtener los productos del pedido
 $stmt_detalle = $conn->prepare("SELECT pd.*, p.nombre, p.imagen 
-                                FROM detalle_pedidos pd
+                                FROM detalles_pedidos pd
                                 JOIN productos p ON pd.producto_id = p.id
                                 WHERE pd.pedido_id = ?");
 $stmt_detalle->bind_param("i", $pedido_id);
