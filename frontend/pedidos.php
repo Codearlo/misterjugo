@@ -92,7 +92,7 @@ include 'includes/header.php';
                                         </div>
                                         <div class="order-total">
                                             <span class="info-label">Total:</span>
-                                            <span class="total-amount">$<?php echo number_format($pedido['total'], 2); ?></span>
+                                            <span class="total-amount">S/<?php echo number_format($pedido['total'], 2); ?></span>
                                         </div>
                                     </div>
                                 </div>
@@ -204,11 +204,6 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="order-actions">
-                            ${data.pedido.estado !== 'completado' ? `
-                                <button class="btn-complete-order" data-id="${data.pedido.id}">
-                                    <i class="fas fa-check"></i> Marcar como Completado
-                                </button>
-                            ` : ''}
                             ${data.pedido.estado === 'pendiente' ? `
                                 <button class="btn-cancel-order-modal" data-id="${data.pedido.id}">
                                     <i class="fas fa-times"></i> Cancelar Pedido
@@ -226,56 +221,31 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <div class="item-details">
                                     <h5>${item.nombre}</h5>
                                     <div>Cantidad: ${item.cantidad}</div>
-                                    <div>Precio: $${Number(item.precio).toFixed(2)}</div>
+                                    <div>Precio: S/${Number(item.precio).toFixed(2)}</div>
                                 </div>
-                                <div class="item-total">$${Number(item.subtotal).toFixed(2)}</div>
+                                <div class="item-total">S/${Number(item.subtotal).toFixed(2)}</div>
                             </div>`;
                     });
 
                     html += `</div></div><div class="order-totals"><div class="total-line grand-total">
                                 <span class="total-label">Total:</span>
-                                <span class="total-value">$${Number(data.totales.total).toFixed(2)}</span>
+                                <span class="total-value">S/${Number(data.totales.total).toFixed(2)}</span>
                             </div></div>`;
 
                     orderDetailsContent.innerHTML = html;
 
-                    // Evento: Marcar como completado
-                    document.querySelector('.btn-complete-order')?.addEventListener('click', function () {
-                        const idPedido = this.getAttribute('data-id');
-                        marcarComoCompletado(idPedido);
-                    });
-
-                    // Evento: Cancelar pedido
+                    // Evento: Cancelar pedido desde modal
                     document.querySelector('.btn-cancel-order-modal')?.addEventListener('click', function () {
                         const idPedido = this.getAttribute('data-id');
                         openCancelConfirmationModal(idPedido);
                     });
                 } else {
-                    orderDetailsContent.innerHTML = `<p>No se pudieron cargar los detalles.</p>`;
+                    orderDetailsContent.innerHTML = `<p>Error al cargar los detalles: ${data.message || 'No se pudieron cargar los detalles.'}</p>`;
                 }
             })
             .catch(error => {
                 console.error('Error:', error);
                 orderDetailsContent.innerHTML = `<p>Error al cargar los detalles.</p>`;
-            });
-    }
-
-    function marcarComoCompletado(idPedido) {
-        fetch(`/backend/completar_pedido.php?id=${idPedido}`)
-            .then(response => response.json())
-            .then(data => {
-                if (data.success) {
-                    closeDetailsModal();
-                    mostrarNotificacion("El pedido ha sido marcado como completado.", "success");
-                    document.querySelector(`.order-card[data-id='${data.pedido_id}'] .status-text`).innerHTML =
-                        '<span class="status-badge completed">Completado</span>';
-                } else {
-                    alert("No se pudo completar el pedido.");
-                }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert("Ocurrió un error al completar el pedido.");
             });
     }
 
@@ -301,9 +271,13 @@ document.addEventListener('DOMContentLoaded', function () {
         const div = document.createElement('div');
         div.className = `notification ${tipo}`;
         div.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : 'exclamation-circle'}"></i><div><p>${mensaje}</p></div>`;
+        div.style.opacity = '0';
         contenedor.prepend(div);
 
-        setTimeout(() => div.style.opacity = '1', 100);
+        setTimeout(() => {
+            div.style.opacity = '1';
+        }, 100);
+        
         setTimeout(() => {
             div.style.opacity = '0';
             setTimeout(() => div.remove(), 500);
@@ -328,29 +302,62 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     });
 
+    // Evento para botones de cancelación
+    btnCancelOrders.forEach(btn => {
+        btn.addEventListener('click', function(e) {
+            e.stopPropagation(); // Evita que se abra el modal de detalles
+            const orderId = this.getAttribute('data-id');
+            openCancelConfirmationModal(orderId);
+        });
+    });
+
     // Cerrar modales
     closeModal.addEventListener('click', closeDetailsModal);
     closeConfirmation.addEventListener('click', closeCancelConfirmationModal);
     btnCancelModal.addEventListener('click', closeCancelConfirmationModal);
 
+    // Botón de confirmar cancelación
     btnConfirmCancel.addEventListener('click', function () {
         if (orderIdToCancel) {
+            // Mostrar indicador de carga
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+            this.disabled = true;
+            
             fetch(`/backend/cancelar_pedido.php?id=${orderIdToCancel}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         closeCancelConfirmationModal();
                         closeDetailsModal();
-                        mostrarNotificacion("El pedido ha sido cancelado.", "success");
-                        document.querySelector(`.order-card[data-id='${data.pedido_id}'] .status-text`).innerHTML =
-                            '<span class="status-badge cancelled">Cancelado</span>';
+                        mostrarNotificacion("El pedido ha sido cancelado exitosamente", "success");
+                        
+                        // Actualizar la UI para reflejar el cambio
+                        const statusElement = document.querySelector(`.order-card[data-id="${data.pedido_id}"] .status-badge`);
+                        if (statusElement) {
+                            statusElement.textContent = "Cancelado";
+                            statusElement.className = "status-badge cancelled";
+                        }
+                        
+                        // Eliminar el botón de cancelar de ese pedido
+                        const cancelBtn = document.querySelector(`.order-card[data-id="${data.pedido_id}"] .btn-cancel-order`);
+                        if (cancelBtn) {
+                            cancelBtn.remove();
+                        }
                     } else {
-                        alert("No se pudo cancelar el pedido.");
+                        alert("Error: " + (data.message || "No se pudo cancelar el pedido"));
                     }
+                    
+                    // Restaurar botón
+                    this.innerHTML = '<i class="fas fa-times"></i> Sí, cancelar pedido';
+                    this.disabled = false;
                 })
                 .catch(error => {
                     console.error('Error:', error);
-                    alert("Ocurrió un error al cancelar el pedido.");
+                    alert("Ocurrió un error al procesar la solicitud");
+                    
+                    // Restaurar botón
+                    this.innerHTML = '<i class="fas fa-times"></i> Sí, cancelar pedido';
+                    this.disabled = false;
                 });
         }
     });
