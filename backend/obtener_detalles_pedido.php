@@ -10,6 +10,9 @@ if (!isset($_SESSION['user_id'])) {
 // Conexión a la base de datos
 require_once 'conexion.php';
 
+// Set the timezone to Lima, Peru
+date_default_timezone_set('America/Lima');
+
 // Obtener ID del pedido desde la URL
 $pedido_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
@@ -49,7 +52,7 @@ while ($row = $result_detalle->fetch_assoc()) {
         'cantidad' => $row['cantidad'],
         'precio' => $row['precio'],
         'subtotal' => $row['precio'] * $row['cantidad'],
-        'imagen' => $row['imagen']
+        'imagen' => $row['imagen'] ?: '/images/producto-default.jpg'
     ];
 }
 
@@ -65,7 +68,7 @@ $response = [
     ],
     'items' => $items,
     'totales' => [
-        'total' => array_sum(array_column($items, 'subtotal'))
+        'total' => $pedido['total'] // Use the total from the order record
     ]
 ];
 

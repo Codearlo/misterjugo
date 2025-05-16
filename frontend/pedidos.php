@@ -18,6 +18,8 @@ $error_pedido = isset($_SESSION['error_pedido']) ? $_SESSION['error_pedido'] : '
 // Limpiar mensajes de sesión
 unset($_SESSION['exito_pedido']);
 unset($_SESSION['error_pedido']);
+
+
 // Obtener pedidos del usuario
 $pedidos = [];
 $stmt = $conn->prepare("SELECT * FROM pedidos WHERE usuario_id = ? ORDER BY fecha_pedido DESC");
@@ -319,45 +321,52 @@ document.addEventListener('DOMContentLoaded', function () {
     // Botón de confirmar cancelación
     btnConfirmCancel.addEventListener('click', function () {
         if (orderIdToCancel) {
-            // Mostrar indicador de carga
-            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
+        // Mostrar indicador de carga
+           this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Procesando...';
             this.disabled = true;
-            
+        
             fetch(`/backend/cancelar_pedido.php?id=${orderIdToCancel}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
                         closeCancelConfirmationModal();
                         closeDetailsModal();
-                        mostrarNotificacion("El pedido ha sido cancelado exitosamente", "success");
-                        
-                        // Actualizar la UI para reflejar el cambio
+                        ostrarNotificacion("El pedido ha sido cancelado exitosamente", "success");
+                    
+                    // Actualizar la UI para reflejar el cambio
                         const statusElement = document.querySelector(`.order-card[data-id="${data.pedido_id}"] .status-badge`);
                         if (statusElement) {
                             statusElement.textContent = "Cancelado";
                             statusElement.className = "status-badge cancelled";
                         }
-                        
-                        // Eliminar el botón de cancelar de ese pedido
+                    
+                    // Eliminar el botón de cancelar de ese pedido
                         const cancelBtn = document.querySelector(`.order-card[data-id="${data.pedido_id}"] .btn-cancel-order`);
                         if (cancelBtn) {
                             cancelBtn.remove();
                         }
+                    
+                    // Abrir WhatsApp si hay URL
+                        if (data.whatsapp_url) {
+                            setTimeout(() => {
+                                window.open(data.whatsapp_url, '_blank');
+                            }, 1000);
+                        }
                     } else {
                         alert("Error: " + (data.message || "No se pudo cancelar el pedido"));
                     }
-                    
-                    // Restaurar botón
+                
+                // Restaurar botón
                     this.innerHTML = '<i class="fas fa-times"></i> Sí, cancelar pedido';
                     this.disabled = false;
                 })
                 .catch(error => {
                     console.error('Error:', error);
                     alert("Ocurrió un error al procesar la solicitud");
-                    
-                    // Restaurar botón
+                
+                // Restaurar botón
                     this.innerHTML = '<i class="fas fa-times"></i> Sí, cancelar pedido';
-                    this.disabled = false;
+                    his.disabled = false;
                 });
         }
     });
