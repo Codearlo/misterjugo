@@ -199,8 +199,8 @@ try {
         throw new Exception("No se pudo obtener el ID del pedido insertado");
     }
     
-    // 2. Insertar los detalles del pedido en la tabla 'detalle_pedidos'
-    $stmt = $conn->prepare("INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad, precio) VALUES (?, ?, ?, ?)");
+    // 2. Insertar los detalles del pedido en la tabla 'detalles_pedidos' (con 's')
+    $stmt = $conn->prepare("INSERT INTO detalles_pedidos (pedido_id, producto_id, cantidad, precio) VALUES (?, ?, ?, ?)");
     
     foreach ($items as $item) {
         $producto_id = $item['id'];

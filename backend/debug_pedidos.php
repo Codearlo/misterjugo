@@ -47,12 +47,12 @@ if ($result) {
     echo "<p style='color: red;'>Error al consultar la estructura de la tabla pedidos: " . $conn->error . "</p>";
 }
 
-// Tabla detalle_pedidos
-$sql = "DESCRIBE detalle_pedidos";
+// Tabla detalles_pedidos (con 's')
+$sql = "DESCRIBE detalles_pedidos";
 $result = $conn->query($sql);
 
 if ($result) {
-    echo "<h3>Tabla: detalle_pedidos</h3>";
+    echo "<h3>Tabla: detalles_pedidos</h3>";
     echo "<table border='1' cellpadding='5'>";
     echo "<tr><th>Campo</th><th>Tipo</th><th>NULL</th><th>Clave</th><th>Predeterminado</th></tr>";
     
@@ -68,7 +68,64 @@ if ($result) {
     
     echo "</table>";
 } else {
-    echo "<p style='color: red;'>Error al consultar la estructura de la tabla detalle_pedidos: " . $conn->error . "</p>";
+    echo "<p style='color: red;'>Error al consultar la estructura de la tabla detalles_pedidos: " . $conn->error . "</p>";
+    
+    // Intentar con el otro nombre (sin 's')
+    $sql = "DESCRIBE detalle_pedidos";
+    $result = $conn->query($sql);
+    
+    if ($result) {
+        echo "<h3>Tabla: detalle_pedidos (sin 's')</h3>";
+        echo "<table border='1' cellpadding='5'>";
+        echo "<tr><th>Campo</th><th>Tipo</th><th>NULL</th><th>Clave</th><th>Predeterminado</th></tr>";
+        
+        while ($row = $result->fetch_assoc()) {
+            echo "<tr>";
+            echo "<td>" . $row['Field'] . "</td>";
+            echo "<td>" . $row['Type'] . "</td>";
+            echo "<td>" . $row['Null'] . "</td>";
+            echo "<td>" . $row['Key'] . "</td>";
+            echo "<td>" . $row['Default'] . "</td>";
+            echo "</tr>";
+        }
+        
+        echo "</table>";
+    } else {
+        echo "<p style='color: red;'>Error al consultar la estructura de la tabla detalle_pedidos: " . $conn->error . "</p>";
+    }
+}
+
+// Verificar si existen las tablas mediante información del esquema
+echo "<h3>Comprobación de tablas existentes en la base de datos</h3>";
+$tablas = [];
+$sql = "SHOW TABLES";
+$result = $conn->query($sql);
+
+if ($result) {
+    echo "<table border='1' cellpadding='5'>";
+    echo "<tr><th>Nombre de la tabla</th></tr>";
+    
+    while ($row = $result->fetch_row()) {
+        $tablas[] = $row[0];
+        echo "<tr><td>" . $row[0] . "</td></tr>";
+    }
+    
+    echo "</table>";
+    
+    // Comprobar si las tablas que necesitamos existen
+    $tabla_pedidos = in_array('pedidos', $tablas);
+    $tabla_detalles_pedidos = in_array('detalles_pedidos', $tablas);
+    $tabla_detalle_pedidos = in_array('detalle_pedidos', $tablas);
+    
+    echo "<p><strong>Tabla 'pedidos' existe:</strong> " . ($tabla_pedidos ? 'Sí' : 'No') . "</p>";
+    echo "<p><strong>Tabla 'detalles_pedidos' existe:</strong> " . ($tabla_detalles_pedidos ? 'Sí' : 'No') . "</p>";
+    echo "<p><strong>Tabla 'detalle_pedidos' existe:</strong> " . ($tabla_detalle_pedidos ? 'Sí' : 'No') . "</p>";
+    
+    if (!$tabla_detalles_pedidos && !$tabla_detalle_pedidos) {
+        echo "<p style='color: red;'><strong>ADVERTENCIA:</strong> No se encontró ninguna tabla para los detalles de pedidos. Es posible que necesites crearla.</p>";
+    }
+} else {
+    echo "<p style='color: red;'>Error al consultar las tablas existentes: " . $conn->error . "</p>";
 }
 
 // 2. Últimos pedidos registrados
@@ -101,7 +158,7 @@ if ($result && $result->num_rows > 0) {
     echo "<p>No hay pedidos registrados en la base de datos.</p>";
 }
 
-// 3. Ver detalles de un pedido específico
+// 3. Ver detalles de un pedido específico (con soporte para ambos nombres de tabla)
 if (isset($_GET['ver_pedido'])) {
     $pedido_id = intval($_GET['ver_pedido']);
     
@@ -135,9 +192,9 @@ if (isset($_GET['ver_pedido'])) {
         
         echo "</table>";
         
-        // Obtener detalles de los productos
+        // Intentar primero con 'detalles_pedidos' (con 's')
         $sql = "SELECT dp.*, p.nombre as producto_nombre 
-                FROM detalle_pedidos dp 
+                FROM detalles_pedidos dp 
                 LEFT JOIN productos p ON dp.producto_id = p.id 
                 WHERE dp.pedido_id = ?";
         
@@ -147,7 +204,7 @@ if (isset($_GET['ver_pedido'])) {
         $result = $stmt->get_result();
         
         if ($result && $result->num_rows > 0) {
-            echo "<h3>Productos del Pedido</h3>";
+            echo "<h3>Productos del Pedido (de tabla 'detalles_pedidos')</h3>";
             echo "<table border='1' cellpadding='5'>";
             echo "<tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>";
             
@@ -173,7 +230,46 @@ if (isset($_GET['ver_pedido'])) {
                 echo "<p style='color: red;'><strong>¡ADVERTENCIA!</strong> El total calculado (S/ " . number_format($total, 2) . ") no coincide con el total guardado (S/ " . number_format($pedido['total'], 2) . "). Esto podría indicar un problema en el cálculo o en la inserción de datos.</p>";
             }
         } else {
-            echo "<p>No se encontraron productos asociados a este pedido.</p>";
+            // Intentar con 'detalle_pedidos' (sin 's')
+            $sql = "SELECT dp.*, p.nombre as producto_nombre 
+                    FROM detalle_pedidos dp 
+                    LEFT JOIN productos p ON dp.producto_id = p.id 
+                    WHERE dp.pedido_id = ?";
+            
+            $stmt = $conn->prepare($sql);
+            $stmt->bind_param("i", $pedido_id);
+            $stmt->execute();
+            $result = $stmt->get_result();
+            
+            if ($result && $result->num_rows > 0) {
+                echo "<h3>Productos del Pedido (de tabla 'detalle_pedidos')</h3>";
+                echo "<table border='1' cellpadding='5'>";
+                echo "<tr><th>ID</th><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Subtotal</th></tr>";
+                
+                $total = 0;
+                while ($row = $result->fetch_assoc()) {
+                    $subtotal = $row['cantidad'] * $row['precio'];
+                    $total += $subtotal;
+                    
+                    echo "<tr>";
+                    echo "<td>" . $row['id'] . "</td>";
+                    echo "<td>" . htmlspecialchars($row['producto_nombre'] ?? 'Producto #' . $row['producto_id']) . "</td>";
+                    echo "<td>" . $row['cantidad'] . "</td>";
+                    echo "<td>S/ " . number_format($row['precio'], 2) . "</td>";
+                    echo "<td>S/ " . number_format($subtotal, 2) . "</td>";
+                    echo "</tr>";
+                }
+                
+                echo "<tr><td colspan='4' align='right'><strong>Total</strong></td><td><strong>S/ " . number_format($total, 2) . "</strong></td></tr>";
+                echo "</table>";
+                
+                // Verificar si el total calculado coincide con el total guardado
+                if (abs($total - $pedido['total']) > 0.01) {
+                    echo "<p style='color: red;'><strong>¡ADVERTENCIA!</strong> El total calculado (S/ " . number_format($total, 2) . ") no coincide con el total guardado (S/ " . number_format($pedido['total'], 2) . "). Esto podría indicar un problema en el cálculo o en la inserción de datos.</p>";
+                }
+            } else {
+                echo "<p>No se encontraron productos asociados a este pedido en ninguna de las tablas (detalles_pedidos o detalle_pedidos).</p>";
+            }
         }
         
         echo "<p><a href='debug_pedidos.php'>Volver a la lista de pedidos</a></p>";
@@ -182,61 +278,50 @@ if (isset($_GET['ver_pedido'])) {
     }
 }
 
-// 4. Formulario para probar la inserción de pedidos
-echo "<h2>4. Prueba de inserción manual de pedido</h2>";
-echo "<p>Este formulario permite probar la inserción manual de un pedido para verificar la funcionalidad básica de la base de datos.</p>";
+// 4. Formulario para crear la tabla si no existe
+echo "<h2>4. Crear tabla de detalles si no existe</h2>";
 
 echo "<form method='post' action=''>";
-echo "<table>";
-echo "<tr><td>Usuario ID:</td><td><input type='number' name='usuario_id' required></td></tr>";
-echo "<tr><td>Total:</td><td><input type='number' name='total' step='0.01' required></td></tr>";
-echo "<tr><td>Estado:</td><td><select name='estado'><option value='pendiente'>pendiente</option><option value='procesando'>procesando</option><option value='completado'>completado</option><option value='cancelado'>cancelado</option></select></td></tr>";
-echo "<tr><td colspan='2'><input type='submit' name='test_insert' value='Probar Inserción'></td></tr>";
-echo "</table>";
+echo "<p>Si la tabla de detalles no existe, puedes crearla aquí:</p>";
+echo "<div style='margin-bottom: 10px;'>";
+echo "<input type='radio' id='create_con_s' name='table_name' value='detalles_pedidos' checked>";
+echo "<label for='create_con_s'> Crear tabla 'detalles_pedidos' (con 's')</label>";
+echo "</div>";
+echo "<div style='margin-bottom: 10px;'>";
+echo "<input type='radio' id='create_sin_s' name='table_name' value='detalle_pedidos'>";
+echo "<label for='create_sin_s'> Crear tabla 'detalle_pedidos' (sin 's')</label>";
+echo "</div>";
+echo "<input type='submit' name='create_table' value='Crear Tabla'>";
 echo "</form>";
 
-// Procesar la prueba de inserción
-if (isset($_POST['test_insert'])) {
-    $usuario_id = intval($_POST['usuario_id']);
-    $total = floatval($_POST['total']);
-    $estado = $_POST['estado'];
+// Procesar la creación de la tabla
+if (isset($_POST['create_table']) && isset($_POST['table_name'])) {
+    $table_name = $_POST['table_name'];
     
-    // Verificar si el usuario existe
-    $stmt = $conn->prepare("SELECT id, nombre FROM usuarios WHERE id = ?");
-    $stmt->bind_param("i", $usuario_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
+    // Verificar si la tabla ya existe
+    $sql = "SHOW TABLES LIKE '$table_name'";
+    $result = $conn->query($sql);
     
-    if ($result->num_rows === 0) {
-        echo "<p style='color: red;'>Error: El usuario con ID $usuario_id no existe en la base de datos.</p>";
+    if ($result && $result->num_rows > 0) {
+        echo "<p style='color: red;'>La tabla '$table_name' ya existe.</p>";
     } else {
-        $usuario = $result->fetch_assoc();
+        // SQL para crear la tabla
+        $sql = "CREATE TABLE `$table_name` (
+                  `id` int(11) NOT NULL AUTO_INCREMENT,
+                  `pedido_id` int(11) NOT NULL,
+                  `producto_id` int(11) NOT NULL,
+                  `cantidad` int(11) NOT NULL,
+                  `precio` decimal(10,2) NOT NULL,
+                  PRIMARY KEY (`id`),
+                  KEY `pedido_id` (`pedido_id`),
+                  KEY `producto_id` (`producto_id`)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;";
         
-        // Iniciar transacción
-        $conn->begin_transaction();
-        
-        try {
-            // Insertar el pedido
-            $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, total, estado, fecha_pedido) VALUES (?, ?, ?, NOW())");
-            $stmt->bind_param("ids", $usuario_id, $total, $estado);
-            $stmt->execute();
-            
-            $pedido_id = $conn->insert_id;
-            
-            // Insertar un detalle de prueba
-            $stmt = $conn->prepare("INSERT INTO detalle_pedidos (pedido_id, producto_id, cantidad, precio) VALUES (?, 1, 1, ?)");
-            $stmt->bind_param("id", $pedido_id, $total);
-            $stmt->execute();
-            
-            // Confirmar transacción
-            $conn->commit();
-            
-            echo "<p style='color: green;'>Prueba de inserción exitosa. Se ha creado el pedido #$pedido_id para el usuario " . htmlspecialchars($usuario['nombre']) . ".</p>";
-            echo "<p><a href='?ver_pedido=$pedido_id'>Ver detalles del pedido de prueba</a></p>";
-        } catch (Exception $e) {
-            // Revertir transacción en caso de error
-            $conn->rollback();
-            echo "<p style='color: red;'>Error durante la prueba de inserción: " . $e->getMessage() . "</p>";
+        if ($conn->query($sql) === TRUE) {
+            echo "<p style='color: green;'>La tabla '$table_name' ha sido creada correctamente.</p>";
+            echo "<meta http-equiv='refresh' content='2;url=debug_pedidos.php'>";
+        } else {
+            echo "<p style='color: red;'>Error al crear la tabla: " . $conn->error . "</p>";
         }
     }
 }
@@ -265,18 +350,7 @@ echo "user_email: " . (isset($_SESSION['user_email']) ? htmlspecialchars($_SESSI
 echo "is_admin: " . (isset($_SESSION['is_admin']) ? ($_SESSION['is_admin'] ? 'Sí' : 'No') : 'No definido') . "\n";
 echo "</pre>";
 
-echo "<h3>Otras variables de sesión</h3>";
-echo "<pre>";
-foreach ($_SESSION as $key => $value) {
-    if (!in_array($key, ['user_id', 'user_name', 'user_email', 'is_admin', 'carrito'])) {
-        echo "$key: ";
-        print_r($value);
-        echo "\n";
-    }
-}
-echo "</pre>";
-
-// Botón para limpiar variables de depuración en sesión
+// Botón para limpiar variables de sesión
 echo "<form method='post'>";
 echo "<input type='submit' name='limpiar_sesion' value='Limpiar variables de sesión (excepto usuario)'>";
 echo "</form>";
