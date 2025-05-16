@@ -38,7 +38,7 @@
 
 
 <section class="promotions">
-    <h2>Promociones Especiales</h2>
+    <h2>Promociones </h2>
     <div class="promo-cards">
         <div class="promo-card">
             <img src="./images/promo1.jpg" alt="Promoción 1">

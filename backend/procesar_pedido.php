@@ -1,19 +1,11 @@
 <?php
-// Iniciar sesión para depuración
+// Iniciar sesión
 session_start();
-
-// Habilitar los mensajes de error para depuración
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Registrar la hora de inicio
-$_SESSION['debug_time'] = date('Y-m-d H:i:s');
 
 // Verificar si hay productos en el carrito
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
-    $_SESSION['error_checkout'] = "El carrito está vacío.";
-    header("Location: /productos");
+    echo "El carrito está vacío.";
+    echo "<a href='/productos'>Ver productos</a>";
     exit;
 }
 
@@ -26,15 +18,8 @@ if (!isset($_SESSION['user_id'])) {
 
 // Validar datos del formulario
 if (!isset($_POST['nombre'], $_POST['direccion_id'])) {
-    // Registrar qué campos faltan para depuración
-    $_SESSION['debug_missing_fields'] = [
-        'nombre' => isset($_POST['nombre']),
-        'direccion_id' => isset($_POST['direccion_id']),
-        'post_data' => $_POST
-    ];
-    
-    $_SESSION['error_checkout'] = "Faltan datos requeridos en el formulario.";
-    header("Location: /checkout");
+    echo "Error: Faltan datos requeridos. Nombre o dirección no proporcionados.";
+    echo "<a href='/checkout'>Volver al checkout</a>";
     exit;
 }
 
@@ -54,7 +39,7 @@ if (!empty($instrucciones) && !empty($instrucciones_dir)) {
     $instrucciones = $instrucciones_dir;
 }
 
-// Obtener dirección - puede venir como texto directo o como ID de dirección guardada
+// Obtener dirección
 $direccion_completa = isset($_POST['direccion_completa']) ? htmlspecialchars(trim($_POST['direccion_completa'])) : '';
 $direccion_id = isset($_POST['direccion_id']) ? intval($_POST['direccion_id']) : 0;
 
@@ -91,26 +76,16 @@ if ($direccion_id > 0) {
             $instrucciones = $dir['instrucciones'];
         }
     } else {
-        // Registrar error para depuración
-        $_SESSION['debug_dir_error'] = "No se encontró la dirección ID: $direccion_id para usuario: $usuario_id";
-        
-        $_SESSION['error_checkout'] = "La dirección seleccionada no es válida.";
-        header("Location: /checkout");
+        echo "Error: La dirección seleccionada no es válida.";
+        echo "<a href='/checkout'>Volver al checkout</a>";
         exit;
     }
 }
 
 // Verificar que tenemos una dirección
 if (empty($direccion_completa)) {
-    $_SESSION['error_checkout'] = "No se proporcionó una dirección válida.";
-    header("Location: /checkout");
-    exit;
-}
-
-// Verificar que tenemos un teléfono
-if (empty($telefono)) {
-    $_SESSION['error_checkout'] = "No se proporcionó un teléfono de contacto.";
-    header("Location: /checkout");
+    echo "Error: No se proporcionó una dirección válida.";
+    echo "<a href='/checkout'>Volver al checkout</a>";
     exit;
 }
 
@@ -122,8 +97,8 @@ $items = [];
 if (isset(reset($_SESSION['carrito'])['id'])) {
     // Si el carrito es un array de objetos con id, nombre, precio, etc.
     foreach ($_SESSION['carrito'] as $item) {
-        $cantidad = $item['cantidad'];
-        $precio = $item['precio'];
+        $cantidad = isset($item['cantidad']) ? $item['cantidad'] : 1;
+        $precio = floatval($item['precio']);
         $importe = $precio * $cantidad;
         $total_calculado += $importe;
         
@@ -163,12 +138,8 @@ if (isset(reset($_SESSION['carrito'])['id'])) {
                 }
             }
         } else {
-            // Registrar error para depuración
-            $_SESSION['debug_products_error'] = "No se pudieron obtener los productos: " . $conn->error;
-            $_SESSION['debug_products_query'] = $query;
-            
-            $_SESSION['error_checkout'] = "Error al obtener información de productos.";
-            header("Location: /checkout");
+            echo "Error: No se pudieron obtener los productos del carrito.";
+            echo "<a href='/productos'>Ver productos</a>";
             exit;
         }
     }
@@ -176,8 +147,8 @@ if (isset(reset($_SESSION['carrito'])['id'])) {
 
 // Si llegamos aquí y no hay items, hay un problema con el carrito
 if (empty($items)) {
-    $_SESSION['error_checkout'] = "No se pudieron procesar los productos del carrito.";
-    header("Location: /productos");
+    echo "Error: No se pudieron procesar los productos del carrito.";
+    echo "<a href='/productos'>Ver productos</a>";
     exit;
 }
 
@@ -256,12 +227,9 @@ try {
     // Revertir transacción en caso de error
     $conn->rollback();
     
-    // Registrar error para depuración
-    $_SESSION['debug_db_error'] = $e->getMessage();
-    
-    // Guardar mensaje de error en sesión
-    $_SESSION['error_checkout'] = "Error al registrar el pedido: " . $e->getMessage();
-    header("Location: /checkout");
+    // Mensaje de error
+    echo "Error al registrar el pedido: " . $e->getMessage();
+    echo "<br><a href='/checkout'>Volver al checkout</a>";
     exit;
 }
 
