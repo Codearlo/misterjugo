@@ -1153,3 +1153,379 @@
     font-size: 0.95rem;
   }
 }
+
+/* CSS específico para mejorar el modal de detalles del pedido */
+
+/* Estilo para el encabezado del modal */
+.pedidos-page .modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 22px 30px;
+  border-bottom: 1px solid rgba(0,0,0,0.08);
+  background: linear-gradient(to right, rgba(255,122,0,0.03), transparent);
+}
+
+.pedidos-page #modal-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: var(--ped-text-dark);
+  margin: 0;
+  position: relative;
+  padding-left: 15px;
+}
+
+.pedidos-page #modal-title:before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 5px;
+  height: 25px;
+  background: var(--ped-primary);
+  border-radius: 3px;
+}
+
+/* Estilo para los detalles del pedido */
+.pedidos-page .order-summary {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 25px;
+  margin-bottom: 25px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+}
+
+.pedidos-page .order-info-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.pedidos-page .info-group {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.pedidos-page .info-label {
+  font-weight: 600;
+  color: var(--ped-text-medium);
+  min-width: 80px;
+}
+
+.pedidos-page .info-value {
+  font-weight: 500;
+}
+
+/* Estilo para el badge de estado */
+.pedidos-page .status-text {
+  display: inline-flex;
+  align-items: center;
+  padding: 8px 16px;
+  border-radius: 30px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: white;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.pedidos-page .status-text:before {
+  content: '';
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: rgba(255,255,255,0.7);
+  margin-right: 8px;
+}
+
+.pedidos-page .status-text.pendiente {
+  background: linear-gradient(135deg, #FF9800, #F57C00);
+  box-shadow: 0 2px 8px rgba(255, 152, 0, 0.3);
+}
+
+.pedidos-page .status-text.procesando {
+  background: linear-gradient(135deg, #2196F3, #1976D2);
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.pedidos-page .status-text.completado {
+  background: linear-gradient(135deg, #4CAF50, #388E3C);
+  box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
+}
+
+.pedidos-page .status-text.cancelado {
+  background: linear-gradient(135deg, #F44336, #D32F2F);
+  box-shadow: 0 2px 8px rgba(244, 67, 54, 0.3);
+}
+
+/* Estilo para el botón de cancelar pedido */
+.pedidos-page .btn-cancel-order-modal {
+  background-color: #FFF;
+  color: #E53935;
+  border: 1px solid rgba(229, 57, 53, 0.3);
+  padding: 12px 22px;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s cubic-bezier(0.165, 0.84, 0.44, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin: 15px auto 20px;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(229, 57, 53, 0.07);
+}
+
+.pedidos-page .btn-cancel-order-modal:after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: -100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.4s ease;
+}
+
+.pedidos-page .btn-cancel-order-modal:hover {
+  background-color: rgba(229, 57, 53, 0.05);
+  transform: translateY(-3px);
+  box-shadow: 0 5px 12px rgba(229, 57, 53, 0.15);
+}
+
+.pedidos-page .btn-cancel-order-modal:hover:after {
+  left: 100%;
+}
+
+.pedidos-page .btn-cancel-order-modal:active {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 5px rgba(229, 57, 53, 0.1);
+}
+
+.pedidos-page .btn-cancel-order-modal i {
+  font-size: 1rem;
+}
+
+/* Estilo para la sección de productos */
+.pedidos-page .order-items {
+  margin-bottom: 25px;
+}
+
+.pedidos-page .order-items h4 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: var(--ped-text-dark);
+  padding-bottom: 10px;
+  border-bottom: 2px solid rgba(0,0,0,0.08);
+  position: relative;
+}
+
+.pedidos-page .order-items h4:after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -2px;
+  width: 80px;
+  height: 2px;
+  background-color: var(--ped-primary);
+}
+
+/* Estilo para los items del pedido */
+.pedidos-page .items-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.pedidos-page .order-item {
+  background-color: #fff;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  box-shadow: 0 3px 10px rgba(0,0,0,0.08);
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  border: 1px solid rgba(0,0,0,0.04);
+  padding: 0;
+}
+
+.pedidos-page .order-item:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 7px 15px rgba(0,0,0,0.12);
+}
+
+.pedidos-page .item-image {
+  width: 100%;
+  height: 180px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  position: relative;
+}
+
+.pedidos-page .item-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.5s ease;
+}
+
+.pedidos-page .order-item:hover .item-image img {
+  transform: scale(1.05);
+}
+
+.pedidos-page .item-details {
+  padding: 15px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.pedidos-page .item-details h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--ped-text-dark);
+}
+
+.pedidos-page .item-details div {
+  display: flex;
+  justify-content: space-between;
+  color: var(--ped-text-medium);
+  font-size: 0.9rem;
+}
+
+.pedidos-page .item-total {
+  margin: 0 15px 15px;
+  padding: 8px 15px;
+  background: linear-gradient(135deg, var(--ped-primary-light), var(--ped-primary));
+  border-radius: 30px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #fff;
+  display: inline-block;
+  align-self: flex-start;
+  box-shadow: 0 3px 8px rgba(255, 122, 0, 0.25);
+  position: relative;
+  overflow: hidden;
+}
+
+.pedidos-page .item-total:after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 70%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.pedidos-page .order-item:hover .item-total:after {
+  left: 100%;
+}
+
+/* Estilo para el total */
+.pedidos-page .order-totals {
+  background-color: #f9f9f9;
+  border-radius: 12px;
+  padding: 25px;
+  margin-top: 20px;
+  position: relative;
+}
+
+.pedidos-page .order-totals:before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  height: 1px;
+  width: 90%;
+  border-top: 1px dashed rgba(0,0,0,0.1);
+}
+
+.pedidos-page .total-line {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.pedidos-page .total-line.grand-total {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+.pedidos-page .total-label {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: var(--ped-text-dark);
+}
+
+.pedidos-page .total-value {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: var(--ped-primary);
+  background: linear-gradient(135deg, var(--ped-primary), var(--ped-primary-dark));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .pedidos-page .items-list {
+    grid-template-columns: 1fr;
+  }
+  
+  .pedidos-page .btn-cancel-order-modal {
+    width: 100%;
+  }
+  
+  .pedidos-page .info-group {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 5px;
+  }
+  
+  .pedidos-page .info-label {
+    min-width: auto;
+  }
+  
+  .pedidos-page .modal-header {
+    padding: 18px 20px;
+  }
+  
+  .pedidos-page .order-summary,
+  .pedidos-page .order-totals {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .pedidos-page #modal-title {
+    font-size: 1.3rem;
+  }
+  
+  .pedidos-page .order-items h4 {
+    font-size: 1.1rem;
+  }
+  
+  .pedidos-page .total-label {
+    font-size: 1.1rem;
+  }
+  
+  .pedidos-page .total-value {
+    font-size: 1.3rem;
+  }
+}
