@@ -26,12 +26,12 @@ button {
     outline: none;
 }
 
-/* === Hero Section - Versión Mejorada === */
 /* === Hero Section === */
 .hero-section {
     background-color: #fff;
     padding: 80px 0;
     position: relative; /* Permite posicionar elementos absolutos dentro */
+    overflow: visible; /* Evita que los elementos absolutos se corten */
 }
 
 .container {
