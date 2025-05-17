@@ -31,7 +31,7 @@
             <div class="hero-text">
                 <h1>¿Ya comiste? Que esperas para ordenar</h1>
                 <p>Descubre nuestros jugos y sándwich </p>
-                <a href="productos.php" class="btn-order-now">Ordena Ya!!</a>
+                <a href="productos" class="btn-order-now">Ordena Ya!!</a>
             </div>
         </div>
     </div>
