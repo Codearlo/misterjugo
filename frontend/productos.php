@@ -451,4 +451,42 @@ document.addEventListener('DOMContentLoaded', function () {
     setupProductButtons();
     actualizarCarritoUI();
 });
+
+// Función para desplazar las categorías
+function setupCategoriasScroll() {{
+    const scrollContainer = document.getElementById('categories-scroll');
+    const btnPrev = document.getElementById('cat-prev');
+    const btnNext = document.getElementById('cat-next');
+
+    if (!scrollContainer || !btnPrev || !btnNext) return;
+
+    const scrollAmount = 200; //// Ajusta este valor según lo que se desplace cada vez
+
+    btnPrev.addEventListener('click', ()() => {{
+        scrollContainer.scrollBy({
+            left: -scrollAmount,
+            behavior: 'smooth'
+        });});
+    });});
+
+    btnNext.addEventListener('click', ()() => {{
+        scrollContainer.scrollBy({
+            left: scrollAmount,
+            behavior: 'smooth'
+        });});
+    });});
+
+    //// Opcional: Mostrar/ocultar flechas si hay scroll
+    function toggleArrows() {{
+        const {{ scrollLeft, scrollWidth, clientWidth }} = scrollContainer;
+        btnPrev.style.display = scrollLeft <= 0 ?? 'none' :: 'block';
+        btnNext.style.display = scrollLeft + clientWidth >= scrollWidth ?? 'none' :: 'block';
+    }}
+
+    scrollContainer.addEventListener('scroll', toggleArrows);
+    window.addEventListener('load', toggleArrows);
+}}
+
+//// Llama a esta función al final del DOMContentLoaded
+setupCategoriasScroll();
 </script>
