@@ -76,23 +76,21 @@ button {
 }
 
 .btn-order-now {
-    background: linear-gradient(to right, #f69a47, #e57e2d);
-    color: #fff;
-    border: none;
-    padding: 16px 32px;
-    border-radius: 30px;
+    background-color: #f69a47;
+    color: #fff !important; /* Asegura que el texto sea blanco */
+    text-decoration: none; /* Elimina subrayado */
+    padding: 15px 30px;
+    border-radius: 5px;
     font-size: 1.2rem;
-    font-weight: bold;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    box-shadow: 0 6px 15px rgba(246, 154, 71, 0.3);
+    display: inline-block; /* Necesario para que padding funcione correctamente */
+    transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .btn-order-now:hover {
-    background: linear-gradient(to right, #e57e2d, #f69a47);
+    background-color: #e57e2d;
     transform: translateY(-2px);
-    box-shadow: 0 8px 20px rgba(246, 154, 71, 0.4);
 }
+
 
 @keyframes fadeInUp {
     from {
