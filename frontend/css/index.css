@@ -61,7 +61,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: scroll; /* Cambio principal */
+    background-attachment: scroll;
     color: var(--text-light);
     min-height: 100vh;
     display: flex;
@@ -79,7 +79,7 @@ body {
 .hero-text {
     max-width: 550px;
     animation: fadeInUp 1s ease-in-out;
-    background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
     padding: 20px;
     border-radius: 10px;
 }
@@ -116,6 +116,11 @@ body {
     background: linear-gradient(to right, #e57e2d, #f69a47);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(246, 154, 71, 0.4);
+}
+
+/* Eliminar el subrayado del botón */
+.btn-order-now::before {
+    content: none; /* Elimina el subrayado */
 }
 
 /* === Sección de Promociones - Diseño Mejorado === */
