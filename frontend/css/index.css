@@ -53,57 +53,47 @@ body {
     align-items: center;
 }
 
-/* === Hero Section === */
+/* === Hero Section - Imagen como fondo === */
 .hero-section {
     background-color: #fff;
     padding: 80px 0;
     position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
 }
 
 .hero-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: center;
-    flex-wrap: wrap;
-    gap: 60px;
-}
-
-.hero-image {
-    position: relative;
-    z-index: 1;
+    text-align: left;
     width: 100%;
-    max-width: 450px;
-    margin-left: auto;
-    margin-right: auto;
-    text-align: center;
-}
-
-.hero-image img {
-    width: 100%;
-    max-width: 450px;
-    height: auto;
-    object-fit: cover;
-    border-radius: 20px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
 }
 
 .hero-text {
-    text-align: left;
     max-width: 550px;
     animation: fadeInUp 1s ease-in-out;
 }
 
 .hero-text h1 {
     font-size: 3.5rem;
-    color: #f69a47;
+    color: var(--text-light);
     margin-bottom: 20px;
     line-height: 1.2;
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
 }
 
 .hero-text p {
     font-size: 1.3rem;
-    color: #555;
+    color: var(--text-light);
     margin-bottom: 30px;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
 }
 
 .btn-order-now {
@@ -134,17 +124,6 @@ body {
         opacity: 1;
         transform: translateY(0);
     }
-}
-
-/* Clase especial para proteger la imagen del banner */
-.hero-banner {
-    display: block !important;
-    width: 100% !important;
-    height: auto !important;
-    opacity: 1 !important;
-    visibility: visible !important;
-    animation: none !important;
-    transform: none !important;
 }
 
 /* === Sección de Promociones - Diseño Mejorado === */
@@ -353,11 +332,6 @@ body {
     .hero-content {
         flex-direction: column;
         text-align: center;
-    }
-
-    .hero-image {
-        width: 90%;
-        max-width: 300px;
     }
 
     .hero-text h1 {
