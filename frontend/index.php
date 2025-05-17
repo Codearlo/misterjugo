@@ -26,12 +26,12 @@
     <div class="container">
         <div class="hero-content">
             <div class="hero-image">
-                <img src="./images/jugos-misterjugo.jpg" alt="Logo Mister Jugo">
+                <img src="./images/banner.jpg" alt="Logo Mister Jugo">
             </div>
             <div class="hero-text">
                 <h1>¿Ya comiste? ¿Qué esperas para ordenar?</h1>
                 <p>Descubre nuestros jugos y sándwich</p>
-                <a href="productos.php" class="btn-order-now">Ordena Ya!!</a>
+                <a href="productos" class="btn-order-now">Ordena Ya!!</a>
             </div>
         </div>
     </div>
