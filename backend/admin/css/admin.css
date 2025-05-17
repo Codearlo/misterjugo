@@ -1,0 +1,264 @@
+/* admin.css - Estilos para el panel de administración de MisterJugo */
+
+/* Estilos generales */
+body {
+    font-family: 'Poppins', sans-serif;
+    background-color: #f8f9fa;
+    min-height: 100vh;
+}
+
+/* Estilos para la barra lateral */
+.sidebar {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 100;
+    padding: 0;
+    box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+    height: 100vh;
+    overflow-y: auto;
+}
+
+/* Logo */
+.admin-logo {
+    height: 60px;
+    width: auto;
+    margin-bottom: 10px;
+    filter: drop-shadow(0 2px 4px rgba(255, 255, 255, 0.2));
+}
+
+/* Links de navegación */
+.nav-link {
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+    padding: 12px 15px;
+    margin-bottom: 5px;
+    border-radius: 5px;
+    transition: all 0.3s ease;
+}
+
+.nav-link:hover {
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    transform: translateX(5px);
+}
+
+.nav-link.active {
+    color: #fff;
+    background: #FF7A00;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+
+.nav-link i {
+    margin-right: 8px;
+    width: 20px;
+    text-align: center;
+}
+
+/* Títulos y encabezados */
+.h2 {
+    font-weight: 700;
+    color: #333;
+}
+
+/* Tarjetas de estadísticas */
+.stats-card {
+    border-radius: 12px;
+    transition: all 0.3s ease;
+    border: none;
+    overflow: hidden;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.stats-products {
+    border-left: 5px solid #FF9800;
+}
+
+.stats-categories {
+    border-left: 5px solid #4CAF50;
+}
+
+.stats-orders {
+    border-left: 5px solid #2196F3;
+}
+
+.stats-users {
+    border-left: 5px solid #9C27B0;
+}
+
+.icon-container {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+}
+
+.stats-products .icon-container {
+    background-color: #FFF3E0;
+    color: #FF9800;
+}
+
+.stats-categories .icon-container {
+    background-color: #E8F5E9;
+    color: #4CAF50;
+}
+
+.stats-orders .icon-container {
+    background-color: #E3F2FD;
+    color: #2196F3;
+}
+
+.stats-users .icon-container {
+    background-color: #F3E5F5;
+    color: #9C27B0;
+}
+
+/* Estilos para tablas */
+.table {
+    vertical-align: middle;
+}
+
+.table th {
+    font-weight: 600;
+    color: #333;
+    background-color: #f8f9fa;
+}
+
+.table tr:hover {
+    background-color: #f5f5f5;
+}
+
+/* Estilos para botones de acciones */
+.btn-group .btn {
+    margin: 0 2px;
+}
+
+/* Estilos para paginación */
+.pagination .page-link {
+    color: #FF7A00;
+}
+
+.pagination .page-item.active .page-link {
+    background-color: #FF7A00;
+    border-color: #FF7A00;
+    color: white;
+}
+
+/* Estilos para miniatura de producto */
+.product-thumb {
+    width: 60px;
+    height: 60px;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.no-image-placeholder {
+    width: 60px;
+    height: 60px;
+    background-color: #f5f5f5;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #aaa;
+    font-size: 1.5rem;
+}
+
+/* Estilo para vista previa de imagen */
+.product-image-preview {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+}
+
+/* Estilos responsivos */
+@media (max-width: 768px) {
+    .sidebar {
+        position: static;
+        height: auto;
+    }
+    
+    .stats-card {
+        margin-bottom: 15px;
+    }
+    
+    .card-body {
+        padding: 15px;
+    }
+    
+    .table-responsive {
+        font-size: 0.9rem;
+    }
+}
+
+/* Animaciones y transiciones */
+.card {
+    transition: all 0.3s ease;
+}
+
+.card:hover {
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn {
+    transition: all 0.3s ease;
+}
+
+.btn-primary {
+    background-color: #FF7A00;
+    border-color: #FF7A00;
+}
+
+.btn-primary:hover {
+    background-color: #E56D00;
+    border-color: #E56D00;
+    transform: translateY(-2px);
+}
+
+/* Color de texto para enlaces primarios */
+a.text-primary, .text-primary {
+    color: #FF7A00 !important;
+}
+
+/* Color de fondo para encabezados de tarjeta */
+.card-header.bg-primary {
+    background-color: #FF7A00 !important;
+}
+
+/* Estilizacion de alerts */
+.alert {
+    border-radius: 10px;
+}
+
+.alert-success {
+    border-left: 5px solid #4CAF50;
+}
+
+.alert-danger {
+    border-left: 5px solid #F44336;
+}
+
+/* Animaciones de entrada */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: fadeIn 0.5s ease-out;
+}
