@@ -1,10 +1,38 @@
-/* === Hero Section === */
-.hero-section {
+/* === Tipografía y Reset Básico === */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Poppins', sans-serif;
+    line-height: 1.6;
     background-color: #fff;
-    padding: 60px 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    color: #333;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    color: #333;
+    font-weight: 600;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+button {
+    outline: none;
+}
+
+/* === Hero Section - Versión Mejorada === */
+.hero-section {
+    background: linear-gradient(to right, #fffdf5, #fefaf1);
+    padding: 80px 0;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
 }
 
 .hero-content {
@@ -12,98 +40,146 @@
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
-    gap: 40px;
+    gap: 60px;
+    max-width: 1200px;
+    margin: auto;
 }
 
 .hero-image img {
-    width: 400px;
-    border: 2px dashed #f69a47;
-    border-radius: 10px;
+    width: 100%;
+    max-width: 450px;
+    border-radius: 20px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s ease;
+}
+
+.hero-image img:hover {
+    transform: scale(1.03);
 }
 
 .hero-text {
-    max-width: 500px;
+    max-width: 550px;
+    animation: fadeInUp 1s ease-in-out;
 }
 
 .hero-text h1 {
-    font-size: 3rem;
+    font-size: 3.5rem;
     color: #f69a47;
     margin-bottom: 20px;
+    line-height: 1.2;
 }
 
 .hero-text p {
-    font-size: 1.2rem;
-    color: #333;
+    font-size: 1.3rem;
+    color: #555;
     margin-bottom: 30px;
 }
 
 .btn-order-now {
-    background-color: #f69a47;
+    background: linear-gradient(to right, #f69a47, #e57e2d);
     color: #fff;
     border: none;
-    padding: 15px 30px;
-    border-radius: 5px;
+    padding: 16px 32px;
+    border-radius: 30px;
     font-size: 1.2rem;
+    font-weight: bold;
     cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(246, 154, 71, 0.3);
 }
 
-/* === Sección de promociones === */
+.btn-order-now:hover {
+    background: linear-gradient(to right, #e57e2d, #f69a47);
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(246, 154, 71, 0.4);
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* === Sección de Promociones - Diseño Mejorado === */
 .promotions {
-    padding: 60px 20px;
-    background-color: #f9f9f9;
+    padding: 80px 20px;
+    background-color: #fff;
     text-align: center;
 }
 
 .promotions h2 {
-    font-size: 2rem;
-    margin-bottom: 20px;
+    font-size: 2.5rem;
+    margin-bottom: 40px;
     color: #333;
+    position: relative;
+    display: inline-block;
+}
+
+.promotions h2::after {
+    content: '';
+    display: block;
+    width: 80px;
+    height: 3px;
+    background-color: #f69a47;
+    margin: 10px auto 0;
 }
 
 .promo-cards {
     display: flex;
-    justify-content: center; /* Centra las tarjetas horizontalmente */
+    justify-content: center;
     flex-wrap: wrap;
-    gap: 20px; /* Reduce el espacio entre tarjetas */
+    gap: 30px;
 }
 
 .promo-card {
     background-color: white;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
     overflow: hidden;
-    width: 300px; /* Tamaño uniforme */
+    width: 300px;
     max-width: 100%;
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .promo-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-8px);
+    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
 }
 
 .promo-card img {
     width: 100%;
     height: auto;
+    object-fit: cover;
+    transition: transform 0.4s ease;
+}
+
+.promo-card:hover img {
+    transform: scale(1.05);
 }
 
 .promo-card .content {
-    padding: 15px;
+    padding: 20px;
     text-align: left;
 }
 
 .promo-card h3 {
-    font-size: 1.2rem;
+    font-size: 1.3rem;
     margin-bottom: 10px;
     color: #f69a47;
 }
 
 .promo-card p {
-    font-size: 0.95rem;
-    color: #333;
-    line-height: 1.5;
+    font-size: 1rem;
+    color: #444;
+    line-height: 1.6;
 }
 
-/* === Botón de WhatsApp === */
+/* === Botón de WhatsApp - Mejorado === */
 .whatsapp-btn {
     position: fixed;
     bottom: 20px;
@@ -117,25 +193,26 @@
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-    transition: background-color 0.3s;
+    box-shadow: 0 6px 15px rgba(37, 211, 102, 0.4);
+    transition: all 0.3s ease;
     z-index: 1000;
 }
 
 .whatsapp-btn:hover {
     background-color: #1ebc57;
+    transform: scale(1.1);
 }
 
 .whatsapp-btn i {
     font-size: 30px;
 }
 
-/* === Footer Styles === */
+/* === Footer Styles - Mejorado === */
 .site-footer {
     background-color: #1c1c1c;
     color: #fff;
     padding: 60px 20px;
-    font-family: Arial, sans-serif;
+    font-family: 'Poppins', sans-serif;
 }
 
 .footer-container {
@@ -157,6 +234,7 @@
     color: #f69a47;
     font-size: 1.2rem;
     text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .footer-section p {
@@ -171,12 +249,17 @@
 }
 
 .footer-section ul li {
-    margin-bottom: 10px;
+    margin-bottom: 12px;
     display: flex;
     align-items: center;
     gap: 10px;
     font-size: 0.95rem;
     color: #ccc;
+    transition: color 0.3s;
+}
+
+.footer-section ul li:hover {
+    color: #f69a47;
 }
 
 .footer-section ul li i {
@@ -188,6 +271,7 @@
 .footer-section ul li a {
     color: #ccc;
     text-decoration: none;
+    transition: color 0.3s;
 }
 
 .footer-section ul li a:hover {
@@ -203,11 +287,15 @@
 .socials a {
     color: #fff;
     font-size: 20px;
-    transition: color 0.3s;
+    background-color: #333;
+    padding: 8px;
+    border-radius: 50%;
+    transition: all 0.3s;
 }
 
 .socials a:hover {
-    color: #f69a47;
+    background-color: #f69a47;
+    color: #fff;
 }
 
 .footer-bottom {
@@ -217,4 +305,15 @@
     color: #aaa;
     border-top: 1px solid #333;
     padding-top: 20px;
+}
+
+@media (max-width: 768px) {
+    .hero-content {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .promo-cards {
+        justify-content: center;
+    }
 }
