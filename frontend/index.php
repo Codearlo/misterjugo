@@ -24,7 +24,7 @@
 <!-- Hero Section con imagen como fondo -->
 <div class="hero-section">
     <div class="hero-overlay"></div>
-    <div class="container hero-content">
+    <div class="container hero-content fade-in">
         <h1>¿Ya comiste? ¿Qué esperas para ordenar?</h1>
         <p>Descubre nuestros jugos y sándwich</p>
         <a href="productos" class="btn-order-now">Ordena Ya!!</a>
