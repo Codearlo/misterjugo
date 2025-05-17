@@ -1,7 +1,7 @@
 <?php include 'includes/header.php'; ?>
 <link rel="stylesheet" href="./css/index.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins :wght@400;500;600;700&display=swap" rel="stylesheet"> <!-- Estilo principal -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css "> <!-- Iconos -->
+<link href="https://fonts.googleapis.com/css2?family=Poppins :wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css ">
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -21,12 +21,11 @@
     });
 </script>
 
-
 <main class="hero-section">
     <div class="container">
         <div class="hero-content">
             <div class="hero-image">
-                <img src="./images/banner.jpg" alt="Logo Mister Jugo">
+                <img src="./images/banner.jpg?<?= time() ?>" alt="Logo Mister Jugo" class="hero-banner">
             </div>
             <div class="hero-text">
                 <h1>¿Ya comiste? ¿Qué esperas para ordenar?</h1>
@@ -37,9 +36,8 @@
     </div>
 </main>
 
-
 <section class="promotions">
-    <h2>Promociones </h2>
+    <h2>Promociones</h2>
     <div class="promo-cards">
         <div class="promo-card">
             <img src="./images/promo1.jpg" alt="Promoción 1">
