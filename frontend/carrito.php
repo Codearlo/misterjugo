@@ -1,123 +1,273 @@
 <?php
-// Iniciar sesión (siempre al inicio)
-session_start();
+// Este archivo será incluido en productos.php
+// Contiene el carrito lateral y su funcionalidad
 
-// Verificar si el carrito existe, si no, lo inicializamos vacío
-if (!isset($_SESSION['carrito'])) {
-    $_SESSION['carrito'] = [];
+// Asegurarse de que la sesión está iniciada
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
 }
+?>
 
-// Manejar acciones como eliminar producto o actualizar cantidad
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action'])) {
-        $id_producto = intval($_POST['producto_id']);
+<!-- Carrito lateral -->
+<div class="cart-sidebar" id="cart-sidebar">
+    <div class="cart-header">
+        <h3><i class="fas fa-shopping-cart"></i> Mi Carrito</h3>
+        <button class="btn-close-cart" id="btn-close-cart">
+            <i class="fas fa-times"></i>
+        </button>
+    </div>
+    
+    <div class="cart-items" id="cart-items">
+        <!-- Aquí se cargarán los items del carrito con JS -->
+        <div class="empty-cart">
+            <i class="fas fa-shopping-basket"></i>
+            <p>Tu carrito está vacío</p>
+        </div>
+    </div>
+    
+    <div class="cart-summary">
+        <div class="cart-total">
+            <span>Total:</span>
+            <span id="cart-total-amount">S/0.00</span>
+        </div>
+        <div class="cart-actions">
+            <!-- Eliminado el botón "Ver carrito" -->
+            <a href="/checkout" class="btn-checkout">
+                <i class="fas fa-check"></i> Finalizar compra
+            </a>
+        </div>
+    </div>
+</div>
 
-        switch ($_POST['action']) {
-            case 'eliminar':
-                unset($_SESSION['carrito'][$id_producto]);
-                break;
+<div class="cart-overlay" id="cart-overlay"></div>
 
-            case 'aumentar':
-                if (isset($_SESSION['carrito'][$id_producto])) {
-                    $_SESSION['carrito'][$id_producto]++;
-                }
-                break;
+<!-- Botón flotante del carrito para móviles -->
+<button class="cart-float-btn" id="cart-float-btn">
+    <i class="fas fa-shopping-cart"></i>
+    <span class="cart-count">0</span>
+</button>
 
-            case 'disminuir':
-                if (isset($_SESSION['carrito'][$id_producto]) && $_SESSION['carrito'][$id_producto] > 1) {
-                    $_SESSION['carrito'][$id_producto]--;
-                } else {
-                    unset($_SESSION['carrito'][$id_producto]); // Eliminar si es 0
-                }
-                break;
+<script>
+// Función para gestionar el carrito
+document.addEventListener('DOMContentLoaded', function() {
+    // Elementos del DOM
+    const cartSidebar = document.getElementById('cart-sidebar');
+    const cartOverlay = document.getElementById('cart-overlay');
+    const btnCloseCart = document.getElementById('btn-close-cart');
+    const cartFloatBtn = document.getElementById('cart-float-btn');
+    
+    // Función global para añadir al carrito, disponible para otras partes de la página
+    window.addToCart = function(id, nombre, precio, imagen, cantidad = 1) {
+        if (!id || !nombre || !precio) {
+            console.error('Datos incompletos para añadir al carrito:', { id, nombre, precio });
+            return;
         }
 
-        // Redirigir para evitar reenvío del formulario
-        header("Location: carrito.php");
-        exit;
+        const producto = {
+            id: id,
+            nombre: nombre,
+            precio: parseFloat(precio),
+            imagen: imagen || '/images/producto-default.jpg',
+            cantidad: parseInt(cantidad)
+        };
+
+        fetch('/backend/agregar_al_carrito.php', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(producto)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                mostrarNotificacion(`${nombre} agregado al carrito`);
+                actualizarCarritoUI(); // Actualizar UI desde sesión
+                openCartSidebar(); // Abrir carrito automáticamente
+            } else {
+                alert('Error al agregar el producto al carrito.');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ocurrió un error al agregar al carrito.');
+        });
+    };
+
+    // Cargar el carrito desde el servidor
+    function actualizarCarritoUI() {
+        fetch('/backend/obtener_carrito.php')
+            .then(response => response.json())
+            .then(carrito => {
+                const cartItems = document.getElementById('cart-items');
+                const cartTotalAmount = document.getElementById('cart-total-amount');
+                const cartCount = document.querySelector('.cart-count');
+
+                if (!carrito || carrito.length === 0) {
+                    cartItems.innerHTML = `
+                        <div class="empty-cart">
+                            <i class="fas fa-shopping-basket"></i>
+                            <p>Tu carrito está vacío</p>
+                        </div>`;
+                    cartTotalAmount.textContent = 'S/0.00';
+                    cartCount.textContent = '0';
+
+                    if (cartFloatBtn) cartFloatBtn.classList.remove('active');
+                } else {
+                    let html = '';
+                    let total = 0;
+
+                    carrito.forEach(item => {
+                        const subtotal = item.precio * item.cantidad;
+                        total += subtotal;
+
+                        html += `
+                            <div class="cart-item" data-id="${item.id}">
+                                <div class="cart-item-image">
+                                    <img src="${item.imagen}" alt="${item.nombre}">
+                                </div>
+                                <div class="cart-item-details">
+                                    <h4>${item.nombre}</h4>
+                                    <div>S/${parseFloat(item.precio).toFixed(2)}</div>
+                                    <div class="cart-item-quantity">
+                                        <button class="cart-quantity-btn minus" data-id="${item.id}">-</button>
+                                        <span>${item.cantidad}</span>
+                                        <button class="cart-quantity-btn plus" data-id="${item.id}">+</button>
+                                    </div>
+                                </div>
+                                <div class="cart-item-subtotal">
+                                    S/${subtotal.toFixed(2)}
+                                    <button class="cart-item-remove" data-id="${item.id}">
+                                        <i class="fas fa-trash-alt"></i>
+                                    </button>
+                                </div>
+                            </div>`;
+                    });
+
+                    cartItems.innerHTML = html;
+                    cartTotalAmount.textContent = `S/${total.toFixed(2)}`;
+                    cartCount.textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+
+                    if (cartFloatBtn && cartCount.textContent > 0) {
+                        cartFloatBtn.classList.add('active');
+                    }
+
+                    // Botones de cantidad en el carrito
+                    const quantityBtns = document.querySelectorAll('.cart-quantity-btn');
+                    quantityBtns.forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const id = this.getAttribute('data-id');
+                            const action = this.classList.contains('plus') ? 'increase' : 'decrease';
+                            updateCartItemQuantity(id, action);
+                        });
+                    });
+
+                    // Eliminar items
+                    const removeButtons = document.querySelectorAll('.cart-item-remove');
+                    removeButtons.forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            const id = this.getAttribute('data-id');
+                            eliminarDelCarrito(id);
+                        });
+                    });
+                }
+            })
+            .catch(error => {
+                console.error('Error al cargar el carrito:', error);
+            });
     }
-}
-?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <title>Tu Carrito</title>
-    <link rel="stylesheet" href="carrito.css"> <!-- Vinculamos el CSS -->
-</head>
-<body>
+    // Actualizar cantidad de un item en el carrito
+    function updateCartItemQuantity(id, action) {
+        fetch('/backend/obtener_carrito.php')
+            .then(response => response.json())
+            .then(carrito => {
+                let updatedCarrito = [...carrito];
+                const index = updatedCarrito.findIndex(item => item.id === id);
+                
+                if (index !== -1) {
+                    if (action === 'increase') {
+                        updatedCarrito[index].cantidad += 1;
+                    } else if (action === 'decrease') {
+                        if (updatedCarrito[index].cantidad > 1) {
+                            updatedCarrito[index].cantidad -= 1;
+                        } else {
+                            eliminarDelCarrito(id);
+                            return;
+                        }
+                    }
+                    
+                    // Actualizar el carrito en el servidor
+                    fetch('/backend/actualizar_carrito.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(updatedCarrito)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            actualizarCarritoUI();
+                        }
+                    });
+                }
+            });
+    }
 
-<h1>🛒 Tu Carrito de Compras</h1>
+    // Eliminar del carrito
+    function eliminarDelCarrito(id) {
+        fetch(`/backend/eliminar_del_carrito.php?id=${id}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    actualizarCarritoUI();
+                }
+            });
+    }
 
-<?php if (empty($_SESSION['carrito'])): ?>
-    <p class="empty-cart">Tu carrito está vacío.</p>
-<?php else: 
-    // Simular productos desde una base de datos o array
-    $productos = [
-        1 => ['nombre' => 'Hamburguesa', 'precio' => 120],
-        2 => ['nombre' => 'Pizza', 'precio' => 150],
-        3 => ['nombre' => 'Ensalada', 'precio' => 80],
-        4 => ['nombre' => 'Refresco', 'precio' => 30],
-    ];
+    // Mostrar notificación
+    window.mostrarNotificacion = function(mensaje) {
+        const notificacion = document.createElement('div');
+        notificacion.className = 'notification success-notification';
+        notificacion.innerHTML = `<i class="fas fa-check-circle"></i><p>${mensaje}</p>`;
+        document.body.appendChild(notificacion);
+        setTimeout(() => notificacion.classList.add('show'), 100);
+        setTimeout(() => {
+            notificacion.classList.remove('show');
+            setTimeout(() => document.body.removeChild(notificacion), 300);
+        }, 3000);
+    };
 
-    $total = 0;
-?>
-    <table>
-        <thead>
-            <tr>
-                <th>Producto</th>
-                <th>Precio</th>
-                <th>Cantidad</th>
-                <th>Total</th>
-                <th>Acciones</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach ($_SESSION['carrito'] as $id => $cantidad): 
-                if (isset($productos[$id])) {
-                    $producto = $productos[$id];
-                    $subtotal = $producto['precio'] * $cantidad;
-                    $total += $subtotal;
-            ?>
-            <tr>
-                <td><?= htmlspecialchars($producto['nombre']) ?></td>
-                <td>$<?= number_format($producto['precio'], 2) ?></td>
-                <td><?= $cantidad ?></td>
-                <td>$<?= number_format($subtotal, 2) ?></td>
-                <td class="actions">
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="producto_id" value="<?= $id ?>">
-                        <input type="hidden" name="action" value="aumentar">
-                        <button type="submit">+</button>
-                    </form>
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="producto_id" value="<?= $id ?>">
-                        <input type="hidden" name="action" value="disminuir">
-                        <button type="submit">−</button>
-                    </form>
-                    <form method="POST" style="display:inline;">
-                        <input type="hidden" name="producto_id" value="<?= $id ?>">
-                        <input type="hidden" name="action" value="eliminar">
-                        <button type="submit" onclick="return confirm('¿Eliminar este producto?')">🗑️</button>
-                    </form>
-                </td>
-            </tr>
-            <?php } endforeach; ?>
-        </tbody>
-        <tfoot>
-            <tr>
-                <td colspan="3" class="total">Total del Pedido:</td>
-                <td class="total">$<?= number_format($total, 2) ?></td>
-                <td></td>
-            </tr>
-        </tfoot>
-    </table>
+    // Abrir carrito lateral
+    window.openCartSidebar = function() {
+        if (!cartSidebar || !cartOverlay) return;
+        cartSidebar.classList.add('active');
+        cartOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden'; // Evitar scroll
+    };
 
-    <!-- Botón para ir al Checkout -->
-    <a href="checkout.php" class="btn-checkout">Ir al Checkout</a>
+    // Cerrar carrito lateral
+    function closeCartSidebar() {
+        if (!cartSidebar || !cartOverlay) return;
+        cartSidebar.classList.remove('active');
+        cartOverlay.classList.remove('active');
+        document.body.style.overflow = ''; // Restaurar scroll
+    }
 
-<?php endif; ?>
+    // Eventos del carrito
+    if (cartFloatBtn) {
+        cartFloatBtn.addEventListener('click', openCartSidebar);
+    }
 
-</body>
-</html>
+    if (btnCloseCart) {
+        btnCloseCart.addEventListener('click', closeCartSidebar);
+    }
+
+    if (cartOverlay) {
+        cartOverlay.addEventListener('click', closeCartSidebar);
+    }
+
+    // Inicialización
+    actualizarCarritoUI();
+});
