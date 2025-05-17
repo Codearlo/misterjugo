@@ -26,13 +26,19 @@ button {
     outline: none;
 }
 
-/* === Hero Section - Versión Mejorada === */
+/* === Hero Section === */
 .hero-section {
-    background: linear-gradient(to right, #fffdf5, #fefaf1);
+    background-color: #fff;
     padding: 80px 0;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    position: relative; /* Permite posicionar elementos absolutos dentro */
+}
+
+.container {
+    max-width: 1200px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+    gap: 60px;
 }
 
 .hero-content {
@@ -41,23 +47,27 @@ button {
     align-items: center;
     flex-wrap: wrap;
     gap: 60px;
-    max-width: 1200px;
-    margin: auto;
+}
+
+.hero-image {
+    position: absolute; /* Coloca la imagen en posición absoluta */
+    top: 50%; /* Centra verticalmente */
+    left: 50%; /* Centra horizontalmente */
+    transform: translate(-50%, -50%); /* Ajusta la posición para centrar */
+    z-index: -1; /* Coloca la imagen detrás del texto */
 }
 
 .hero-image img {
     width: 100%;
-    max-width: 450px;
+    max-width: 450px; /* Tamaño máximo de la imagen */
+    height: auto;
+    object-fit: cover;
     border-radius: 20px;
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    transition: transform 0.3s ease;
-}
-
-.hero-image img:hover {
-    transform: scale(1.03);
 }
 
 .hero-text {
+    text-align: left;
     max-width: 550px;
     animation: fadeInUp 1s ease-in-out;
 }
@@ -76,21 +86,23 @@ button {
 }
 
 .btn-order-now {
-    background-color: #f69a47;
-    color: #fff !important; /* Asegura que el texto sea blanco */
-    text-decoration: none; /* Elimina subrayado */
-    padding: 15px 30px;
-    border-radius: 5px;
+    background: linear-gradient(to right, #f69a47, #e57e2d);
+    color: #fff;
+    border: none;
+    padding: 16px 32px;
+    border-radius: 30px;
     font-size: 1.2rem;
-    display: inline-block; /* Necesario para que padding funcione correctamente */
-    transition: background-color 0.3s ease, transform 0.3s ease;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 6px 15px rgba(246, 154, 71, 0.3);
 }
 
 .btn-order-now:hover {
-    background-color: #e57e2d;
+    background: linear-gradient(to right, #e57e2d, #f69a47);
     transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(246, 154, 71, 0.4);
 }
-
 
 @keyframes fadeInUp {
     from {
