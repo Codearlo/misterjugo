@@ -61,7 +61,7 @@ body {
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: scroll; /* Cambio principal */
     color: var(--text-light);
     min-height: 100vh;
     display: flex;
@@ -79,6 +79,9 @@ body {
 .hero-text {
     max-width: 550px;
     animation: fadeInUp 1s ease-in-out;
+    background: rgba(0, 0, 0, 0.5); /* Fondo semi-transparente */
+    padding: 20px;
+    border-radius: 10px;
 }
 
 .hero-text h1 {
@@ -113,17 +116,6 @@ body {
     background: linear-gradient(to right, #e57e2d, #f69a47);
     transform: translateY(-2px);
     box-shadow: 0 8px 20px rgba(246, 154, 71, 0.4);
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
 }
 
 /* === Sección de Promociones - Diseño Mejorado === */
