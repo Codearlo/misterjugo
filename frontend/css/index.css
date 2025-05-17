@@ -1,45 +1,63 @@
-/* === Tipografía y Reset Básico === */
+/* Importación de fuentes */
+@import url('https://fonts.googleapis.com/css2?family=Poppins :wght@300;400;500;600;700&display=swap');
+
+/* Variables CSS para colores y transiciones */
+:root {
+    /* Colores anaranjados más saturados */
+    --primary-color: #ff9933;
+    --primary-dark: #ff7f00;
+    --primary-light: #ffad5a;
+    --secondary-color: #3a3a3a;
+    --accent-color: #ff7f00;
+    --text-light: #ffffff;
+    --text-dark: #333333;
+    --background-light: #f9f9f9;
+
+    /* Transiciones */
+    --transition-fast: 0.2s ease;
+    --transition-normal: 0.3s ease;
+    --transition-slow: 0.5s ease;
+
+    /* Sombras */
+    --shadow-small: 0 2px 5px rgba(0, 0, 0, 0.1);
+    --shadow-medium: 0 4px 12px rgba(0, 0, 0, 0.15);
+    --shadow-large: 0 8px 24px rgba(0, 0, 0, 0.2);
+
+    /* Hover botón ordenar */
+    --primary-hover: #e35f00;
+}
+
+/* Reset mejorado */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
+html {
+    scroll-behavior: smooth;
+}
 body {
-    font-family: 'Poppins', sans-serif;
+    font-family: 'Poppins', Arial, sans-serif;
+    background-color: var(--background-light);
+    color: var(--text-dark);
     line-height: 1.6;
-    background-color: #fff;
-    color: #333;
+    overflow-x: hidden;
 }
 
-h1, h2, h3, h4, h5, h6 {
-    color: #333;
-    font-weight: 600;
-}
-
-a {
-    text-decoration: none;
-    color: inherit;
-}
-
-button {
-    outline: none;
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
 /* === Hero Section === */
 .hero-section {
     background-color: #fff;
     padding: 80px 0;
-    position: relative; /* Permite posicionar elementos absolutos dentro */
-    overflow: visible; /* Evita que los elementos absolutos se corten */
-}
-
-.container {
-    max-width: 1200px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    gap: 60px;
+    position: relative;
 }
 
 .hero-content {
@@ -51,16 +69,18 @@ button {
 }
 
 .hero-image {
-    position: absolute; /* Coloca la imagen en posición absoluta */
-    top: 50%; /* Centra verticalmente */
-    left: 50%; /* Centra horizontalmente */
-    transform: translate(-50%, -50%); /* Ajusta la posición para centrar */
-    z-index: -1; /* Coloca la imagen detrás del texto */
+    position: relative;
+    z-index: 1;
+    width: 100%;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+    text-align: center;
 }
 
 .hero-image img {
     width: 100%;
-    max-width: 450px; /* Tamaño máximo de la imagen */
+    max-width: 450px;
     height: auto;
     object-fit: cover;
     border-radius: 20px;
@@ -114,6 +134,17 @@ button {
         opacity: 1;
         transform: translateY(0);
     }
+}
+
+/* Clase especial para proteger la imagen del banner */
+.hero-banner {
+    display: block !important;
+    width: 100% !important;
+    height: auto !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    animation: none !important;
+    transform: none !important;
 }
 
 /* === Sección de Promociones - Diseño Mejorado === */
@@ -324,7 +355,16 @@ button {
         text-align: center;
     }
 
-    .promo-cards {
-        justify-content: center;
+    .hero-image {
+        width: 90%;
+        max-width: 300px;
+    }
+
+    .hero-text h1 {
+        font-size: 2rem;
+    }
+
+    .promo-card {
+        width: 100%;
     }
 }

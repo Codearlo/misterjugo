@@ -889,13 +889,3 @@ body {
     transform: scale(0.95);
     transition: transform 0.15s;
 }
-
-.hero-banner {
-    display: block;
-    width: 100%;
-    height: auto;
-    opacity: 1 !important;
-    visibility: visible !important;
-    animation: none !important;
-    transform: none !important;
-}
