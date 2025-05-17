@@ -3,7 +3,6 @@
 
 /* Variables CSS para colores y transiciones */
 :root {
-    /* Colores anaranjados más saturados */
     --primary-color: #ff9933;
     --primary-dark: #ff7f00;
     --primary-light: #ffad5a;
@@ -55,45 +54,47 @@ body {
 
 /* === Hero Section - Imagen como fondo === */
 .hero-section {
-    background-color: #fff;
-    padding: 80px 0;
-    position: relative;
+    background-image: url('../images/banner.jpg');
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: scroll;
-    color: var(--text-light);
     min-height: 100vh;
     display: flex;
     align-items: center;
+    justify-content: center;
+    position: relative;
+    padding: 80px 20px;
+    color: var(--text-light);
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+    z-index: 1;
 }
 
 .hero-content {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: left;
-    width: 100%;
-}
-
-.hero-text {
-    max-width: 550px;
-    animation: fadeInUp 1s ease-in-out;
-    background: rgba(0, 0, 0, 0.5); /* Fondo oscuro semi-transparente */
+    position: relative;
+    z-index: 2;
+    text-align: center;
+    max-width: 700px;
     padding: 20px;
-    border-radius: 10px;
 }
 
-.hero-text h1 {
-    font-size: 3.5rem;
+.hero-content h1 {
+    font-size: 3rem;
     color: var(--text-light);
     margin-bottom: 20px;
-    line-height: 1.2;
-    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.6);
+    text-shadow: 2px 2px 6px rgba(0, 0, 0, 0.7);
 }
 
-.hero-text p {
-    font-size: 1.3rem;
+.hero-content p {
+    font-size: 1.2rem;
     color: var(--text-light);
     margin-bottom: 30px;
     text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.5);
@@ -110,6 +111,8 @@ body {
     cursor: pointer;
     transition: all 0.3s ease;
     box-shadow: 0 6px 15px rgba(246, 154, 71, 0.3);
+    text-decoration: none;
+    display: inline-block;
 }
 
 .btn-order-now:hover {
@@ -118,12 +121,18 @@ body {
     box-shadow: 0 8px 20px rgba(246, 154, 71, 0.4);
 }
 
-/* Eliminar el subrayado del botón */
-.btn-order-now::before {
-    content: none; /* Elimina el subrayado */
+/* Eliminar cualquier subrayado adicional */
+.btn-order-now::before,
+.btn-order-now::after {
+    content: none !important;
 }
 
-/* === Sección de Promociones - Diseño Mejorado === */
+/* Evitar subrayado por defecto en enlaces */
+.btn-order-now:hover {
+    text-decoration: none !important;
+}
+
+/* Sección de Promociones */
 .promotions {
     padding: 80px 20px;
     background-color: #fff;
@@ -197,7 +206,7 @@ body {
     line-height: 1.6;
 }
 
-/* === Botón de WhatsApp - Mejorado === */
+/* Botón de WhatsApp */
 .whatsapp-btn {
     position: fixed;
     bottom: 20px;
@@ -225,7 +234,7 @@ body {
     font-size: 30px;
 }
 
-/* === Footer Styles - Mejorado === */
+/* Footer Styles */
 .site-footer {
     background-color: #1c1c1c;
     color: #fff;
@@ -325,17 +334,14 @@ body {
     padding-top: 20px;
 }
 
+/* Responsive */
 @media (max-width: 768px) {
-    .hero-content {
-        flex-direction: column;
-        text-align: center;
-    }
-
-    .hero-text h1 {
+    .hero-content h1 {
         font-size: 2rem;
     }
 
-    .promo-card {
-        width: 100%;
+    .btn-order-now {
+        padding: 14px 28px;
+        font-size: 1rem;
     }
 }
