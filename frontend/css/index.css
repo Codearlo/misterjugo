@@ -55,7 +55,7 @@ button {
     top: 50%; /* Centra verticalmente */
     left: 50%; /* Centra horizontalmente */
     transform: translate(-50%, -50%); /* Ajusta la posición para centrar */
-    z-index: -1; /* Coloca la imagen detrás del texto */
+   /* Coloca la imagen detrás del texto */
 }
 
 .hero-image img {
