@@ -1,7 +1,7 @@
 /* Estilos para el carrito lateral */
 .cart-sidebar {
-  background-color: #ff7a00;
-  color: white;
+  background-color: #ffffff;
+  color: #333;
   width: 100%;
   max-width: 350px;
   position: fixed;
@@ -12,6 +12,7 @@
   transition: right 0.3s ease;
   display: flex;
   flex-direction: column;
+  box-shadow: -3px 0 10px rgba(0, 0, 0, 0.1);
 }
 
 .cart-sidebar.active {
@@ -23,7 +24,8 @@
   justify-content: space-between;
   align-items: center;
   padding: 15px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: #ff7a00;
+  color: white;
 }
 
 .cart-header h3 {
@@ -51,7 +53,7 @@
 .cart-items {
   flex: 1;
   overflow-y: auto;
-  background-color: #f0f0f0;
+  background-color: #ffffff;
 }
 
 .empty-cart {
@@ -71,7 +73,7 @@
 .cart-item {
   display: flex;
   padding: 15px;
-  border-bottom: 1px solid #ddd;
+  border-bottom: 1px solid #eee;
   background-color: #fff;
   position: relative;
 }
@@ -79,7 +81,6 @@
 .cart-item-image {
   width: 60px;
   height: 60px;
-  border-radius: 5px;
   overflow: hidden;
   margin-right: 15px;
 }
@@ -133,11 +134,11 @@
 }
 
 .cart-quantity-btn.minus {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
 }
 
 .cart-quantity-btn.plus {
-  background-color: #e0e0e0;
+  background-color: #f0f0f0;
 }
 
 .cart-item-subtotal {
@@ -166,8 +167,8 @@
 .cart-summary {
   background-color: white;
   padding: 15px;
-  border-top: 1px solid #ddd;
-  color: #333;
+  border-top: 1px solid #eee;
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.05);
 }
 
 .cart-total {
@@ -270,11 +271,11 @@
   position: fixed;
   bottom: 20px;
   left: 20px;
-  background-color: #4caf50;
-  color: white;
+  background-color: white;
+  color: #333;
   padding: 15px 20px;
   border-radius: 5px;
-  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
   display: flex;
   align-items: center;
   gap: 10px;
@@ -282,6 +283,7 @@
   opacity: 0;
   transform: translateY(20px);
   transition: opacity 0.3s ease, transform 0.3s ease;
+  border-left: 4px solid #4caf50;
 }
 
 .notification.show {
@@ -291,41 +293,9 @@
 
 .notification i {
   font-size: 1.2rem;
+  color: #4caf50;
 }
 
 .notification p {
   margin: 0;
-}
-
-/* Estilo visto en la imagen */
-.cart-item {
-  background-color: #d3d3d3;
-  border-bottom: 1px solid #aaa;
-}
-
-.cart-sidebar {
-  background-color: #d3d3d3;
-}
-
-.cart-header {
-  background-color: #ff7a00;
-}
-
-.cart-item-image {
-  border-radius: 0;
-}
-
-.cart-quantity-btn {
-  border: 1px solid #ccc;
-}
-
-.cart-summary {
-  background-color: white;
-  box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
-}
-
-.success-notification {
-  background-color: white;
-  color: #333;
-  border-left: 4px solid #4caf50;
 }
