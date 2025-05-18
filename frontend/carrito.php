@@ -31,7 +31,6 @@ if (session_status() == PHP_SESSION_NONE) {
             <span id="cart-total-amount">S/0.00</span>
         </div>
         <div class="cart-actions">
-            <!-- Eliminado el botón "Ver carrito" -->
             <a href="/checkout" class="btn-checkout">
                 <i class="fas fa-check"></i> Finalizar compra
             </a>
@@ -127,8 +126,8 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <img src="${item.imagen}" alt="${item.nombre}">
                                 </div>
                                 <div class="cart-item-details">
-                                    <h4>${item.nombre}</h4>
-                                    <div>S/${parseFloat(item.precio).toFixed(2)}</div>
+                                    <h4 class="cart-item-name">${item.nombre}</h4>
+                                    <div class="cart-item-price">S/${parseFloat(item.precio).toFixed(2)}</div>
                                     <div class="cart-item-quantity">
                                         <button class="cart-quantity-btn minus" data-id="${item.id}">-</button>
                                         <span>${item.cantidad}</span>
@@ -136,7 +135,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     </div>
                                 </div>
                                 <div class="cart-item-subtotal">
-                                    S/${subtotal.toFixed(2)}
+                                    <span>S/${subtotal.toFixed(2)}</span>
                                     <button class="cart-item-remove" data-id="${item.id}">
                                         <i class="fas fa-trash-alt"></i>
                                     </button>
@@ -146,9 +145,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                     cartItems.innerHTML = html;
                     cartTotalAmount.textContent = `S/${total.toFixed(2)}`;
-                    cartCount.textContent = carrito.reduce((sum, item) => sum + item.cantidad, 0);
+                    cartCount.textContent = carrito.reduce((sum, item) => sum + parseInt(item.cantidad), 0);
 
-                    if (cartFloatBtn && cartCount.textContent > 0) {
+                    if (cartFloatBtn && parseInt(cartCount.textContent) > 0) {
                         cartFloatBtn.classList.add('active');
                     }
 
@@ -271,3 +270,4 @@ document.addEventListener('DOMContentLoaded', function() {
     // Inicialización
     actualizarCarritoUI();
 });
+</script>
