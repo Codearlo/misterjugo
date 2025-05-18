@@ -62,7 +62,7 @@ if ($result_productos && $result_productos->num_rows > 0) {
     }
 }
 ?>
-
+<?php include 'includes/navbar.php'; ?>
 <!DOCTYPE html>
 <html lang="es">
 <head>
