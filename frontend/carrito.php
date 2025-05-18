@@ -8,6 +8,7 @@ if (session_status() == PHP_SESSION_NONE) {
 }
 ?>
 
+<link rel="stylesheet" href="/css/carrito.css">ReintentarC
 <!-- Carrito lateral -->
 <div class="cart-sidebar" id="cart-sidebar">
     <div class="cart-header">
