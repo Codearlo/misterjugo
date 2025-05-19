@@ -20,7 +20,7 @@
 /* Barra de navegación flotante */
 .top-nav-bar {
   background-color: var(--nav-primary);
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
@@ -38,7 +38,7 @@
 
 .nav-controls {
   display: flex;
-  flex-direction: row;
+  flex-wrap: wrap;
   justify-content: space-between;
   align-items: center;
   padding: 10px 15px;
@@ -119,6 +119,8 @@
   position: relative;
   overflow: hidden;
   flex: 1;
+  order: 2;
+  width: 100%;
 }
 
 .nav-arrow {
@@ -200,6 +202,7 @@
   justify-content: flex-end;
   position: relative;
   flex: 0 0 auto;
+  order: 3;
 }
 
 .search-form {
@@ -289,23 +292,25 @@
 @media (max-width: 768px) {
   .nav-controls {
     flex-wrap: wrap;
-    padding: 12px;
-    gap: 12px;
+    padding: 10px;
+    gap: 10px;
+    justify-content: center;
   }
   
   .order-control {
-    order: 2;
-    flex: 0 0 auto;
+    order: 1;
+    margin-right: 10px;
   }
   
   .categories-nav {
-    order: 1;
+    order: 3;
     flex: 0 0 100%;
     width: 100%;
+    margin-top: 10px;
   }
   
   .search-control {
-    order: 3;
+    order: 2;
     flex: 1;
   }
   
@@ -316,8 +321,19 @@
 }
 
 @media (max-width: 480px) {
+  .top-nav-bar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+  
+  .productos-page .main-content {
+    margin-top: 120px; /* Ajustar según la altura del navbar */
+  }
+  
   .nav-controls {
-    gap: 10px;
+    gap: 8px;
     padding: 8px;
   }
   
@@ -352,36 +368,5 @@
     padding: 8px 12px;
     padding-right: 40px;
     font-size: 0.9rem;
-  }
-}
-
-@media (max-width: 360px) {
-  .nav-controls {
-    padding: 6px;
-    gap: 8px;
-  }
-  
-  .categories-scroll {
-    margin: 0 25px;
-  }
-  
-  .nav-arrow {
-    width: 25px;
-    height: 25px;
-  }
-  
-  .category-btn {
-    padding: 6px 10px;
-    font-size: 0.8rem;
-  }
-  
-  .sort-toggle {
-    width: 32px;
-    height: 32px;
-  }
-  
-  .clear-search {
-    width: 32px;
-    height: 32px;
   }
 }
