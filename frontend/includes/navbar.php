@@ -1,4 +1,6 @@
 <!-- Barra de navegación flotante para productos -->
+<script src="js/loader.js"></script>
+<script src="js/cache_control.js"></script>
 <link rel="stylesheet" href="/css/navbar.css">
 <div class="top-nav-bar" id="floating-navbar">
     <div class="container">
