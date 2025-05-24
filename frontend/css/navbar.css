@@ -422,39 +422,32 @@
   .nav-controls {
     padding: 8px;
     gap: 8px;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-rows: auto auto;
+    align-items: center;
   }
   
-  /* Primera fila: Botón volver + Barra de búsqueda */
+  /* Primera fila: Botón volver (columna 1) + Barra de búsqueda (columna 2) */
   .back-control {
-    order: 1;
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 8px;
+    grid-column: 1;
+    grid-row: 1;
   }
   
   .search-control {
-    order: 1;
-    flex: 1;
-    margin: 0;
+    grid-column: 2;
+    grid-row: 1;
   }
   
-  /* Segunda fila: Botón filtro + Categorías */
+  /* Segunda fila: Botón filtro (columna 1) + Categorías (columna 2) */
   .order-control {
-    order: 2;
-    flex: 0 0 auto;
-    display: flex;
-    align-items: center;
-    width: 100%;
-    gap: 8px;
+    grid-column: 1;
+    grid-row: 2;
   }
   
   .categories-nav {
-    order: 2;
-    flex: 1;
-    margin-top: 0;
+    grid-column: 2;
+    grid-row: 2;
   }
   
   /* Estilos de elementos */
