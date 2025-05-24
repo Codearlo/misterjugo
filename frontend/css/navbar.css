@@ -419,7 +419,7 @@
 }
 
 @media (max-width: 480px) {
-  /* Mobile pequeño - Layout en una fila */
+  /* Mobile pequeño - Primera fila: Volver pegado a búsqueda */
   .top-nav-bar {
     position: fixed;
     top: 0;
@@ -429,39 +429,47 @@
   }
   
   .productos-page .main-content {
-    margin-top: 120px; /* Espacio suficiente para 2 filas */
+    margin-top: 100px; /* Espacio suficiente para 2 filas */
   }
   
   .nav-controls {
-    gap: 5px;
+    gap: 8px;
     padding: 8px;
     flex-direction: column;
     align-items: stretch;
   }
   
-  /* Primera fila: Volver + Búsqueda + Ordenamiento */
-  .nav-row-top {
+  /* Primera fila: Volver + Búsqueda (pegados) + Ordenamiento */
+  .nav-controls {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  
+  /* Crear contenedor para primera fila */
+  .top-row {
     display: flex;
     align-items: center;
-    gap: 5px;
+    gap: 0; /* Sin gap para pegar elementos */
     width: 100%;
-    order: 1;
   }
   
   .back-control {
     order: 1;
     flex: 0 0 auto;
+    margin-right: 0; /* Sin margen para pegarlo */
   }
   
   .search-control {
     order: 2;
     flex: 1;
-    margin: 0 5px;
+    margin: 0; /* Sin margen */
   }
   
   .order-control {
     order: 3;
     flex: 0 0 auto;
+    margin-left: 8px; /* Pequeño margen solo del ordenamiento */
   }
   
   /* Segunda fila: Solo categorías */
@@ -469,7 +477,7 @@
     order: 4;
     flex: 0 0 100%;
     width: 100%;
-    margin-top: 5px;
+    margin-top: 0;
   }
   
   .categories-scroll {
@@ -490,11 +498,12 @@
   }
   
   .back-button-nav {
-    padding: 6px;
+    padding: 8px;
     min-width: 36px;
     min-height: 36px;
     font-size: 0.9rem;
-    border-radius: 6px;
+    border-radius: 6px 0 0 6px; /* Solo bordes izquierdos redondeados */
+    margin-right: 0;
   }
   
   .back-button-nav span {
@@ -505,12 +514,18 @@
     font-size: 1rem;
   }
   
+  .search-input-group {
+    display: flex;
+    position: relative;
+    width: 100%;
+  }
+  
   .search-input-group input {
-    padding: 8px 10px;
-    padding-right: 36px;
+    padding: 8px 36px 8px 10px;
     font-size: 0.9rem;
     min-height: 36px;
-    border-radius: 6px;
+    border-radius: 0 6px 6px 0; /* Solo bordes derechos redondeados */
+    border-left: 1px solid rgba(255, 255, 255, 0.1); /* Línea sutil de separación */
   }
   
   .search-input-group button {
