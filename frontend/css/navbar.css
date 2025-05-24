@@ -419,7 +419,7 @@
 }
 
 @media (max-width: 480px) {
-  /* Mobile pequeño - 2 filas layout */
+  /* Mobile pequeño - Layout en una fila */
   .top-nav-bar {
     position: fixed;
     top: 0;
@@ -429,21 +429,21 @@
   }
   
   .productos-page .main-content {
-    margin-top: 70px; /* Reducido aún más para 2 filas */
+    margin-top: 120px; /* Espacio suficiente para 2 filas */
   }
   
   .nav-controls {
     gap: 5px;
-    padding: 5px 8px;
+    padding: 8px;
     flex-direction: column;
     align-items: stretch;
   }
   
-  /* Primera fila: Volver + Búsqueda */
+  /* Primera fila: Volver + Búsqueda + Ordenamiento */
   .nav-row-top {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 5px;
     width: 100%;
     order: 1;
   }
@@ -456,16 +456,17 @@
   .search-control {
     order: 2;
     flex: 1;
+    margin: 0 5px;
   }
   
-  /* Ocultar ordenamiento en esta vista */
   .order-control {
-    display: none;
+    order: 3;
+    flex: 0 0 auto;
   }
   
   /* Segunda fila: Solo categorías */
   .categories-nav {
-    order: 3;
+    order: 4;
     flex: 0 0 100%;
     width: 100%;
     margin-top: 5px;
@@ -489,10 +490,11 @@
   }
   
   .back-button-nav {
-    padding: 4px 6px;
-    min-width: 32px;
-    min-height: 32px;
-    font-size: 0.8rem;
+    padding: 6px;
+    min-width: 36px;
+    min-height: 36px;
+    font-size: 0.9rem;
+    border-radius: 6px;
   }
   
   .back-button-nav span {
@@ -500,27 +502,39 @@
   }
   
   .back-button-nav i {
-    font-size: 0.9rem;
+    font-size: 1rem;
   }
   
   .search-input-group input {
-    padding: 6px 8px;
-    padding-right: 32px;
-    font-size: 0.8rem;
-    min-height: 32px;
+    padding: 8px 10px;
+    padding-right: 36px;
+    font-size: 0.9rem;
+    min-height: 36px;
+    border-radius: 6px;
   }
   
   .search-input-group button {
-    width: 32px;
-    min-height: 32px;
+    width: 36px;
+    min-height: 36px;
     font-size: 0.9rem;
   }
   
   .clear-search {
-    width: 26px;
-    height: 26px;
-    margin-left: 3px;
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
     font-size: 0.8rem;
+  }
+  
+  .sort-toggle {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .sort-toggle i {
+    font-size: 1rem;
   }
 }
 
