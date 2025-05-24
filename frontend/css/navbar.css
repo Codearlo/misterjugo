@@ -419,65 +419,71 @@
 }
 
 @media (max-width: 480px) {
-  /* Mobile pequeño - Primera fila: Volver pegado a búsqueda */
-  .top-nav-bar {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    padding: 0;
-  }
-  
-  .productos-page .main-content {
-    margin-top: 100px; /* Espacio suficiente para 2 filas */
-  }
-  
   .nav-controls {
-    gap: 8px;
     padding: 8px;
-    flex-direction: column;
-    align-items: stretch;
-  }
-  
-  /* Primera fila: Volver + Búsqueda (pegados) + Ordenamiento */
-  .nav-controls {
-    display: flex;
-    flex-direction: column;
     gap: 8px;
+    flex-direction: column;
   }
   
-  /* Crear contenedor para primera fila */
+  /* Primera fila con botón volver pegado a búsqueda */
   .top-row {
     display: flex;
     align-items: center;
-    gap: 0; /* Sin gap para pegar elementos */
     width: 100%;
+    gap: 0;
   }
   
   .back-control {
     order: 1;
     flex: 0 0 auto;
-    margin-right: 0; /* Sin margen para pegarlo */
   }
   
   .search-control {
     order: 2;
     flex: 1;
-    margin: 0; /* Sin margen */
   }
   
   .order-control {
     order: 3;
     flex: 0 0 auto;
-    margin-left: 8px; /* Pequeño margen solo del ordenamiento */
+    margin-left: 8px;
   }
   
-  /* Segunda fila: Solo categorías */
+  .back-button-nav {
+    padding: 8px;
+    min-width: 36px;
+    min-height: 36px;
+    border-radius: 6px 0 0 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .back-button-nav span {
+    display: none;
+  }
+  
+  .search-input-group input {
+    border-radius: 0 6px 6px 0;
+    min-height: 36px;
+    padding: 8px 36px 8px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .search-input-group button {
+    width: 36px;
+    min-height: 36px;
+  }
+  
+  .sort-toggle {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
   .categories-nav {
     order: 4;
-    flex: 0 0 100%;
     width: 100%;
-    margin-top: 0;
+    margin-top: 8px;
   }
   
   .categories-scroll {
@@ -495,124 +501,5 @@
     width: 26px;
     height: 26px;
     font-size: 0.8rem;
-  }
-  
-  .back-button-nav {
-    padding: 8px;
-    min-width: 36px;
-    min-height: 36px;
-    font-size: 0.9rem;
-    border-radius: 6px 0 0 6px; /* Solo bordes izquierdos redondeados */
-    margin-right: 0;
-  }
-  
-  .back-button-nav span {
-    display: none;
-  }
-  
-  .back-button-nav i {
-    font-size: 1rem;
-  }
-  
-  .search-input-group {
-    display: flex;
-    position: relative;
-    width: 100%;
-  }
-  
-  .search-input-group input {
-    padding: 8px 36px 8px 10px;
-    font-size: 0.9rem;
-    min-height: 36px;
-    border-radius: 0 6px 6px 0; /* Solo bordes derechos redondeados */
-    border-left: 1px solid rgba(255, 255, 255, 0.1); /* Línea sutil de separación */
-  }
-  
-  .search-input-group button {
-    width: 36px;
-    min-height: 36px;
-    font-size: 0.9rem;
-  }
-  
-  .clear-search {
-    width: 30px;
-    height: 30px;
-    margin-left: 5px;
-    font-size: 0.8rem;
-  }
-  
-  .sort-toggle {
-    width: 36px;
-    height: 36px;
-    min-width: 36px;
-    min-height: 36px;
-  }
-  
-  .sort-toggle i {
-    font-size: 1rem;
-  }
-}
-
-/* Ajuste específico para iPad Pro y tablets en landscape */
-@media (min-width: 1024px) and (max-width: 1366px) {
-  .nav-controls {
-    padding: 12px 20px;
-    gap: 15px;
-  }
-  
-  .categories-nav {
-    flex: 1;
-    order: 2;
-  }
-  
-  .search-control {
-    order: 3;
-    flex: 0 0 250px;
-  }
-  
-  .order-control {
-    order: 4;
-    flex: 0 0 auto;
-  }
-  
-  .back-control {
-    order: 1;
-    flex: 0 0 auto;
-  }
-}
-
-/* Reorganización para layout horizontal en tablets */
-@media (min-width: 768px) and (max-width: 1023px) {
-  .nav-controls {
-    flex-wrap: nowrap;
-    align-items: center;
-  }
-  
-  .back-control {
-    order: 1;
-    flex: 0 0 auto;
-    margin-right: 10px;
-  }
-  
-  .categories-nav {
-    order: 2;
-    flex: 1;
-    margin-top: 0;
-  }
-  
-  .search-control {
-    order: 3;
-    flex: 0 0 180px;
-    margin-left: 10px;
-  }
-  
-  .order-control {
-    order: 4;
-    flex: 0 0 auto;
-    margin-left: 10px;
-  }
-  
-  .back-button-nav span {
-    display: inline; /* Mostrar texto en tablet */
   }
 }
