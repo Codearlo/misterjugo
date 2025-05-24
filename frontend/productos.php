@@ -75,11 +75,6 @@ if ($result_productos && $result_productos->num_rows > 0) {
 
 </head>
 <body>
-    <!-- Botón volver -->
-    <a href="javascript:history.back()" class="back-button">
-        <i class="fas fa-arrow-left"></i> Volver
-    </a>
-
     <!-- Inicio de la página de productos -->
     <div class="productos-page">
         <!-- Incluir la barra de navegación -->
