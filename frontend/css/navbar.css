@@ -1,5 +1,6 @@
 /* Estilos para la barra de navegación - MisterJugo
  * CSS independiente y responsivo para la barra de navegación flotante
+ * Versión móvil mejorada con botón volver integrado
  */
 
 /* Variables locales consistentes con el sistema de diseño */
@@ -46,12 +47,48 @@
   width: 100%;
 }
 
+/* Botón volver - siempre visible */
+.back-control {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  flex: 0 0 auto;
+  order: 1;
+}
+
+.back-button-nav {
+  background-color: rgba(255, 255, 255, 0.2);
+  color: var(--nav-white);
+  border: none;
+  padding: 8px 12px;
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  min-height: 44px;
+  font-size: 0.9rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.back-button-nav:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  transform: translateX(-2px);
+}
+
+.back-button-nav i {
+  font-size: 1rem;
+}
+
 /* Control de ordenamiento */
 .order-control {
   display: flex;
   justify-content: flex-start;
   align-items: center;
   flex: 0 0 auto;
+  order: 2;
 }
 
 .order-form {
@@ -119,7 +156,7 @@
   position: relative;
   overflow: hidden;
   flex: 1;
-  order: 2;
+  order: 4;
   width: 100%;
 }
 
@@ -282,45 +319,107 @@
   transform: scale(1.1);
 }
 
-/* Responsive */
-@media (max-width: 992px) {
-  .search-control {
-    width: auto;
-  }
-}
-
-@media (max-width: 768px) {
+/* Responsive - Mobile First */
+@media (max-width: 1024px) {
+  /* Tablet y iPad */
   .nav-controls {
     flex-wrap: wrap;
-    padding: 10px;
-    gap: 10px;
-    justify-content: center;
+    padding: 12px 15px;
+    gap: 12px;
   }
   
-  .order-control {
+  .back-control {
     order: 1;
-    margin-right: 10px;
-  }
-  
-  .categories-nav {
-    order: 3;
-    flex: 0 0 100%;
-    width: 100%;
-    margin-top: 10px;
+    flex: 0 0 auto;
   }
   
   .search-control {
     order: 2;
     flex: 1;
+    min-width: 200px;
+  }
+  
+  .order-control {
+    order: 3;
+    flex: 0 0 auto;
+  }
+  
+  .categories-nav {
+    order: 4;
+    flex: 0 0 100%;
+    width: 100%;
+    margin-top: 10px;
   }
   
   .order-form select {
     min-width: 120px;
     padding: 8px 10px;
+    font-size: 0.9rem;
+  }
+  
+  .back-button-nav {
+    padding: 8px 10px;
+    font-size: 0.85rem;
+  }
+}
+
+@media (max-width: 768px) {
+  /* Mobile */
+  .nav-controls {
+    flex-wrap: wrap;
+    padding: 10px;
+    gap: 10px;
+    justify-content: space-between;
+  }
+  
+  .back-control {
+    order: 1;
+    flex: 0 0 auto;
+  }
+  
+  .search-control {
+    order: 2;
+    flex: 1;
+    min-width: 150px;
+  }
+  
+  .order-control {
+    order: 3;
+    flex: 0 0 auto;
+  }
+  
+  .categories-nav {
+    order: 4;
+    flex: 0 0 100%;
+    width: 100%;
+    margin-top: 10px;
+  }
+  
+  .back-button-nav {
+    padding: 6px 8px;
+    font-size: 0.8rem;
+    min-height: 36px;
+  }
+  
+  .back-button-nav span {
+    display: none; /* Ocultar texto en móvil, solo mostrar icono */
+  }
+  
+  .order-form select {
+    min-width: 100px;
+    padding: 6px 8px;
+    font-size: 0.85rem;
+  }
+  
+  .search-input-group input {
+    padding: 8px 12px;
+    padding-right: 40px;
+    font-size: 0.9rem;
   }
 }
 
 @media (max-width: 480px) {
+  /* Mobile pequeño */
   .top-nav-bar {
     position: fixed;
     top: 0;
@@ -335,6 +434,41 @@
   .nav-controls {
     gap: 8px;
     padding: 8px;
+    flex-direction: column;
+    align-items: stretch;
+  }
+  
+  /* Primera fila: Volver y Búsqueda */
+  .nav-row-1 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    order: 1;
+  }
+  
+  .back-control {
+    order: 1;
+    flex: 0 0 auto;
+  }
+  
+  .search-control {
+    order: 2;
+    flex: 1;
+  }
+  
+  .order-control {
+    order: 3;
+    flex: 0 0 auto;
+  }
+  
+  /* Segunda fila: Categorías */
+  .categories-nav {
+    order: 4;
+    flex: 0 0 100%;
+    width: 100%;
+    margin-top: 8px;
   }
   
   .categories-scroll {
@@ -356,17 +490,106 @@
     height: 36px;
   }
   
+  .back-button-nav {
+    padding: 6px;
+    min-width: 36px;
+    min-height: 36px;
+  }
+  
+  .back-button-nav span {
+    display: none;
+  }
+  
   .order-form {
     gap: 5px;
   }
   
   .order-form label {
-    font-size: 0.85rem;
+    display: none; /* Ocultar label en móvil muy pequeño */
+  }
+  
+  .order-form select {
+    min-width: 80px;
+    font-size: 0.8rem;
   }
   
   .search-input-group input {
-    padding: 8px 12px;
-    padding-right: 40px;
-    font-size: 0.9rem;
+    padding: 8px 10px;
+    padding-right: 35px;
+    font-size: 0.85rem;
+  }
+  
+  .search-input-group button {
+    width: 35px;
+  }
+  
+  .clear-search {
+    width: 30px;
+    height: 30px;
+    margin-left: 5px;
+  }
+}
+
+/* Ajuste específico para iPad Pro y tablets en landscape */
+@media (min-width: 1024px) and (max-width: 1366px) {
+  .nav-controls {
+    padding: 12px 20px;
+    gap: 15px;
+  }
+  
+  .categories-nav {
+    flex: 1;
+    order: 2;
+  }
+  
+  .search-control {
+    order: 3;
+    flex: 0 0 250px;
+  }
+  
+  .order-control {
+    order: 4;
+    flex: 0 0 auto;
+  }
+  
+  .back-control {
+    order: 1;
+    flex: 0 0 auto;
+  }
+}
+
+/* Reorganización para layout horizontal en tablets */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .nav-controls {
+    flex-wrap: nowrap;
+    align-items: center;
+  }
+  
+  .back-control {
+    order: 1;
+    flex: 0 0 auto;
+    margin-right: 10px;
+  }
+  
+  .categories-nav {
+    order: 2;
+    flex: 1;
+    margin-top: 0;
+  }
+  
+  .search-control {
+    order: 3;
+    flex: 0 0 180px;
+    margin-left: 10px;
+  }
+  
+  .order-control {
+    order: 4;
+    flex: 0 0 auto;
+    margin-left: 10px;
+  }
+  
+  .back-button-nav span {
+    display: inline; /* Mostrar texto en tablet */
   }
 }
