@@ -419,35 +419,27 @@
 }
 
 @media (max-width: 480px) {
-  /* Mobile pequeño */
+  /* Mobile pequeño - Compacto */
   .top-nav-bar {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
+    padding: 0;
   }
   
   .productos-page .main-content {
-    margin-top: 120px; /* Ajustar según la altura del navbar */
+    margin-top: 85px; /* Reducido para navbar más compacto */
   }
   
   .nav-controls {
-    gap: 8px;
-    padding: 8px;
+    gap: 5px;
+    padding: 5px 8px;
     flex-direction: column;
     align-items: stretch;
   }
   
-  /* Primera fila: Volver y Búsqueda */
-  .nav-row-1 {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 8px;
-    width: 100%;
-    order: 1;
-  }
-  
+  /* Primera fila: Volver, Búsqueda y Orden - más compacta */
   .back-control {
     order: 1;
     flex: 0 0 auto;
@@ -456,6 +448,7 @@
   .search-control {
     order: 2;
     flex: 1;
+    margin: 0 5px;
   }
   
   .order-control {
@@ -463,70 +456,84 @@
     flex: 0 0 auto;
   }
   
-  /* Segunda fila: Categorías */
+  /* Segunda fila: Categorías - más compacta */
   .categories-nav {
     order: 4;
     flex: 0 0 100%;
     width: 100%;
-    margin-top: 8px;
+    margin-top: 5px;
   }
   
   .categories-scroll {
-    margin: 0 30px;
+    margin: 0 25px;
+    padding: 2px 0;
   }
   
   .category-btn {
-    padding: 8px 12px;
-    font-size: 0.9rem;
+    padding: 6px 10px;
+    font-size: 0.8rem;
+    min-height: 28px;
   }
   
   .nav-arrow {
-    width: 30px;
-    height: 30px;
+    width: 26px;
+    height: 26px;
+    font-size: 0.8rem;
   }
   
   .sort-toggle {
-    width: 36px;
-    height: 36px;
+    width: 32px;
+    height: 32px;
+    font-size: 1rem;
   }
   
   .back-button-nav {
-    padding: 6px;
-    min-width: 36px;
-    min-height: 36px;
+    padding: 4px 6px;
+    min-width: 32px;
+    min-height: 32px;
+    font-size: 0.8rem;
   }
   
   .back-button-nav span {
     display: none;
   }
   
+  .back-button-nav i {
+    font-size: 0.9rem;
+  }
+  
   .order-form {
-    gap: 5px;
+    gap: 3px;
   }
   
   .order-form label {
-    display: none; /* Ocultar label en móvil muy pequeño */
+    display: none;
   }
   
   .order-form select {
-    min-width: 80px;
-    font-size: 0.8rem;
+    min-width: 70px;
+    font-size: 0.75rem;
+    padding: 4px 6px;
   }
   
   .search-input-group input {
-    padding: 8px 10px;
-    padding-right: 35px;
-    font-size: 0.85rem;
+    padding: 6px 8px;
+    padding-right: 32px;
+    font-size: 0.8rem;
+    min-height: 32px;
   }
   
   .search-input-group button {
-    width: 35px;
+    width: 32px;
+    min-height: 32px;
+    font-size: 0.9rem;
   }
   
   .clear-search {
-    width: 30px;
-    height: 30px;
-    margin-left: 5px;
+    width: 26px;
+    height: 26px;
+    margin-left: 3px;
+    font-size: 0.8rem;
   }
 }
 
