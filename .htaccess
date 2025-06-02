@@ -138,4 +138,3 @@ ErrorDocument 500 /frontend/error.php
     Order Deny,Allow
     Deny from all
 </LimitExcept>
-
