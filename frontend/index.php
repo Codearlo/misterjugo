@@ -40,7 +40,7 @@
     <h2>Promociones</h2>
     <div class="promo-cards">
         <div class="promo-card">
-            <img src="./images/promo/promoalmuerzo.jpg" alt="Promoción 1">
+            <img src="./images/promos/promoalmuerzo.jpg" alt="Promoción 1">
             <div class="content">
                 <h3>Almuerzo Promo!!</h3>
                 <p>Toda los platos al fondo A 20 S/ de lunes a sabado: 12:00 PM a 5:00 PM</p>
