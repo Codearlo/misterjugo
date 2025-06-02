@@ -18,7 +18,6 @@ $inicio = ($pagina - 1) * $registros_por_pagina;
 
 // Filtros
 $filtro_admin = isset($_GET['admin']) ? $_GET['admin'] : '';
-$filtro_activo = isset($_GET['activo']) ? $_GET['activo'] : '';
 $busqueda = isset($_GET['buscar']) ? trim($_GET['buscar']) : '';
 
 // Construir consulta base
@@ -30,12 +29,6 @@ $tipos = "";
 if ($filtro_admin !== '') {
     $consulta_base .= " AND is_admin = ?";
     $params[] = (int)$filtro_admin;
-    $tipos .= "i";
-}
-
-if ($filtro_activo !== '') {
-    $consulta_base .= " AND activo = ?";
-    $params[] = (int)$filtro_activo;
     $tipos .= "i";
 }
 
@@ -182,7 +175,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                 <div class="card shadow mb-4">
                     <div class="card-body">
                         <form method="GET" action="usuarios.php" class="row align-items-end">
-                            <div class="col-md-2 mb-3">
+                            <div class="col-md-3 mb-3">
                                 <label for="admin" class="form-label">Tipo de Usuario</label>
                                 <select class="form-select" id="admin" name="admin">
                                     <option value="">Todos</option>
@@ -194,19 +187,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                     </option>
                                 </select>
                             </div>
-                            <div class="col-md-2 mb-3">
-                                <label for="activo" class="form-label">Estado</label>
-                                <select class="form-select" id="activo" name="activo">
-                                    <option value="">Todos</option>
-                                    <option value="1" <?php echo ($filtro_activo === '1') ? 'selected' : ''; ?>>
-                                        Activos
-                                    </option>
-                                    <option value="0" <?php echo ($filtro_activo === '0') ? 'selected' : ''; ?>>
-                                        Inactivos
-                                    </option>
-                                </select>
-                            </div>
-                            <div class="col-md-5 mb-3">
+                            <div class="col-md-6 mb-3">
                                 <label for="buscar" class="form-label">Buscar</label>
                                 <input type="text" class="form-control" id="buscar" name="buscar" 
                                        placeholder="Nombre o email del usuario"
@@ -236,7 +217,6 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                             <th>Nombre</th>
                                             <th>Email</th>
                                             <th>Tipo</th>
-                                            <th>Estado</th>
                                             <th>Fecha Registro</th>
                                             <th>Pedidos</th>
                                             <th>Acciones</th>
@@ -263,13 +243,6 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                                         <span class="badge bg-secondary">Cliente</span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td>
-                                                    <?php if ($usuario['activo']): ?>
-                                                        <span class="badge bg-success">Activo</span>
-                                                    <?php else: ?>
-                                                        <span class="badge bg-danger">Inactivo</span>
-                                                    <?php endif; ?>
-                                                </td>
                                                 <td><?php echo $usuario['fecha_registro_formateada']; ?></td>
                                                 <td>
                                                     <span class="badge bg-info"><?php echo $total_pedidos; ?></span>
@@ -281,10 +254,6 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                                             <i class="fas fa-eye"></i>
                                                         </button>
                                                         <?php if (!$usuario['is_admin']): ?>
-                                                            <button type="button" class="btn btn-sm btn-outline-warning" title="Cambiar estado"
-                                                                    onclick="cambiarEstado(<?php echo $usuario['id']; ?>, '<?php echo htmlspecialchars($usuario['nombre']); ?>', <?php echo $usuario['activo'] ? 'true' : 'false'; ?>)">
-                                                                <i class="fas fa-toggle-<?php echo $usuario['activo'] ? 'on' : 'off'; ?>"></i>
-                                                            </button>
                                                             <button type="button" class="btn btn-sm btn-outline-secondary" title="Restablecer contraseña"
                                                                     onclick="restablecerPassword(<?php echo $usuario['id']; ?>, '<?php echo htmlspecialchars($usuario['nombre']); ?>')">
                                                                 <i class="fas fa-key"></i>
@@ -303,7 +272,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                 <nav aria-label="Paginación de usuarios">
                                     <ul class="pagination justify-content-center mt-4">
                                         <li class="page-item <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'usuarios.php?pagina='.($pagina-1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($filtro_activo)) ? '&activo='.$filtro_activo : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                            <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'usuarios.php?pagina='.($pagina-1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                aria-label="Anterior">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
@@ -311,14 +280,14 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                         
                                         <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
                                             <li class="page-item <?php echo ($pagina == $i) ? 'active' : ''; ?>">
-                                                <a class="page-link" href="usuarios.php?pagina=<?php echo $i; ?><?php echo (!empty($filtro_admin)) ? '&admin='.$filtro_admin : ''; ?><?php echo (!empty($filtro_activo)) ? '&activo='.$filtro_activo : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
+                                                <a class="page-link" href="usuarios.php?pagina=<?php echo $i; ?><?php echo (!empty($filtro_admin)) ? '&admin='.$filtro_admin : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
                                                     <?php echo $i; ?>
                                                 </a>
                                             </li>
                                         <?php endfor; ?>
                                         
                                         <li class="page-item <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'usuarios.php?pagina='.($pagina+1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($filtro_activo)) ? '&activo='.$filtro_activo : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                            <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'usuarios.php?pagina='.($pagina+1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                aria-label="Siguiente">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
@@ -359,25 +328,6 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal de confirmación para cambiar estado -->
-    <div class="modal fade" id="cambiarEstadoModal" tabindex="-1" aria-labelledby="cambiarEstadoModalLabel" aria-hidden="true">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h5 class="modal-title" id="cambiarEstadoModalLabel">Cambiar Estado</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                    <p>¿Estás seguro de que deseas <span id="accionEstado"></span> al usuario <strong id="nombreUsuarioEstado"></strong>?</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                    <a href="#" id="confirmCambiarEstadoBtn" class="btn btn-warning">Cambiar Estado</a>
                 </div>
             </div>
         </div>
@@ -438,10 +388,6 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                         '<span class="badge bg-primary">Administrador</span>' : 
                                         '<span class="badge bg-secondary">Cliente</span>'
                                     }</p>
-                                    <p><strong>Estado:</strong> ${usuario.activo == 1 ? 
-                                        '<span class="badge bg-success">Activo</span>' : 
-                                        '<span class="badge bg-danger">Inactivo</span>'
-                                    }</p>
                                     <p><strong>Fecha de Registro:</strong> ${usuario.fecha_registro_formateada}</p>
                                 </div>
                                 <div class="col-md-6">
@@ -487,16 +433,6 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                         </div>
                     `;
                 });
-        }
-        
-        // Función para cambiar estado del usuario
-        function cambiarEstado(id, nombre, activo) {
-            document.getElementById('nombreUsuarioEstado').textContent = nombre;
-            document.getElementById('accionEstado').textContent = activo ? 'desactivar' : 'activar';
-            document.getElementById('confirmCambiarEstadoBtn').href = '../procesar_usuario.php?action=toggle_status&id=' + id;
-            
-            var modal = new bootstrap.Modal(document.getElementById('cambiarEstadoModal'));
-            modal.show();
         }
         
         // Función para restablecer contraseña
