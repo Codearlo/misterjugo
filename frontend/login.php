@@ -76,7 +76,6 @@ unset($_SESSION['email']); // Limpiar después de usar
                 <div class="form-group">
                     <!-- Entrada oculta que siempre establece "recordar" como activado -->
                     <input type="hidden" name="recordar" value="1">
-                    <a href="recuperar-password.php" class="forgot-password" style="display: block; text-align: right;">¿Olvidaste tu contraseña?</a>
                 </div>
                 
                 <button type="submit" class="btn-submit">Iniciar Sesión</button>
