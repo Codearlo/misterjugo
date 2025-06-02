@@ -67,47 +67,63 @@ document.addEventListener('DOMContentLoaded', function() {
         fetch('/backend/obtener_carrito.php')
             .then(response => response.json())
             .then(carrito => {
+                let productoExistente = null;
                 if (carrito && carrito.length > 0) {
-                    // Buscar si el producto ya está en el carrito
-                    const productoExistente = carrito.find(item => item.id === id);
-                    if (productoExistente) {
-                        // Ya existe, mostrar mensaje y no agregar más
-                        mostrarNotificacion(`${nombre} ya está en tu carrito`);
-                        openCartSidebar();
-                        return;
-                    }
+                    productoExistente = carrito.find(item => item.id === id);
                 }
                 
-                // Producto nuevo, agregarlo
-                const producto = {
-                    id: id,
-                    nombre: nombre,
-                    precio: parseFloat(precio),
-                    imagen: imagen || '/images/producto-default.jpg',
-                    cantidad: parseInt(cantidad)
-                };
+                if (productoExistente) {
+                    // Si ya existe, aumentar la cantidad
+                    productoExistente.cantidad = parseInt(productoExistente.cantidad) + parseInt(cantidad);
+                    
+                    // Actualizar el carrito en el servidor
+                    fetch('/backend/actualizar_carrito.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(carrito)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            mostrarNotificacion(`${nombre} cantidad actualizada en el carrito`);
+                            actualizarCarritoUI();
+                            openCartSidebar();
+                        }
+                    });
+                } else {
+                    // Producto nuevo, agregarlo
+                    const producto = {
+                        id: id,
+                        nombre: nombre,
+                        precio: parseFloat(precio),
+                        imagen: imagen || '/images/producto-default.jpg',
+                        cantidad: parseInt(cantidad)
+                    };
 
-                fetch('/backend/agregar_al_carrito.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(producto)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        mostrarNotificacion(`${nombre} agregado al carrito`);
-                        actualizarCarritoUI(); // Actualizar UI desde sesión
-                        openCartSidebar(); // Abrir carrito automáticamente
-                    } else {
-                        alert('Error al agregar el producto al carrito.');
-                    }
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    alert('Ocurrió un error al agregar al carrito.');
-                });
+                    fetch('/backend/agregar_al_carrito.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(producto)
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            mostrarNotificacion(`${nombre} agregado al carrito`);
+                            actualizarCarritoUI();
+                            openCartSidebar();
+                        } else {
+                            alert('Error al agregar el producto al carrito.');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        alert('Ocurrió un error al agregar al carrito.');
+                    });
+                }
             })
             .catch(error => {
                 console.error('Error al verificar carrito:', error);
@@ -152,7 +168,7 @@ document.addEventListener('DOMContentLoaded', function() {
                                     <div class="cart-item-quantity">
                                         <button class="cart-quantity-btn minus" data-id="${item.id}">-</button>
                                         <span>${item.cantidad}</span>
-                                        <button class="cart-quantity-btn plus" data-id="${item.id}" style="visibility: hidden;">+</button>
+                                        <button class="cart-quantity-btn plus" data-id="${item.id}">+</button>
                                     </div>
                                 </div>
                                 <div class="cart-item-subtotal">
@@ -175,12 +191,11 @@ document.addEventListener('DOMContentLoaded', function() {
                     // Botones de cantidad en el carrito
                     const quantityBtns = document.querySelectorAll('.cart-quantity-btn');
                     quantityBtns.forEach(btn => {
-                        if (btn.classList.contains('minus')) {
-                            btn.addEventListener('click', function() {
-                                const id = this.getAttribute('data-id');
-                                updateCartItemQuantity(id, 'decrease');
-                            });
-                        }
+                        btn.addEventListener('click', function() {
+                            const id = this.getAttribute('data-id');
+                            const action = this.classList.contains('plus') ? 'increase' : 'decrease';
+                            updateCartItemQuantity(id, action);
+                        });
                     });
 
                     // Eliminar items
@@ -208,11 +223,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 
                 if (index !== -1) {
                     if (action === 'increase') {
-                        // No permitir aumentar la cantidad (oculto)
-                        return;
+                        updatedCarrito[index].cantidad = parseInt(updatedCarrito[index].cantidad) + 1;
                     } else if (action === 'decrease') {
-                        if (updatedCarrito[index].cantidad > 1) {
-                            updatedCarrito[index].cantidad -= 1;
+                        if (parseInt(updatedCarrito[index].cantidad) > 1) {
+                            updatedCarrito[index].cantidad = parseInt(updatedCarrito[index].cantidad) - 1;
                         } else {
                             eliminarDelCarrito(id);
                             return;
