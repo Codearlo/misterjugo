@@ -83,10 +83,10 @@ while ($row = $result->fetch_assoc()) {
 
 // Obtener estadísticas rápidas
 $stats = [
-    'pendientes' => 0,
+    'pendiente' => 0,
     'procesando' => 0,
-    'completados' => 0,
-    'cancelados' => 0
+    'completado' => 0,
+    'cancelado' => 0
 ];
 
 $result = $conn->query("SELECT estado, COUNT(*) as total FROM pedidos GROUP BY estado");
@@ -199,7 +199,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                     <div class="col-md-3 mb-3">
                         <div class="card shadow stats-card border-warning">
                             <div class="card-body text-center">
-                                <h3 class="text-warning"><?php echo $stats['pendientes']; ?></h3>
+                                <h3 class="text-warning"><?php echo $stats['pendiente']; ?></h3>
                                 <p class="mb-0">Pendientes</p>
                             </div>
                         </div>
@@ -215,7 +215,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                     <div class="col-md-3 mb-3">
                         <div class="card shadow stats-card border-success">
                             <div class="card-body text-center">
-                                <h3 class="text-success"><?php echo $stats['completados']; ?></h3>
+                                <h3 class="text-success"><?php echo $stats['completado']; ?></h3>
                                 <p class="mb-0">Completados</p>
                             </div>
                         </div>
@@ -223,7 +223,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                     <div class="col-md-3 mb-3">
                         <div class="card shadow stats-card border-danger">
                             <div class="card-body text-center">
-                                <h3 class="text-danger"><?php echo $stats['cancelados']; ?></h3>
+                                <h3 class="text-danger"><?php echo $stats['cancelado']; ?></h3>
                                 <p class="mb-0">Cancelados</p>
                             </div>
                         </div>
