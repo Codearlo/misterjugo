@@ -68,7 +68,7 @@
     <div class="container">
         <h2>Contáctanos</h2>
         <div class="contact-details">
-            <p><i class="fas fa-map-marker-alt"></i> Dirección: Calle Principal 123, Ciudad Ejemplo</p>
+            <p><i class="fas fa-map-marker-alt"></i> Dirección: San isidro, Calle Margaritas 120, Ica, Peru</p>
             <p><i class="fas fa-phone"></i> Teléfono: +51 970 846 395</p>
             <p><i class="fas fa-clock"></i> Horario: Lunes a Sábado 8:00 AM - 8:00 PM</p>
         </div>
