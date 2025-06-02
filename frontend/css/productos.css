@@ -898,7 +898,7 @@
 /* Ajustes específicos para móviles pequeños */
 @media (max-width: 480px) {
   .productos-page .main-content {
-    padding: 100px 0 70px; /* Ajustado para móviles */
+    padding: 80px 0 70px; /* Reducido de 100px a 80px para móviles */
   }
   
   .productos-page .products-section {
@@ -922,7 +922,7 @@
 /* Ajustes para dispositivos muy pequeños */
 @media (max-width: 360px) {
   .productos-page .main-content {
-    padding: 90px 0 70px; /* Ajustado para pantallas muy pequeñas */
+    padding: 70px 0 70px; /* Reducido de 90px a 70px para pantallas muy pequeñas */
   }
   
   .productos-page .container {
@@ -1015,6 +1015,6 @@
 
 @media (max-width: 480px) {
   .productos-page.has-floating-navbar .main-content {
-    padding-top: 60px;
+    padding-top: 80px; /* Reducido de 100px a 80px */
   }
 }
