@@ -40,10 +40,10 @@
     <h2>Promociones</h2>
     <div class="promo-cards">
         <div class="promo-card">
-            <img src="./images/promo1.jpg" alt="Promoción 1">
+            <img src="./images/promo/promoalmuerzo.jpg" alt="Promoción 1">
             <div class="content">
-                <h3>Jugo del Día</h3>
-                <p>2x1 en todos los jugos naturales. ¡Solo por hoy!</p>
+                <h3>Almuerzo Promo!!</h3>
+                <p>Toda los platos al fondo A 20 S/ de lunes a sabado: 12:00 PM a 5:00 PM</p>
             </div>
         </div>
         <div class="promo-card">
@@ -51,13 +51,6 @@
             <div class="content">
                 <h3>Envío Gratis</h3>
                 <p>En compras mayores a $20, recibe gratis en toda la ciudad.</p>
-            </div>
-        </div>
-        <div class="promo-card">
-            <img src="./images/promo3.jpg" alt="Promoción 3">
-            <div class="content">
-                <h3>Membresía VIP</h3>
-                <p>Acumula puntos y canjea descuentos exclusivos cada semana.</p>
             </div>
         </div>
     </div>
