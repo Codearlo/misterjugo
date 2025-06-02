@@ -21,10 +21,10 @@
         <!-- Columna 3: Contacto -->
         <div class="footer-column contact-column">
             <h3>Contacto</h3>
-            <p><i class="fas fa-map-marker-alt"></i> Calle Principal 123, Ciudad Ejemplo</p>
+            <p><i class="fas fa-map-marker-alt"></i> San isidro, Calle Margaritas 120, Ica, Peru</p>
             <p><i class="fas fa-phone"></i> +51 970 846 395</p>
-            <p><i class="fas fa-envelope"></i> hola@misterjugo.com</p>
-            <p><i class="fas fa-clock"></i> Lunes - Sábado: 8:00 AM - 8:00 PM</p>
+            <p><i class="fas fa-envelope"></i> mrjugo.ica@gmail.com</p>
+            <p><i class="fas fa-clock"></i> Lunes - Sábado: 7:30 AM - 10:30 PM, Domingo : 8:00 AM -- 1:00 PM </p>
         </div>
 
         <!-- Columna 4: Redes sociales -->
