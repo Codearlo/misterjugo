@@ -47,10 +47,10 @@
             </div>
         </div>
         <div class="promo-card">
-            <img src="./images/promo2.jpg" alt="Promoción 2">
+            <img src="./images/promos/promoduo.jpg" alt="Promoción 2">
             <div class="content">
-                <h3>Envío Gratis</h3>
-                <p>En compras mayores a $20, recibe gratis en toda la ciudad.</p>
+                <h3>Chicha Gratis!!</h3>
+                <p>Por la compra de tus alitas, gratis tu vaso de chicha morada</p>
             </div>
         </div>
     </div>
