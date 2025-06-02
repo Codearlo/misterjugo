@@ -138,13 +138,11 @@ if(isset($_COOKIE['logout_message'])) {
                     <li><a href="/perfil" class="menu-item-animated"><i class="fas fa-user"></i> Mi Perfil</a></li>
                     <li><a href="/direcciones" class="menu-item-animated"><i class="fas fa-map-marker-alt"></i> Mis Direcciones</a></li>
                     <li><a href="/pedidos" class="menu-item-animated"><i class="fas fa-shopping-bag"></i> Mis Pedidos</a></li>
-                    <li><a href="/nosotros" class="menu-item-animated"><i class="fas fa-info-circle"></i> Nosotros</a></li>
                     <li><a href="javascript:void(0);" id="logout-link" class="menu-item-animated"><i class="fas fa-sign-out-alt"></i> Cerrar Sesión</a></li>
                 <?php else: ?>
                     <!-- Menú para usuarios no logueados -->
                     <li><a href="/login" class="menu-item-animated"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</a></li>
                     <li><a href="/registro" class="menu-item-animated"><i class="fas fa-user-plus"></i> Registrarse</a></li>
-                    <li><a href="/nosotros" class="menu-item-animated"><i class="fas fa-info-circle"></i> Nosotros</a></li>
                 <?php endif; ?>
             </ul>
             <button class="close-btn" id="close-menu-btn">&times;</button>
@@ -240,4 +238,4 @@ if(isset($_COOKIE['logout_message'])) {
                 }, 5000);
             }
         });
-    </script> 
+    </script>
