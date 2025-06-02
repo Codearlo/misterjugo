@@ -31,9 +31,8 @@
         <div class="footer-column social-column">
             <h3>Síguenos</h3>
             <div class="social-icons">
-                <a href="#"><i class="fab fa-facebook-f"></i></a>
-                <a href="#"><i class="fab fa-instagram"></i></a>
-                <a href="#"><i class="fab fa-twitter"></i></a>
+                <a href="#"><i class="fab fa-facebook-f"></i>https://www.facebook.com/misterjugoica</a>
+                <a href="#"><i class="fab fa-instagram"></i>https://www.facebook.com/misterjugoica</a>
             </div>
             <p>También nos puedes encontrar en WhatsApp:</p>
             <a href="https://wa.me/+51970846395"  target="_blank" class="whatsapp-link">

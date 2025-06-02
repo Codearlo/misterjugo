@@ -7,7 +7,7 @@
         <div class="nav-controls">
             <!-- Botón volver - siempre visible -->
             <div class="back-control">
-                <a href="javascript:history.back()" class="back-button-nav">
+                <a href="https://misterjugo.codearlo.com" class="back-button-nav">
                     <i class="fas fa-arrow-left"></i>
                     <span>Volver</span>
                 </a>
