@@ -33,7 +33,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             
             // Redireccionar según tipo de usuario
             if ($usuario['is_admin'] == 1) {
-                header("Location: /backend/admin.php");
+                header("Location: /backend/admin");
             } else {
                 header("Location: /");
             }
