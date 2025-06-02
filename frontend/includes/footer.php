@@ -1,4 +1,5 @@
 <!-- /includes/footer.php -->
+<link rel="stylesheet" href="./css/index.css">
 <footer class="footer">
     <div class="footer-container">
         <!-- Columna 1: Logo e información -->
