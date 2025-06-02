@@ -3,7 +3,7 @@
     <div class="footer-container">
         <!-- Columna 1: Logo e información -->
         <div class="footer-column logo-column">
-            <img src="./images/logo.png" alt="MisterJugo Logo" class="footer-logo">
+            <img src="/images/logo_mrjugo.png" alt="MisterJugo Logo" class="footer-logo">
             <p>Deléitate con nuestros jugos naturales y sándwiches frescos. ¡Sabor y salud en cada bocado!</p>
         </div>
 
