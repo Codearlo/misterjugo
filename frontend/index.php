@@ -1,7 +1,7 @@
 <?php include 'includes/header.php'; ?>
 <link rel="stylesheet" href="./css/index.css">
-<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Poppins :wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css ">
 
 <script>
     document.addEventListener("DOMContentLoaded", function () {
@@ -21,7 +21,7 @@
     });
 </script>
 
-<!-- Hero Section -->
+<!-- Hero Section con imagen como fondo -->
 <div class="hero-section">
     <div class="hero-overlay"></div>
     <div class="container hero-content">
@@ -63,20 +63,8 @@
     </div>
 </section>
 
-<!-- Sección de Contacto -->
-<section class="contact-info">
-    <div class="container">
-        <h2>Contáctanos</h2>
-        <div class="contact-details">
-            <p><i class="fas fa-map-marker-alt"></i> Dirección: San isidro, Calle Margaritas 120, Ica, Peru</p>
-            <p><i class="fas fa-phone"></i> Teléfono: +51 970 846 395</p>
-            <p><i class="fas fa-clock"></i> Horario: Lunes a Sábado 8:00 AM - 8:00 PM</p>
-        </div>
-    </div>
-</section>
-
 <!-- Botón de WhatsApp -->
-<a href="https://wa.me/+51970846395?text=Hola%20MisterJugo,%20quisiera%20más%20información." 
+<a href="https://wa.me/+51970846395?text=Hola%20MisterJugo ,%20quisiera%20más%20información." 
    target="_blank" 
    class="whatsapp-btn">
     <i class="fab fa-whatsapp"></i>
