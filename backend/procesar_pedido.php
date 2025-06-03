@@ -72,8 +72,8 @@ try {
         exit;
     }
     
-    // Verificar que la dirección pertenezca al usuario
-    $stmt = $conn->prepare("SELECT * FROM direcciones WHERE id = ? AND usuario_id = ?");
+    // Verificar que la dirección pertenezca al usuario y obtener el teléfono
+    $stmt = $conn->prepare("SELECT telefono, calle, ciudad, estado, codigo_postal, instrucciones FROM direcciones WHERE id = ? AND usuario_id = ?");
     $stmt->bind_param("ii", $direccion_id, $user_id);
     $stmt->execute();
     $direccion_result = $stmt->get_result();
@@ -88,6 +88,11 @@ try {
     
     $direccion_data = $direccion_result->fetch_assoc();
     
+    // Usar el teléfono de la dirección
+    $telefono_direccion = $direccion_data['telefono'];
+    $direccion_completa_real = $direccion_data['calle'] . ', ' . $direccion_data['ciudad'] . ', ' . $direccion_data['estado'] . ', CP: ' . $direccion_data['codigo_postal'];
+    $instrucciones_direccion_real = $direccion_data['instrucciones'] ?? '';
+    
     // Iniciar transacción
     $conn->begin_transaction();
     
@@ -97,8 +102,8 @@ try {
     
     // Combinar instrucciones
     $instrucciones_completas = '';
-    if (!empty($instrucciones_direccion)) {
-        $instrucciones_completas .= "Instrucciones de dirección: " . $instrucciones_direccion;
+    if (!empty($instrucciones_direccion_real)) {
+        $instrucciones_completas .= "Instrucciones de dirección: " . $instrucciones_direccion_real;
     }
     if (!empty($instrucciones)) {
         if (!empty($instrucciones_completas)) {
@@ -107,8 +112,8 @@ try {
         $instrucciones_completas .= "Instrucciones adicionales: " . $instrucciones;
     }
     
-    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, telefono, direccion, instrucciones, total, estado, fecha_pedido) VALUES (?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("isssdss", $user_id, $telefono, $direccion_completa, $instrucciones_completas, $total, $estado, $fecha_pedido);
+    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, direccion, instrucciones, total, estado, fecha_pedido) VALUES (?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("issdss", $user_id, $direccion_completa_real, $instrucciones_completas, $total, $estado, $fecha_pedido);
     
     if (!$stmt->execute()) {
         throw new Exception('Error al crear el pedido');
@@ -168,8 +173,8 @@ try {
     $mensaje_whatsapp = "🍹 *NUEVO PEDIDO - MisterJugo* 🍹\n\n";
     $mensaje_whatsapp .= "📋 *Pedido #$pedido_id*\n";
     $mensaje_whatsapp .= "👤 *Cliente:* $nombre_usuario\n";
-    $mensaje_whatsapp .= "📱 *Teléfono:* $telefono\n";
-    $mensaje_whatsapp .= "📍 *Dirección:* $direccion_completa\n";
+    $mensaje_whatsapp .= "📱 *Teléfono:* $telefono_direccion\n";
+    $mensaje_whatsapp .= "📍 *Dirección:* $direccion_completa_real\n";
     
     if (!empty($instrucciones_completas)) {
         $mensaje_whatsapp .= "📝 *Instrucciones:* $instrucciones_completas\n";
