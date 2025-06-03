@@ -107,8 +107,8 @@ try {
         $instrucciones_completas .= "Instrucciones adicionales: " . $instrucciones;
     }
     
-    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, nombre, telefono, direccion, instrucciones, total, estado, fecha_pedido) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issssdss", $user_id, $nombre, $telefono, $direccion_completa, $instrucciones_completas, $total, $estado, $fecha_pedido);
+    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, telefono, direccion, instrucciones, total, estado, fecha_pedido) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    $stmt->bind_param("isssdss", $user_id, $telefono, $direccion_completa, $instrucciones_completas, $total, $estado, $fecha_pedido);
     
     if (!$stmt->execute()) {
         throw new Exception('Error al crear el pedido');
@@ -163,13 +163,11 @@ try {
     // Confirmar transacción
     $conn->commit();
     
-    // Limpiar el carrito
-    unset($_SESSION['carrito']);
-    
-    // Preparar mensaje para WhatsApp
+    // Preparar mensaje para WhatsApp ANTES de limpiar el carrito
+    $nombre_usuario = $_SESSION['user_name'] ?? $nombre;
     $mensaje_whatsapp = "🍹 *NUEVO PEDIDO - MisterJugo* 🍹\n\n";
     $mensaje_whatsapp .= "📋 *Pedido #$pedido_id*\n";
-    $mensaje_whatsapp .= "👤 *Cliente:* $nombre\n";
+    $mensaje_whatsapp .= "👤 *Cliente:* $nombre_usuario\n";
     $mensaje_whatsapp .= "📱 *Teléfono:* $telefono\n";
     $mensaje_whatsapp .= "📍 *Dirección:* $direccion_completa\n";
     
@@ -179,11 +177,18 @@ try {
     
     $mensaje_whatsapp .= "\n🛒 *PRODUCTOS:*\n";
     
-    foreach ($_SESSION['carrito'] ?? [] as $item) {
-        if (isset($item['nombre'], $item['precio'], $item['cantidad'])) {
-            $mensaje_whatsapp .= "• {$item['cantidad']}x {$item['nombre']} - S/" . number_format($item['precio'] * $item['cantidad'], 2) . "\n";
-        }
+    // Obtener productos del pedido recién creado
+    $stmt_productos = $conn->prepare("SELECT nombre_producto, precio, cantidad, subtotal FROM detalles_pedido WHERE pedido_id = ?");
+    $stmt_productos->bind_param("i", $pedido_id);
+    $stmt_productos->execute();
+    $productos_result = $stmt_productos->get_result();
+    
+    while ($producto = $productos_result->fetch_assoc()) {
+        $mensaje_whatsapp .= "• {$producto['cantidad']}x {$producto['nombre_producto']} - S/" . number_format($producto['subtotal'], 2) . "\n";
     }
+    
+    // Limpiar el carrito DESPUÉS de usar los datos
+    unset($_SESSION['carrito']);
     
     $mensaje_whatsapp .= "\n💰 *TOTAL: S/" . number_format($total_calculado, 2) . "*\n";
     $mensaje_whatsapp .= "\n⏰ *Fecha:* " . date('d/m/Y H:i') . "\n";
