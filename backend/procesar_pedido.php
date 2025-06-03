@@ -41,10 +41,7 @@ try {
     $user_id = $_SESSION['user_id'];
     $direccion_id = isset($_POST['direccion_id']) ? intval($_POST['direccion_id']) : 0;
     $nombre = isset($_POST['nombre']) ? trim($_POST['nombre']) : '';
-    $telefono = isset($_POST['telefono_hidden']) ? trim($_POST['telefono_hidden']) : '';
-    $direccion_completa = isset($_POST['direccion_completa']) ? trim($_POST['direccion_completa']) : '';
     $instrucciones = isset($_POST['instrucciones_adicionales']) ? trim($_POST['instrucciones_adicionales']) : '';
-    $instrucciones_direccion = isset($_POST['instrucciones_hidden']) ? trim($_POST['instrucciones_hidden']) : '';
     $total = isset($_POST['total']) ? floatval($_POST['total']) : 0;
     
     // Validaciones
@@ -72,7 +69,7 @@ try {
         exit;
     }
     
-    // Verificar que la dirección pertenezca al usuario y obtener el teléfono
+    // Verificar que la dirección pertenezca al usuario y obtener datos
     $stmt = $conn->prepare("SELECT telefono, calle, ciudad, estado, codigo_postal, instrucciones FROM direcciones WHERE id = ? AND usuario_id = ?");
     $stmt->bind_param("ii", $direccion_id, $user_id);
     $stmt->execute();
@@ -87,33 +84,32 @@ try {
     }
     
     $direccion_data = $direccion_result->fetch_assoc();
-    
-    // Usar el teléfono de la dirección
     $telefono_direccion = $direccion_data['telefono'];
-    $direccion_completa_real = $direccion_data['calle'] . ', ' . $direccion_data['ciudad'] . ', ' . $direccion_data['estado'] . ', CP: ' . $direccion_data['codigo_postal'];
-    $instrucciones_direccion_real = $direccion_data['instrucciones'] ?? '';
+    $direccion_completa = $direccion_data['calle'] . ', ' . $direccion_data['ciudad'] . ', ' . $direccion_data['estado'] . ', CP: ' . $direccion_data['codigo_postal'];
+    $instrucciones_direccion = $direccion_data['instrucciones'] ?? '';
     
     // Iniciar transacción
     $conn->begin_transaction();
     
-    // Insertar el pedido
+    // Insertar el pedido con estructura básica
     $fecha_pedido = date('Y-m-d H:i:s');
     $estado = 'pendiente';
     
     // Combinar instrucciones
     $instrucciones_completas = '';
-    if (!empty($instrucciones_direccion_real)) {
-        $instrucciones_completas .= "Instrucciones de dirección: " . $instrucciones_direccion_real;
+    if (!empty($instrucciones_direccion)) {
+        $instrucciones_completas .= "Dirección: " . $instrucciones_direccion;
     }
     if (!empty($instrucciones)) {
         if (!empty($instrucciones_completas)) {
-            $instrucciones_completas .= "\n";
+            $instrucciones_completas .= " | ";
         }
-        $instrucciones_completas .= "Instrucciones adicionales: " . $instrucciones;
+        $instrucciones_completas .= "Adicionales: " . $instrucciones;
     }
     
-    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, direccion, instrucciones, total, estado, fecha_pedido) VALUES (?, ?, ?, ?, ?, ?)");
-    $stmt->bind_param("issdss", $user_id, $direccion_completa_real, $instrucciones_completas, $total, $estado, $fecha_pedido);
+    // INSERT básico con las columnas más comunes
+    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, total, estado, fecha_pedido) VALUES (?, ?, ?, ?)");
+    $stmt->bind_param("idss", $user_id, $total, $estado, $fecha_pedido);
     
     if (!$stmt->execute()) {
         throw new Exception('Error al crear el pedido');
@@ -168,13 +164,13 @@ try {
     // Confirmar transacción
     $conn->commit();
     
-    // Preparar mensaje para WhatsApp ANTES de limpiar el carrito
+    // Preparar mensaje para WhatsApp
     $nombre_usuario = $_SESSION['user_name'] ?? $nombre;
     $mensaje_whatsapp = "🍹 *NUEVO PEDIDO - MisterJugo* 🍹\n\n";
     $mensaje_whatsapp .= "📋 *Pedido #$pedido_id*\n";
     $mensaje_whatsapp .= "👤 *Cliente:* $nombre_usuario\n";
     $mensaje_whatsapp .= "📱 *Teléfono:* $telefono_direccion\n";
-    $mensaje_whatsapp .= "📍 *Dirección:* $direccion_completa_real\n";
+    $mensaje_whatsapp .= "📍 *Dirección:* $direccion_completa\n";
     
     if (!empty($instrucciones_completas)) {
         $mensaje_whatsapp .= "📝 *Instrucciones:* $instrucciones_completas\n";
@@ -192,12 +188,12 @@ try {
         $mensaje_whatsapp .= "• {$producto['cantidad']}x {$producto['nombre_producto']} - S/" . number_format($producto['subtotal'], 2) . "\n";
     }
     
-    // Limpiar el carrito DESPUÉS de usar los datos
-    unset($_SESSION['carrito']);
-    
     $mensaje_whatsapp .= "\n💰 *TOTAL: S/" . number_format($total_calculado, 2) . "*\n";
     $mensaje_whatsapp .= "\n⏰ *Fecha:* " . date('d/m/Y H:i') . "\n";
     $mensaje_whatsapp .= "\n✅ *Estado:* Pendiente de confirmación";
+    
+    // Limpiar el carrito
+    unset($_SESSION['carrito']);
     
     // Número de WhatsApp del restaurante
     $whatsapp_numero = "+51970846395";
