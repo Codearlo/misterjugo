@@ -1,129 +1,354 @@
-# Activar RewriteEngine
-RewriteEngine On
+<?php
+session_start();
 
-# Redirigir la página principal
-RewriteRule ^$ frontend/index.php [L]
+// Verificar si el usuario está logueado como administrador
+if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    $_SESSION['error_login'] = "Debes iniciar sesión como administrador para acceder";
+    header("Location: /login");
+    exit;
+}
 
-# ADMIN - Configuración simple que funciona como antes
-# Forzar barra final en /admin
-RewriteRule ^admin$ admin/ [R=301,L]
+// Incluir conexión a la base de datos
+require_once '../conexion.php';
 
-# Recursos estáticos del admin PRIMERO
-RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
-RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
-RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
+// Obtener estadísticas básicas
+$stats = [
+    'productos' => 0,
+    'categorias' => 0,
+    'pedidos' => 0,
+    'usuarios' => 0
+];
 
-# Páginas específicas del admin - REDIRECCIÓN DIRECTA
-RewriteRule ^admin/productos/?(\?.*)?$ backend/admin/productos.php$1 [L,QSA]
-RewriteRule ^admin/categorias/?(\?.*)?$ backend/admin/categorias.php$1 [L,QSA]
-RewriteRule ^admin/pedidos/?(\?.*)?$ backend/admin/pedidos.php$1 [L,QSA]
-RewriteRule ^admin/usuarios/?(\?.*)?$ backend/admin/usuarios.php$1 [L,QSA]
+$result = $conn->query("SELECT COUNT(*) as total FROM productos");
+if ($result) {
+    $stats['productos'] = $result->fetch_assoc()['total'];
+}
 
-# Archivos de procesamiento
-RewriteRule ^admin/procesar_(.+)\.php$ backend/admin/procesar_$1.php [L,QSA]
-RewriteRule ^admin/eliminar_(.+)\.php$ backend/admin/eliminar_$1.php [L,QSA]
-RewriteRule ^admin/obtener_(.+)\.php$ backend/admin/obtener_$1.php [L,QSA]
+$result = $conn->query("SELECT COUNT(*) as total FROM categorias");
+if ($result) {
+    $stats['categorias'] = $result->fetch_assoc()['total'];
+}
 
-# Dashboard (cualquier otra cosa del admin)
-RewriteRule ^admin/(.*)$ backend/admin/index.php [L,QSA]
+$result = $conn->query("SELECT COUNT(*) as total FROM pedidos");
+if ($result) {
+    $stats['pedidos'] = $result->fetch_assoc()['total'];
+}
 
-# Rutas del frontend
-RewriteRule ^checkout/?$ frontend/checkout.php [L]
-RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
-RewriteRule ^login/?$ frontend/login.php [L]
-RewriteRule ^registro/?$ frontend/registro.php [L]
-RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
-RewriteRule ^perfil/?$ frontend/perfil.php [L]
-RewriteRule ^cart/?$ frontend/carrito.php [L]
-RewriteRule ^carrito/?$ frontend/carrito.php [L]
-RewriteRule ^productos/?$ frontend/productos.php [L]
-RewriteRule ^direcciones/?$ frontend/direcciones.php [L]
+$result = $conn->query("SELECT COUNT(*) as total FROM usuarios");
+if ($result) {
+    $stats['usuarios'] = $result->fetch_assoc()['total'];
+}
 
-# Acceso directo al backend para AJAX y formularios
-RewriteRule ^backend/(.*)$ backend/$1 [L]
+// Obtener productos recientes
+$productos_recientes = [];
+$result = $conn->query("SELECT p.*, c.nombre as categoria_nombre 
+                       FROM productos p 
+                       LEFT JOIN categorias c ON p.categoria_id = c.id 
+                       ORDER BY p.id DESC LIMIT 5");
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $productos_recientes[] = $row;
+    }
+}
 
-# Excluir archivos existentes
-RewriteCond %{REQUEST_FILENAME} -f [OR]
-RewriteCond %{REQUEST_FILENAME} -d
-RewriteRule ^ - [L]
+// Obtener pedidos recientes
+$pedidos_recientes = [];
+$result = $conn->query("SELECT p.*, u.nombre as usuario_nombre 
+                       FROM pedidos p 
+                       LEFT JOIN usuarios u ON p.usuario_id = u.id 
+                       ORDER BY p.fecha_pedido DESC LIMIT 5");
+if ($result) {
+    while ($row = $result->fetch_assoc()) {
+        $pedidos_recientes[] = $row;
+    }
+}
 
-# Recursos estáticos del frontend
-RewriteRule ^css/(.*)$ frontend/css/$1 [L]
-RewriteRule ^js/(.*)$ frontend/js/$1 [L]
-RewriteRule ^images/(.*)$ frontend/images/$1 [L]
-RewriteRule ^imagenes/(.*)$ imagenes/$1 [L]
+$titulo_pagina = "Panel de Administración - MisterJugo";
+?>
 
-# Otras páginas van al frontend
-RewriteCond %{REQUEST_URI} !^/admin/
-RewriteCond %{REQUEST_URI} !^/backend/
-RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $titulo_pagina; ?></title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="/admin/css/admin.css">
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav id="sidebar" class="col-md-3 col-lg-2 d-md-block bg-dark sidebar collapse">
+                <div class="position-sticky pt-3">
+                    <div class="text-center mb-4">
+                        <img src="/images/logo_mrjugo.png" alt="MisterJugo Logo" class="admin-logo">
+                        <h5 class="text-white mt-2">Panel de Administración</h5>
+                    </div>
+                    <ul class="nav flex-column">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/admin/">
+                                <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/productos">
+                                <i class="fas fa-shopping-basket me-2"></i> Productos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/categorias">
+                                <i class="fas fa-tags me-2"></i> Categorías
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/pedidos">
+                                <i class="fas fa-shopping-cart me-2"></i> Pedidos
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/admin/usuarios">
+                                <i class="fas fa-users me-2"></i> Usuarios
+                            </a>
+                        </li>
+                        <li class="nav-item mt-5">
+                            <a class="nav-link" href="/" target="_blank">
+                                <i class="fas fa-external-link-alt me-2"></i> Ver Tienda
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link text-danger" href="/backend/cerrar_sesion.php">
+                                <i class="fas fa-sign-out-alt me-2"></i> Cerrar Sesión
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </nav>
 
-# Configuraciones de seguridad y performance
-Options -Indexes
+            <!-- Contenido principal -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+                <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                    <h1 class="h2">Dashboard</h1>
+                    <span class="text-muted">Bienvenido, <?php echo htmlspecialchars($_SESSION['user_name']); ?></span>
+                </div>
 
-ErrorDocument 404 /frontend/404.php
-ErrorDocument 403 /frontend/404.php
-ErrorDocument 500 /frontend/error.php
+                <!-- Tarjetas de estadísticas -->
+                <div class="row">
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow stats-card stats-products">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Productos</h6>
+                                        <h3 class="fw-bold"><?php echo $stats['productos']; ?></h3>
+                                    </div>
+                                    <div class="icon-container">
+                                        <i class="fas fa-shopping-basket"></i>
+                                    </div>
+                                </div>
+                                <a href="/admin/productos" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow stats-card stats-categories">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Categorías</h6>
+                                        <h3 class="fw-bold"><?php echo $stats['categorias']; ?></h3>
+                                    </div>
+                                    <div class="icon-container">
+                                        <i class="fas fa-tags"></i>
+                                    </div>
+                                </div>
+                                <a href="/admin/categorias" class="btn btn-sm btn-outline-secondary mt-3">Ver todas</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow stats-card stats-orders">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Pedidos</h6>
+                                        <h3 class="fw-bold"><?php echo $stats['pedidos']; ?></h3>
+                                    </div>
+                                    <div class="icon-container">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                </div>
+                                <a href="/admin/pedidos" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3 mb-4">
+                        <div class="card shadow stats-card stats-users">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h6 class="text-muted">Usuarios</h6>
+                                        <h3 class="fw-bold"><?php echo $stats['usuarios']; ?></h3>
+                                    </div>
+                                    <div class="icon-container">
+                                        <i class="fas fa-users"></i>
+                                    </div>
+                                </div>
+                                <a href="/admin/usuarios" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<FilesMatch "\.(php)$">
-    Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
-    Header set Pragma "no-cache"
-    Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
-</FilesMatch>
+                <!-- Accesos rápidos -->
+                <div class="row mb-4">
+                    <div class="col-12">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-bolt me-2"></i> Acciones Rápidas</h5>
+                            </div>
+                            <div class="card-body">
+                                <div class="row">
+                                    <div class="col-md-3 mb-3">
+                                        <a href="/admin/productos?action=new" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-plus me-2"></i> Nuevo Producto
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <a href="/admin/categorias?action=new" class="btn btn-info w-100 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-plus me-2"></i> Nueva Categoría
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <a href="/admin/pedidos" class="btn btn-warning w-100 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-clipboard-list me-2"></i> Ver Pedidos
+                                        </a>
+                                    </div>
+                                    <div class="col-md-3 mb-3">
+                                        <a href="/" target="_blank" class="btn btn-secondary w-100 d-flex align-items-center justify-content-center">
+                                            <i class="fas fa-external-link-alt me-2"></i> Ver Tienda
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
-<IfModule mod_deflate.c>
-    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
-</IfModule>
+                <!-- Productos y Pedidos recientes -->
+                <div class="row mb-4">
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-shopping-basket me-2"></i> Productos Recientes</h5>
+                            </div>
+                            <div class="card-body">
+                                <?php if (count($productos_recientes) > 0): ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>Nombre</th>
+                                                    <th>Categoría</th>
+                                                    <th>Precio</th>
+                                                    <th>Estado</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($productos_recientes as $producto): ?>
+                                                    <tr>
+                                                        <td><?php echo htmlspecialchars($producto['nombre']); ?></td>
+                                                        <td><?php echo htmlspecialchars($producto['categoria_nombre']); ?></td>
+                                                        <td>S/<?php echo number_format($producto['precio'], 2); ?></td>
+                                                        <td>
+                                                            <?php if ($producto['disponible']): ?>
+                                                                <span class="badge bg-success">Disponible</span>
+                                                            <?php else: ?>
+                                                                <span class="badge bg-secondary">No Disponible</span>
+                                                            <?php endif; ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php else: ?>
+                                    <p class="text-muted">No hay productos registrados aún.</p>
+                                <?php endif; ?>
+                                <a href="/admin/productos" class="btn btn-sm btn-primary">Ver todos los productos</a>
+                            </div>
+                        </div>
+                    </div>
 
-<IfModule mod_expires.c>
-    ExpiresActive On
-    ExpiresByType image/jpg "access plus 1 month"
-    ExpiresByType image/jpeg "access plus 1 month"
-    ExpiresByType image/gif "access plus 1 month"
-    ExpiresByType image/png "access plus 1 month"
-    ExpiresByType image/svg+xml "access plus 1 month"
-    ExpiresByType text/css "access plus 1 week"
-    ExpiresByType application/pdf "access plus 1 month"
-    ExpiresByType text/x-javascript "access plus 1 week"
-    ExpiresByType application/javascript "access plus 1 week"
-    ExpiresByType application/x-javascript "access plus 1 week"
-    ExpiresByType font/ttf "access plus 1 month"
-    ExpiresByType font/woff "access plus 1 month"
-    ExpiresByType font/woff2 "access plus 1 month"
-    ExpiresByType image/x-icon "access plus 1 month"
-    ExpiresDefault "access plus 1 day"
-</IfModule>
+                    <div class="col-md-6">
+                        <div class="card shadow">
+                            <div class="card-header bg-primary text-white">
+                                <h5 class="mb-0"><i class="fas fa-shopping-cart me-2"></i> Pedidos Recientes</h5>
+                            </div>
+                            <div class="card-body">
+                                <?php if (count($pedidos_recientes) > 0): ?>
+                                    <div class="table-responsive">
+                                        <table class="table table-hover">
+                                            <thead>
+                                                <tr>
+                                                    <th>ID</th>
+                                                    <th>Cliente</th>
+                                                    <th>Total</th>
+                                                    <th>Estado</th>
+                                                    <th>Fecha</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <?php foreach ($pedidos_recientes as $pedido): ?>
+                                                    <tr>
+                                                        <td>#<?php echo $pedido['id']; ?></td>
+                                                        <td><?php echo htmlspecialchars($pedido['usuario_nombre']); ?></td>
+                                                        <td>S/<?php echo number_format($pedido['total'], 2); ?></td>
+                                                        <td>
+                                                            <?php 
+                                                            switch ($pedido['estado']) {
+                                                                case 'pendiente':
+                                                                    echo '<span class="badge bg-warning">Pendiente</span>';
+                                                                    break;
+                                                                case 'procesando':
+                                                                    echo '<span class="badge bg-info">Procesando</span>';
+                                                                    break;
+                                                                case 'completado':
+                                                                    echo '<span class="badge bg-success">Completado</span>';
+                                                                    break;
+                                                                case 'cancelado':
+                                                                    echo '<span class="badge bg-danger">Cancelado</span>';
+                                                                    break;
+                                                                default:
+                                                                    echo '<span class="badge bg-secondary">'. ucfirst($pedido['estado']) .'</span>';
+                                                            }
+                                                            ?>
+                                                        </td>
+                                                        <td><?php echo date('d/m/Y', strtotime($pedido['fecha_pedido'])); ?></td>
+                                                    </tr>
+                                                <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                <?php else: ?>
+                                    <p class="text-muted">No hay pedidos registrados aún.</p>
+                                <?php endif; ?>
+                                <a href="/admin/pedidos" class="btn btn-sm btn-primary">Ver todos los pedidos</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
 
-<FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php|composer\.json|\.travis\.yml)$">
-    Order Allow,Deny
-    Deny from all
-</FilesMatch>
-
-<DirectoryMatch "^/.git/">
-    Order Deny,Allow
-    Deny from all
-</DirectoryMatch>
-
-<IfModule mod_headers.c>
-    <FilesMatch "\.(ttf|otf|eot|woff|woff2|font\.css)$">
-        Header set Access-Control-Allow-Origin "*"
-    </FilesMatch>
-</IfModule>
-
-<FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
-    Order Allow,Deny
-    Deny from all
-    Satisfy All
-</FilesMatch>
-
-<IfModule mod_rewrite.c>
-    RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
-    RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
-    RewriteCond %{QUERY_STRING} _REQUEST(=|\[|\%[0-9A-Z]{0,2})
-    RewriteRule ^(.*)$ index.php? [F,L]
-</IfModule>
-
-<LimitExcept GET POST HEAD>
-    Order Deny,Allow
-    Deny from all
-</LimitExcept>
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Admin JS -->
+    <script src="/admin/js/admin.js"></script>
+</body>
+</html>

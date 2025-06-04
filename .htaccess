@@ -4,21 +4,27 @@ RewriteEngine On
 # Redirigir la página principal
 RewriteRule ^$ frontend/index.php [L]
 
-# ADMIN - Configuración simple como antes
+# ADMIN - Configuración simple que funciona como antes
 # Forzar barra final en /admin
 RewriteRule ^admin$ admin/ [R=301,L]
 
-# Recursos estáticos del admin (CSS, JS, imágenes)
+# Recursos estáticos del admin PRIMERO
 RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
 RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
 RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
 
-# Archivos de procesamiento - acceso directo para formularios
-RewriteRule ^admin/procesar_(.+)\.php$ backend/admin/procesar_$1.php [L]
-RewriteRule ^admin/eliminar_(.+)\.php$ backend/admin/eliminar_$1.php [L]
-RewriteRule ^admin/obtener_(.+)\.php$ backend/admin/obtener_$1.php [L]
+# Páginas específicas del admin - REDIRECCIÓN DIRECTA
+RewriteRule ^admin/productos/?(\?.*)?$ backend/admin/productos.php$1 [L,QSA]
+RewriteRule ^admin/categorias/?(\?.*)?$ backend/admin/categorias.php$1 [L,QSA]
+RewriteRule ^admin/pedidos/?(\?.*)?$ backend/admin/pedidos.php$1 [L,QSA]
+RewriteRule ^admin/usuarios/?(\?.*)?$ backend/admin/usuarios.php$1 [L,QSA]
 
-# TODO lo demás del admin va al index principal - COMO ANTES
+# Archivos de procesamiento
+RewriteRule ^admin/procesar_(.+)\.php$ backend/admin/procesar_$1.php [L,QSA]
+RewriteRule ^admin/eliminar_(.+)\.php$ backend/admin/eliminar_$1.php [L,QSA]
+RewriteRule ^admin/obtener_(.+)\.php$ backend/admin/obtener_$1.php [L,QSA]
+
+# Dashboard (cualquier otra cosa del admin)
 RewriteRule ^admin/(.*)$ backend/admin/index.php [L,QSA]
 
 # Rutas del frontend
@@ -33,7 +39,7 @@ RewriteRule ^carrito/?$ frontend/carrito.php [L]
 RewriteRule ^productos/?$ frontend/productos.php [L]
 RewriteRule ^direcciones/?$ frontend/direcciones.php [L]
 
-# Acceso directo al backend para AJAX
+# Acceso directo al backend para AJAX y formularios
 RewriteRule ^backend/(.*)$ backend/$1 [L]
 
 # Excluir archivos existentes
