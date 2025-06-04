@@ -11,16 +11,16 @@ RewriteRule ^admin$ admin/ [R=301,L]
 # Redirigir /admin/ al archivo index.php del admin
 RewriteRule ^admin/$ backend/admin/index.php [L]
 
-# Rutas específicas del admin - redirigir a los archivos correspondientes
+# Recursos estáticos del admin (CSS, JS, imágenes) - ANTES que las rutas dinámicas
+RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
+RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
+RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
+
+# Rutas específicas del admin - SIN .php en la URL
 RewriteRule ^admin/usuarios/?$ backend/admin/usuarios.php [L]
 RewriteRule ^admin/productos/?$ backend/admin/productos.php [L]
 RewriteRule ^admin/categorias/?$ backend/admin/categorias.php [L]
 RewriteRule ^admin/pedidos/?$ backend/admin/pedidos.php [L]
-
-# Recursos estáticos del admin (CSS, JS, imágenes)
-RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
-RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
-RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
 
 # Cualquier otra ruta del admin que no sea recurso estático
 RewriteRule ^admin/([^/]+)/?$ backend/admin/$1.php [L]
