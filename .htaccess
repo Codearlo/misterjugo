@@ -1,58 +1,49 @@
 # Activar RewriteEngine
 RewriteEngine On
 
+# *** FRONTEND SECTION ***
 # Redirigir la página principal
 RewriteRule ^$ frontend/index.php [L]
 
-# ADMIN - Configuración simplificada para mostrar siempre /admin/
-# Forzar barra final en /admin (sin barra) y redirigir a /admin/
-RewriteRule ^admin$ admin/ [R=301,L]
-
-# Recursos estáticos del admin ANTES que las rutas dinámicas
-RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
-RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
-RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
-
-# Todas las rutas del admin van al index.php del admin
-# Esto mantiene la URL como /admin/ sin importar la sección
-RewriteRule ^admin/.*$ backend/admin/index.php [L]
-
-# Archivos de procesamiento del backend (para AJAX y formularios)
-# Estos necesitan acceso directo para que funcionen los formularios
-RewriteRule ^backend/(.*)$ backend/$1 [L]
-
-# Rutas del frontend
+# Rutas comunes del frontend
 RewriteRule ^checkout/?$ frontend/checkout.php [L]
 RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
 RewriteRule ^login/?$ frontend/login.php [L]
 RewriteRule ^registro/?$ frontend/registro.php [L]
 RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
 RewriteRule ^perfil/?$ frontend/perfil.php [L]
-RewriteRule ^cart/?$ frontend/carrito.php [L]
-RewriteRule ^carrito/?$ frontend/carrito.php [L]
+RewriteRule ^cart/?$ frontend/cart.php [L]
 RewriteRule ^productos/?$ frontend/productos.php [L]
 RewriteRule ^direcciones/?$ frontend/direcciones.php [L]
 
-# Excluir recursos estáticos existentes
+# *** ADMIN SECTION ***
+# Redirigir todas las solicitudes a la página principal del administrador
+RewriteRule ^admin/?$ backend/admin/index.php [L]
+RewriteRule ^admin/(.+)$ backend/admin/$1 [L]
+
+# Excluir recursos estáticos (evitar bucles)
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Recursos estáticos del frontend
+# Redirigir solicitudes al frontend para rutas no encontradas
+RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
+
+# *** STATIC RESOURCES ***
+# Frontend resources
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
-RewriteRule ^imagenes/(.*)$ imagenes/$1 [L]
 
-# Redirigir otras rutas al frontend (excepto admin y backend)
-RewriteCond %{REQUEST_URI} !^/admin/
-RewriteCond %{REQUEST_URI} !^/backend/
-RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
+# Admin resources
+RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
+RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
+RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
 
 # Prevenir listado de directorios
 Options -Indexes
 
-# Manejo de errores
+# Manejo de errores personalizados
 ErrorDocument 404 /frontend/404.php
 ErrorDocument 403 /frontend/404.php
 ErrorDocument 500 /frontend/error.php
@@ -100,6 +91,23 @@ ErrorDocument 500 /frontend/error.php
     Deny from all
 </DirectoryMatch>
 
+# Seguridad de cabeceras HTTP
+# <IfModule mod_headers.c>
+#     Header always append X-Frame-Options SAMEORIGIN
+#     Header always set X-XSS-Protection "1; mode=block"
+#     Header always set X-Content-Type-Options "nosniff"
+#     Header always set Referrer-Policy "strict-origin-when-cross-origin"
+#
+#     # Content-Security-Policy flexible para desarrollo y CDN externo
+#     Header always set Content-Security-Policy "default-src 'self'; \
+#         script-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline' 'unsafe-eval'; \
+#         style-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline'; \
+#         img-src 'self' data: https://*.cloudflare.com https://*.whatsapp.net; \
+#         font-src 'self' https://cdnjs.cloudflare.com  data:; \
+#         connect-src 'self'; \
+#         frame-src 'none';"
+# </IfModule>
+
 # Configuración CORS para fuentes
 <IfModule mod_headers.c>
     <FilesMatch "\.(ttf|otf|eot|woff|woff2|font\.css)$">
@@ -107,14 +115,18 @@ ErrorDocument 500 /frontend/error.php
     </FilesMatch>
 </IfModule>
 
-# Bloquear acceso a archivos sensibles
+# Forzar HTTPS (descomenta si usas SSL)
+# RewriteCond %{HTTPS} !=on
+# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
+
+# Bloquear acceso a archivos sensibles por extensión
 <FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
     Order Allow,Deny
     Deny from all
     Satisfy All
 </FilesMatch>
 
-# Prevenir inyección PHP
+# Prevenir inyección PHP en parámetros
 <IfModule mod_rewrite.c>
     RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
     RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
@@ -122,7 +134,7 @@ ErrorDocument 500 /frontend/error.php
     RewriteRule ^(.*)$ index.php? [F,L]
 </IfModule>
 
-# Limitar métodos HTTP
+# Limitar métodos HTTP permitidos
 <LimitExcept GET POST HEAD>
     Order Deny,Allow
     Deny from all
