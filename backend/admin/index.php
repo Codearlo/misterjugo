@@ -82,7 +82,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Admin CSS -->
-    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="/admin/css/admin.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -96,27 +96,27 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="index.php">
+                            <a class="nav-link active" href="/admin/">
                                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="productos.php">
+                            <a class="nav-link" href="/admin/productos">
                                 <i class="fas fa-shopping-basket me-2"></i> Productos
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="categorias.php">
+                            <a class="nav-link" href="/admin/categorias">
                                 <i class="fas fa-tags me-2"></i> Categorías
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="pedidos.php">
+                            <a class="nav-link" href="/admin/pedidos">
                                 <i class="fas fa-shopping-cart me-2"></i> Pedidos
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="usuarios.php">
+                            <a class="nav-link" href="/admin/usuarios">
                                 <i class="fas fa-users me-2"></i> Usuarios
                             </a>
                         </li>
@@ -155,7 +155,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                                         <i class="fas fa-shopping-basket"></i>
                                     </div>
                                 </div>
-                                <a href="productos.php" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
+                                <a href="/admin/productos" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
                             </div>
                         </div>
                     </div>
@@ -171,7 +171,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                                         <i class="fas fa-tags"></i>
                                     </div>
                                 </div>
-                                <a href="categorias.php" class="btn btn-sm btn-outline-secondary mt-3">Ver todas</a>
+                                <a href="/admin/categorias" class="btn btn-sm btn-outline-secondary mt-3">Ver todas</a>
                             </div>
                         </div>
                     </div>
@@ -187,7 +187,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                                         <i class="fas fa-shopping-cart"></i>
                                     </div>
                                 </div>
-                                <a href="pedidos.php" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
+                                <a href="/admin/pedidos" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
                             </div>
                         </div>
                     </div>
@@ -203,7 +203,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                                         <i class="fas fa-users"></i>
                                     </div>
                                 </div>
-                                <a href="usuarios.php" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
+                                <a href="/admin/usuarios" class="btn btn-sm btn-outline-secondary mt-3">Ver todos</a>
                             </div>
                         </div>
                     </div>
@@ -219,17 +219,17 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-3 mb-3">
-                                        <a href="productos.php?action=new" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
+                                        <a href="/admin/productos?action=new" class="btn btn-success w-100 d-flex align-items-center justify-content-center">
                                             <i class="fas fa-plus me-2"></i> Nuevo Producto
                                         </a>
                                     </div>
                                     <div class="col-md-3 mb-3">
-                                        <a href="categorias.php?action=new" class="btn btn-info w-100 d-flex align-items-center justify-content-center">
+                                        <a href="/admin/categorias?action=new" class="btn btn-info w-100 d-flex align-items-center justify-content-center">
                                             <i class="fas fa-plus me-2"></i> Nueva Categoría
                                         </a>
                                     </div>
                                     <div class="col-md-3 mb-3">
-                                        <a href="pedidos.php" class="btn btn-warning w-100 d-flex align-items-center justify-content-center">
+                                        <a href="/admin/pedidos" class="btn btn-warning w-100 d-flex align-items-center justify-content-center">
                                             <i class="fas fa-clipboard-list me-2"></i> Ver Pedidos
                                         </a>
                                     </div>
@@ -284,7 +284,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                                 <?php else: ?>
                                     <p class="text-muted">No hay productos registrados aún.</p>
                                 <?php endif; ?>
-                                <a href="productos.php" class="btn btn-sm btn-primary">Ver todos los productos</a>
+                                <a href="/admin/productos" class="btn btn-sm btn-primary">Ver todos los productos</a>
                             </div>
                         </div>
                     </div>
@@ -343,7 +343,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                                 <?php else: ?>
                                     <p class="text-muted">No hay pedidos registrados aún.</p>
                                 <?php endif; ?>
-                                <a href="pedidos.php" class="btn btn-sm btn-primary">Ver todos los pedidos</a>
+                                <a href="/admin/pedidos" class="btn btn-sm btn-primary">Ver todos los pedidos</a>
                             </div>
                         </div>
                     </div>
@@ -355,6 +355,6 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
     <!-- Bootstrap JS, Popper.js, and jQuery -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     <!-- Admin JS -->
-    <script src="js/admin.js"></script>
+    <script src="/admin/js/admin.js"></script>
 </body>
 </html>
