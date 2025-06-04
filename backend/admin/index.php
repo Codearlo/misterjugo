@@ -3,13 +3,36 @@ session_start();
 
 // Verificar si el usuario está logueado como administrador
 if (!isset($_SESSION['user_id']) || !isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
-    // Si no es admin, redirigir al login
     $_SESSION['error_login'] = "Debes iniciar sesión como administrador para acceder";
     header("Location: /login");
     exit;
 }
 
-// Incluir conexión a la base de datos
+// Detectar qué página mostrar basándose en la URL
+$request_uri = $_SERVER['REQUEST_URI'];
+$path = parse_url($request_uri, PHP_URL_PATH);
+$path = rtrim($path, '/');
+
+// Extraer la página desde la URL
+if (preg_match('#^/admin/([^/]+)#', $path, $matches)) {
+    $page = $matches[1];
+} else {
+    $page = 'dashboard';
+}
+
+// Determinar la acción
+$action = isset($_GET['action']) ? $_GET['action'] : '';
+
+// Si es una de las páginas específicas, incluir el archivo correspondiente
+$valid_pages = ['productos', 'categorias', 'pedidos', 'usuarios'];
+
+if (in_array($page, $valid_pages) && file_exists($page . '.php')) {
+    // Incluir la página específica directamente
+    include $page . '.php';
+    exit;
+}
+
+// Si no es una página específica o no existe, mostrar el dashboard
 require_once '../conexion.php';
 
 // Obtener estadísticas básicas
@@ -20,25 +43,21 @@ $stats = [
     'usuarios' => 0
 ];
 
-// Contar productos
 $result = $conn->query("SELECT COUNT(*) as total FROM productos");
 if ($result) {
     $stats['productos'] = $result->fetch_assoc()['total'];
 }
 
-// Contar categorías
 $result = $conn->query("SELECT COUNT(*) as total FROM categorias");
 if ($result) {
     $stats['categorias'] = $result->fetch_assoc()['total'];
 }
 
-// Contar pedidos
 $result = $conn->query("SELECT COUNT(*) as total FROM pedidos");
 if ($result) {
     $stats['pedidos'] = $result->fetch_assoc()['total'];
 }
 
-// Contar usuarios
 $result = $conn->query("SELECT COUNT(*) as total FROM usuarios");
 if ($result) {
     $stats['usuarios'] = $result->fetch_assoc()['total'];
@@ -81,8 +100,8 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <!-- Admin CSS - Ruta física corregida -->
-    <link rel="stylesheet" href="/backend/admin/css/admin.css">
+    <!-- Admin CSS -->
+    <link rel="stylesheet" href="/admin/css/admin.css">
 </head>
 <body>
     <div class="container-fluid">
@@ -96,7 +115,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link active" href="/admin/">
+                            <a class="nav-link" href="/admin/">
                                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                             </a>
                         </li>
@@ -244,7 +263,7 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                     </div>
                 </div>
 
-                <!-- Productos recientes -->
+                <!-- Productos y Pedidos recientes -->
                 <div class="row mb-4">
                     <div class="col-md-6">
                         <div class="card shadow">
@@ -289,7 +308,6 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
                         </div>
                     </div>
 
-                    <!-- Pedidos recientes -->
                     <div class="col-md-6">
                         <div class="card shadow">
                             <div class="card-header bg-primary text-white">
@@ -352,9 +370,9 @@ $titulo_pagina = "Panel de Administración - MisterJugo";
         </div>
     </div>
 
-    <!-- Bootstrap JS, Popper.js, and jQuery -->
+    <!-- Bootstrap JS -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Admin JS - Ruta física corregida -->
-    <script src="/backend/admin/js/admin.js"></script>
+    <!-- Admin JS -->
+    <script src="/admin/js/admin.js"></script>
 </body>
 </html>
