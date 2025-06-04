@@ -28,7 +28,7 @@ if ($action == 'edit' && $categoria_id > 0) {
     } else {
         // Si no se encuentra la categoría, redirigir a la lista
         $_SESSION['admin_error'] = "Categoría no encontrada";
-        header("Location: categorias.php");
+        header("Location: categorias");
         exit;
     }
 }
@@ -131,7 +131,7 @@ $titulo_pagina = ($action == 'new' ? "Nueva Categoría" : ($action == 'edit' ? "
                         ?>
                     </h1>
                     <?php if (!$action): ?>
-                        <a href="categorias.php?action=new" class="btn btn-primary">
+                        <a href="categorias?action=new" class="btn btn-primary">
                             <i class="fas fa-plus me-2"></i> Nueva Categoría
                         </a>
                     <?php endif; ?>
@@ -170,7 +170,7 @@ $titulo_pagina = ($action == 'new' ? "Nueva Categoría" : ($action == 'edit' ? "
                                 </div>
                                 
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a href="categorias.php" class="btn btn-secondary">Cancelar</a>
+                                    <a href="categorias" class="btn btn-secondary">Cancelar</a>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save me-2"></i>
                                         <?php echo ($action == 'edit') ? 'Actualizar Categoría' : 'Crear Categoría'; ?>
@@ -210,7 +210,7 @@ $titulo_pagina = ($action == 'new' ? "Nueva Categoría" : ($action == 'edit' ? "
                                                     <td><?php echo $total_productos; ?></td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a href="categorias.php?action=edit&id=<?php echo $cat['id']; ?>" 
+                                                            <a href="categorias?action=edit&id=<?php echo $cat['id']; ?>" 
                                                                class="btn btn-sm btn-outline-primary">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
@@ -229,7 +229,7 @@ $titulo_pagina = ($action == 'new' ? "Nueva Categoría" : ($action == 'edit' ? "
                             <?php else: ?>
                                 <div class="text-center p-4">
                                     <p class="text-muted mb-3">No hay categorías registradas aún.</p>
-                                    <a href="categorias.php?action=new" class="btn btn-primary">
+                                    <a href="categorias?action=new" class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i> Crear Primera Categoría
                                     </a>
                                 </div>
