@@ -11,16 +11,32 @@ RewriteRule ^admin$ admin/ [R=301,L]
 # Redirigir /admin/ al archivo index.php del admin
 RewriteRule ^admin/$ backend/admin/index.php [L]
 
-# Recursos estáticos del admin (CSS, JS, imágenes) - ANTES que las rutas dinámicas
+# Recursos estáticos del admin - REDIRECCIONES MEJORADAS
+# CSS del admin
 RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
+# JS del admin
 RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
+# Imágenes del admin
 RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
+# Cualquier otro recurso estático del admin
+RewriteRule ^admin/assets/(.+)$ backend/admin/assets/$1 [L]
 
 # Rutas específicas del admin - SIN .php en la URL
 RewriteRule ^admin/usuarios/?$ backend/admin/usuarios.php [L]
 RewriteRule ^admin/productos/?$ backend/admin/productos.php [L]
 RewriteRule ^admin/categorias/?$ backend/admin/categorias.php [L]
 RewriteRule ^admin/pedidos/?$ backend/admin/pedidos.php [L]
+
+# Archivos de procesamiento del admin (para formularios y AJAX)
+RewriteRule ^admin/procesar_producto/?$ backend/admin/procesar_producto.php [L]
+RewriteRule ^admin/procesar_categoria/?$ backend/admin/procesar_categoria.php [L]
+RewriteRule ^admin/procesar_pedido/?$ backend/admin/procesar_pedido.php [L]
+RewriteRule ^admin/eliminar_producto/?$ backend/admin/eliminar_producto.php [L]
+RewriteRule ^admin/eliminar_categoria/?$ backend/admin/eliminar_categoria.php [L]
+RewriteRule ^admin/obtener_producto/?$ backend/admin/obtener_producto.php [L]
+RewriteRule ^admin/obtener_pedido/?$ backend/admin/obtener_pedido.php [L]
+RewriteRule ^admin/obtener_usuario/?$ backend/admin/obtener_usuario.php [L]
+RewriteRule ^admin/debug_upload/?$ backend/admin/debug_upload.php [L]
 
 # Cualquier otra ruta del admin que no sea recurso estático
 RewriteRule ^admin/([^/]+)/?$ backend/admin/$1.php [L]
@@ -32,10 +48,13 @@ RewriteRule ^login/?$ frontend/login.php [L]
 RewriteRule ^registro/?$ frontend/registro.php [L]
 RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
 RewriteRule ^perfil/?$ frontend/perfil.php [L]
-RewriteRule ^cart/?$ frontend/cart.php [L]
-RewriteRule ^carrito/?$ frontend/cart.php [L]
+RewriteRule ^cart/?$ frontend/carrito.php [L]
+RewriteRule ^carrito/?$ frontend/carrito.php [L]
 RewriteRule ^productos/?$ frontend/productos.php [L]
 RewriteRule ^direcciones/?$ frontend/direcciones.php [L]
+
+# Páginas adicionales del frontend basadas en tu estructura
+RewriteRule ^index/?$ frontend/index.php [L]ex/?$ frontend/index.php [L]
 
 # Excluir recursos estáticos (evitar bucles)
 RewriteCond %{REQUEST_FILENAME} -f [OR]
