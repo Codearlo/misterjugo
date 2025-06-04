@@ -174,7 +174,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                 <!-- Filtros y buscador -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <form method="GET" action="usuarios.php" class="row align-items-end">
+                        <form method="GET" action="usuarios" class="row align-items-end">
                             <div class="col-md-3 mb-3">
                                 <label for="admin" class="form-label">Tipo de Usuario</label>
                                 <select class="form-select" id="admin" name="admin">
@@ -197,7 +197,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                 <button type="submit" class="btn btn-primary flex-grow-1">
                                     <i class="fas fa-search me-2"></i> Filtrar
                                 </button>
-                                <a href="usuarios.php" class="btn btn-secondary">
+                                <a href="usuarios" class="btn btn-secondary">
                                     <i class="fas fa-redo"></i>
                                 </a>
                             </div>
@@ -272,7 +272,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                 <nav aria-label="Paginación de usuarios">
                                     <ul class="pagination justify-content-center mt-4">
                                         <li class="page-item <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'usuarios.php?pagina='.($pagina-1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                            <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'usuarios?pagina='.($pagina-1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                aria-label="Anterior">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
@@ -280,14 +280,14 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                                         
                                         <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
                                             <li class="page-item <?php echo ($pagina == $i) ? 'active' : ''; ?>">
-                                                <a class="page-link" href="usuarios.php?pagina=<?php echo $i; ?><?php echo (!empty($filtro_admin)) ? '&admin='.$filtro_admin : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
+                                                <a class="page-link" href="usuarios?pagina=<?php echo $i; ?><?php echo (!empty($filtro_admin)) ? '&admin='.$filtro_admin : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
                                                     <?php echo $i; ?>
                                                 </a>
                                             </li>
                                         <?php endfor; ?>
                                         
                                         <li class="page-item <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'usuarios.php?pagina='.($pagina+1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                            <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'usuarios?pagina='.($pagina+1).((!empty($filtro_admin)) ? '&admin='.$filtro_admin : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                aria-label="Siguiente">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
@@ -299,7 +299,7 @@ $titulo_pagina = "Gestión de Usuarios - MisterJugo";
                         <?php else: ?>
                             <div class="text-center p-4">
                                 <p class="text-muted mb-3">No se encontraron usuarios que coincidan con tu búsqueda.</p>
-                                <a href="usuarios.php" class="btn btn-secondary">
+                                <a href="usuarios" class="btn btn-secondary">
                                     <i class="fas fa-redo me-2"></i> Limpiar Filtros
                                 </a>
                             </div>

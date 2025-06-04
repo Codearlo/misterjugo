@@ -152,7 +152,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="usuarios.php">
+                            <a class="nav-link" href="usuarios">
                                 <i class="fas fa-users me-2"></i> Usuarios
                             </a>
                         </li>
@@ -233,7 +233,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                 <!-- Filtros y buscador -->
                 <div class="card shadow mb-4">
                     <div class="card-body">
-                        <form method="GET" action="pedidos.php" class="row align-items-end">
+                        <form method="GET" action="pedidos" class="row align-items-end">
                             <div class="col-md-2 mb-3">
                                 <label for="estado" class="form-label">Estado</label>
                                 <select class="form-select" id="estado" name="estado">
@@ -267,7 +267,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                                 <button type="submit" class="btn btn-primary flex-grow-1">
                                     <i class="fas fa-search me-2"></i> Filtrar
                                 </button>
-                                <a href="pedidos.php" class="btn btn-secondary">
+                                <a href="pedidos" class="btn btn-secondary">
                                     <i class="fas fa-redo"></i>
                                 </a>
                             </div>
@@ -383,7 +383,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                                 <nav aria-label="Paginación de pedidos">
                                     <ul class="pagination justify-content-center mt-4">
                                         <li class="page-item <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'pedidos.php?pagina='.($pagina-1).((!empty($filtro_estado)) ? '&estado='.$filtro_estado : '').((!empty($filtro_fecha)) ? '&fecha='.$filtro_fecha : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                            <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'pedidos?pagina='.($pagina-1).((!empty($filtro_estado)) ? '&estado='.$filtro_estado : '').((!empty($filtro_fecha)) ? '&fecha='.$filtro_fecha : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                aria-label="Anterior">
                                                 <span aria-hidden="true">&laquo;</span>
                                             </a>
@@ -391,14 +391,14 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                                         
                                         <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
                                             <li class="page-item <?php echo ($pagina == $i) ? 'active' : ''; ?>">
-                                                <a class="page-link" href="pedidos.php?pagina=<?php echo $i; ?><?php echo (!empty($filtro_estado)) ? '&estado='.$filtro_estado : ''; ?><?php echo (!empty($filtro_fecha)) ? '&fecha='.$filtro_fecha : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
+                                                <a class="page-link" href="pedidos?pagina=<?php echo $i; ?><?php echo (!empty($filtro_estado)) ? '&estado='.$filtro_estado : ''; ?><?php echo (!empty($filtro_fecha)) ? '&fecha='.$filtro_fecha : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
                                                     <?php echo $i; ?>
                                                 </a>
                                             </li>
                                         <?php endfor; ?>
                                         
                                         <li class="page-item <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
-                                            <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'pedidos.php?pagina='.($pagina+1).((!empty($filtro_estado)) ? '&estado='.$filtro_estado : '').((!empty($filtro_fecha)) ? '&fecha='.$filtro_fecha : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                            <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'pedidos?pagina='.($pagina+1).((!empty($filtro_estado)) ? '&estado='.$filtro_estado : '').((!empty($filtro_fecha)) ? '&fecha='.$filtro_fecha : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                aria-label="Siguiente">
                                                 <span aria-hidden="true">&raquo;</span>
                                             </a>
@@ -410,7 +410,7 @@ $titulo_pagina = "Gestión de Pedidos - MisterJugo";
                         <?php else: ?>
                             <div class="text-center p-4">
                                 <p class="text-muted mb-3">No se encontraron pedidos que coincidan con tu búsqueda.</p>
-                                <a href="pedidos.php" class="btn btn-secondary">
+                                <a href="pedidos" class="btn btn-secondary">
                                     <i class="fas fa-redo me-2"></i> Limpiar Filtros
                                 </a>
                             </div>

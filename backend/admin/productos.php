@@ -31,7 +31,7 @@ if ($action == 'edit' && $producto_id > 0) {
     } else {
         // Si no se encuentra el producto, redirigir a la lista
         $_SESSION['admin_error'] = "Producto no encontrado";
-        header("Location: productos.php");
+        header("Location: productos");
         exit;
     }
 }
@@ -48,7 +48,7 @@ if ($result) {
 // Si no hay categorías y estamos creando un producto, redirigir para crear una
 if (empty($categorias) && ($action == 'new' || $action == 'edit')) {
     $_SESSION['admin_error'] = "Debes crear al menos una categoría antes de gestionar productos";
-    header("Location: categorias.php?action=new");
+    header("Location: categorias?action=new");
     exit;
 }
 
@@ -210,7 +210,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                         ?>
                     </h1>
                     <?php if (!$action): ?>
-                        <a href="productos.php?action=new" class="btn btn-primary">
+                        <a href="productos?action=new" class="btn btn-primary">
                             <i class="fas fa-plus me-2"></i> Nuevo Producto
                         </a>
                     <?php endif; ?>
@@ -332,7 +332,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                 </div>
                                 
                                 <div class="d-flex justify-content-end gap-2">
-                                    <a href="productos.php" class="btn btn-secondary">Cancelar</a>
+                                    <a href="productos" class="btn btn-secondary">Cancelar</a>
                                     <button type="submit" class="btn btn-primary">
                                         <i class="fas fa-save me-2"></i>
                                         <?php echo ($action == 'edit') ? 'Actualizar Producto' : 'Crear Producto'; ?>
@@ -345,7 +345,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                     <!-- Filtros y buscador -->
                     <div class="card shadow mb-4">
                         <div class="card-body">
-                            <form method="GET" action="productos.php" class="row align-items-end">
+                            <form method="GET" action="productos" class="row align-items-end">
                                 <div class="col-md-3 mb-3">
                                     <label for="categoria" class="form-label">Filtrar por Categoría</label>
                                     <select class="form-select" id="categoria" name="categoria">
@@ -380,7 +380,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                     <button type="submit" class="btn btn-primary flex-grow-1">
                                         <i class="fas fa-search me-2"></i> Filtrar
                                     </button>
-                                    <a href="productos.php" class="btn btn-secondary">
+                                    <a href="productos" class="btn btn-secondary">
                                         <i class="fas fa-redo"></i>
                                     </a>
                                 </div>
@@ -432,7 +432,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                                     </td>
                                                     <td>
                                                         <div class="btn-group">
-                                                            <a href="productos.php?action=edit&id=<?php echo $prod['id']; ?>" 
+                                                            <a href="productos?action=edit&id=<?php echo $prod['id']; ?>" 
                                                                class="btn btn-sm btn-outline-primary" title="Editar">
                                                                 <i class="fas fa-edit"></i>
                                                             </a>
@@ -457,7 +457,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                     <nav aria-label="Paginación de productos">
                                         <ul class="pagination justify-content-center mt-4">
                                             <li class="page-item <?php echo ($pagina <= 1) ? 'disabled' : ''; ?>">
-                                                <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'productos.php?pagina='.($pagina-1).((!empty($filtro_categoria)) ? '&categoria='.$filtro_categoria : '').((!empty($filtro_disponible)) ? '&disponible='.$filtro_disponible : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                                <a class="page-link" href="<?php echo ($pagina <= 1) ? '#' : 'productos?pagina='.($pagina-1).((!empty($filtro_categoria)) ? '&categoria='.$filtro_categoria : '').((!empty($filtro_disponible)) ? '&disponible='.$filtro_disponible : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                    aria-label="Anterior">
                                                     <span aria-hidden="true">&laquo;</span>
                                                 </a>
@@ -465,14 +465,14 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                             
                                             <?php for ($i = 1; $i <= $total_paginas; $i++): ?>
                                                 <li class="page-item <?php echo ($pagina == $i) ? 'active' : ''; ?>">
-                                                    <a class="page-link" href="productos.php?pagina=<?php echo $i; ?><?php echo (!empty($filtro_categoria)) ? '&categoria='.$filtro_categoria : ''; ?><?php echo (!empty($filtro_disponible)) ? '&disponible='.$filtro_disponible : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
+                                                    <a class="page-link" href="productos?pagina=<?php echo $i; ?><?php echo (!empty($filtro_categoria)) ? '&categoria='.$filtro_categoria : ''; ?><?php echo (!empty($filtro_disponible)) ? '&disponible='.$filtro_disponible : ''; ?><?php echo (!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''; ?>">
                                                         <?php echo $i; ?>
                                                     </a>
                                                 </li>
                                             <?php endfor; ?>
                                             
                                             <li class="page-item <?php echo ($pagina >= $total_paginas) ? 'disabled' : ''; ?>">
-                                                <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'productos.php?pagina='.($pagina+1).((!empty($filtro_categoria)) ? '&categoria='.$filtro_categoria : '').((!empty($filtro_disponible)) ? '&disponible='.$filtro_disponible : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
+                                                <a class="page-link" href="<?php echo ($pagina >= $total_paginas) ? '#' : 'productos?pagina='.($pagina+1).((!empty($filtro_categoria)) ? '&categoria='.$filtro_categoria : '').((!empty($filtro_disponible)) ? '&disponible='.$filtro_disponible : '').((!empty($busqueda)) ? '&buscar='.urlencode($busqueda) : ''); ?>" 
                                                    aria-label="Siguiente">
                                                     <span aria-hidden="true">&raquo;</span>
                                                 </a>
@@ -484,10 +484,10 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                             <?php else: ?>
                                 <div class="text-center p-4">
                                     <p class="text-muted mb-3">No se encontraron productos que coincidan con tu búsqueda.</p>
-                                    <a href="productos.php" class="btn btn-secondary me-2">
+                                    <a href="productos" class="btn btn-secondary me-2">
                                         <i class="fas fa-redo me-2"></i> Limpiar Filtros
                                     </a>
-                                    <a href="productos.php?action=new" class="btn btn-primary">
+                                    <a href="productos?action=new" class="btn btn-primary">
                                         <i class="fas fa-plus me-2"></i> Crear Nuevo Producto
                                     </a>
                                 </div>
@@ -597,7 +597,7 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                     </p>
                                     ${producto.descripcion ? `<p><strong>Descripción:</strong> ${producto.descripcion}</p>` : ''}
                                     <div class="mt-3">
-                                        <a href="productos.php?action=edit&id=${producto.id}" class="btn btn-primary btn-sm">
+                                        <a href="productos?action=edit&id=${producto.id}" class="btn btn-primary btn-sm">
                                             <i class="fas fa-edit me-1"></i> Editar
                                         </a>
                                     </div>
