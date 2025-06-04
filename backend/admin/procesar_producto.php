@@ -81,28 +81,47 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
 
         // Generar nuevo nombre para la imagen
-        $new_file_name = 'imagenes/' . uniqid() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', basename($file_name, ".$file_ext")) . '.jpg';
-        $upload_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $new_file_name;
-
-        // Crear directorio si no existe
-        $dir = dirname($upload_path);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
-
-        // Subir la imagen si no hay errores
         if (empty($errores)) {
-            if (move_uploaded_file($file_tmp, $upload_path)) {
-                $imagen_path = '/' . $new_file_name; // URL para guardar en la base de datos
-            } else {
-                $errores[] = "Error al subir la imagen. Verifica los permisos de la carpeta.";
+            $new_file_name = 'imagenes/' . uniqid() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', basename($file_name, ".$file_ext")) . '.jpg';
+            $upload_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $new_file_name;
+
+            // Crear directorio si no existe
+            $dir = dirname($upload_path);
+            if (!is_dir($dir)) {
+                if (!mkdir($dir, 0755, true)) {
+                    $errores[] = "Error al crear el directorio de imágenes";
+                }
+            }
+
+            // Subir la imagen si no hay errores
+            if (empty($errores)) {
+                if (move_uploaded_file($file_tmp, $upload_path)) {
+                    // Eliminar imagen anterior si existe y se está editando
+                    if ($id > 0 && !empty($imagen_actual) && file_exists($_SERVER['DOCUMENT_ROOT'] . $imagen_actual)) {
+                        unlink($_SERVER['DOCUMENT_ROOT'] . $imagen_actual);
+                    }
+                    $imagen_path = '/' . $new_file_name; // URL para guardar en la base de datos
+                } else {
+                    $errores[] = "Error al subir la imagen. Verifica los permisos de la carpeta.";
+                }
             }
         }
     } else {
-        // Si no se subió una nueva imagen y estamos editando
-        if ($id > 0 && $mantener_imagen && !empty($imagen_actual)) {
-            $imagen_path = $imagen_actual;
-        } elseif ($id == 0) { // Crear nuevo producto sin imagen
+        // Si no se subió una nueva imagen
+        if ($id > 0) {
+            // Estamos editando
+            if ($mantener_imagen && !empty($imagen_actual)) {
+                $imagen_path = $imagen_actual; // Mantener imagen actual
+            } else {
+                // Si no quiere mantener la imagen actual, necesita subir una nueva
+                if (empty($imagen_actual)) {
+                    $errores[] = "Debes subir una imagen para el producto";
+                } else {
+                    $imagen_path = $imagen_actual; // Mantener la actual por defecto
+                }
+            }
+        } else {
+            // Nuevo producto - imagen obligatoria
             $errores[] = "La imagen es obligatoria para nuevos productos";
         }
     }
@@ -136,7 +155,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     } else {
         // Crear nuevo producto
         $stmt = $conn->prepare("INSERT INTO productos (nombre, categoria_id, precio, descripcion, imagen, disponible) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sidisi", $nombre, $categoria_id, $precio, $descripcion, $imagen_path, $disponible);
+        $stmt->bind_param("sidsis", $nombre, $categoria_id, $precio, $descripcion, $imagen_path, $disponible);
         
         if ($stmt->execute()) {
             $_SESSION['admin_exito'] = "Producto creado correctamente";

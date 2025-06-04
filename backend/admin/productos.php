@@ -289,14 +289,16 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                                accept=".jpg, .jpeg" <?php echo ($action == 'new') ? 'required' : ''; ?>>
                                         <?php if ($action == 'edit' && !empty($producto['imagen'])): ?>
                                             <div class="form-text">
-                                                Imagen actual: <a href="<?php echo htmlspecialchars($producto['imagen']); ?>" target="_blank">
-                                                    <?php echo htmlspecialchars($producto['imagen']); ?>
-                                                </a>
+                                                <small>Imagen actual: 
+                                                    <a href="<?php echo htmlspecialchars($producto['imagen']); ?>" target="_blank">
+                                                        Ver imagen
+                                                    </a>
+                                                </small>
                                             </div>
                                             <div class="form-check mt-2">
                                                 <input class="form-check-input" type="checkbox" id="mantener_imagen" name="mantener_imagen" value="1" checked>
                                                 <label class="form-check-label" for="mantener_imagen">
-                                                    Mantener imagen actual si no se sube una nueva
+                                                    <small>Mantener imagen actual si no subes una nueva</small>
                                                 </label>
                                             </div>
                                         <?php endif; ?>
@@ -310,13 +312,13 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
                                     <textarea class="form-control" id="descripcion" name="descripcion" rows="4"><?php echo ($action == 'edit' && $producto) ? htmlspecialchars($producto['descripcion']) : ''; ?></textarea>
                                 </div>
                                 
-                                <!-- Vista previa de imagen -->
+                                <!-- Vista previa de imagen actual -->
                                 <?php if ($action == 'edit' && !empty($producto['imagen'])): ?>
                                     <div class="mb-3">
-                                        <label class="form-label">Vista previa de la imagen actual</label>
+                                        <label class="form-label">Imagen actual</label>
                                         <div class="product-image-preview">
                                             <img src="<?php echo htmlspecialchars($producto['imagen']); ?>" alt="<?php echo htmlspecialchars($producto['nombre']); ?>" 
-                                                 class="img-thumbnail" style="max-height: 200px;">
+                                                 class="img-thumbnail" style="max-height: 200px;" id="imagenActual">
                                         </div>
                                     </div>
                                 <?php endif; ?>
@@ -627,19 +629,60 @@ $titulo_pagina = ($action == 'new' ? "Nuevo Producto" : ($action == 'edit' ? "Ed
             const imageInput = document.getElementById('imagen');
             const imagePreview = document.getElementById('imagePreview');
             const imagePreviewContainer = document.getElementById('imagePreviewContainer');
+            const mantenerImagenCheckbox = document.getElementById('mantener_imagen');
+            const imagenActual = document.getElementById('imagenActual');
             
             if (imageInput && imagePreview && imagePreviewContainer) {
                 imageInput.onchange = function() {
                     const file = this.files[0];
                     if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            imagePreview.src = e.target.result;
-                            imagePreviewContainer.style.display = 'block';
+                        // Verificar que sea JPG
+                        const fileType = file.type;
+                        const fileName = file.name.toLowerCase();
+                        
+                        if (fileType === 'image/jpeg' || fileName.endsWith('.jpg') || fileName.endsWith('.jpeg')) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                imagePreview.src = e.target.result;
+                                imagePreviewContainer.style.display = 'block';
+                                
+                                // Desmarcar mantener imagen actual si hay una nueva
+                                if (mantenerImagenCheckbox) {
+                                    mantenerImagenCheckbox.checked = false;
+                                }
+                                
+                                // Ocultar imagen actual
+                                if (imagenActual) {
+                                    imagenActual.style.opacity = '0.5';
+                                }
+                            }
+                            reader.readAsDataURL(file);
+                        } else {
+                            alert('Por favor, selecciona solo archivos JPG o JPEG.');
+                            this.value = '';
+                            imagePreviewContainer.style.display = 'none';
                         }
-                        reader.readAsDataURL(file);
                     } else {
                         imagePreviewContainer.style.display = 'none';
+                        
+                        // Restaurar imagen actual
+                        if (imagenActual) {
+                            imagenActual.style.opacity = '1';
+                        }
+                        
+                        // Marcar mantener imagen actual si no hay nueva
+                        if (mantenerImagenCheckbox) {
+                            mantenerImagenCheckbox.checked = true;
+                        }
+                    }
+                };
+            }
+            
+            // Manejar el checkbox de mantener imagen
+            if (mantenerImagenCheckbox) {
+                mantenerImagenCheckbox.onchange = function() {
+                    if (imagenActual) {
+                        imagenActual.style.opacity = this.checked ? '1' : '0.5';
                     }
                 };
             }
