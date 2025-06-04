@@ -1,66 +1,74 @@
 # Activar RewriteEngine
 RewriteEngine On
 
-# *** FRONTEND SECTION ***
 # Redirigir la página principal
 RewriteRule ^$ frontend/index.php [L]
 
-# Rutas comunes del frontend
+# ADMIN - Configuración simple como antes
+# Forzar barra final en /admin
+RewriteRule ^admin$ admin/ [R=301,L]
+
+# Recursos estáticos del admin (CSS, JS, imágenes)
+RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
+RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
+RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
+
+# Archivos de procesamiento - acceso directo para formularios
+RewriteRule ^admin/procesar_(.+)\.php$ backend/admin/procesar_$1.php [L]
+RewriteRule ^admin/eliminar_(.+)\.php$ backend/admin/eliminar_$1.php [L]
+RewriteRule ^admin/obtener_(.+)\.php$ backend/admin/obtener_$1.php [L]
+
+# TODO lo demás del admin va al index principal - COMO ANTES
+RewriteRule ^admin/(.*)$ backend/admin/index.php [L,QSA]
+
+# Rutas del frontend
 RewriteRule ^checkout/?$ frontend/checkout.php [L]
 RewriteRule ^nosotros/?$ frontend/nosotros.php [L]
 RewriteRule ^login/?$ frontend/login.php [L]
 RewriteRule ^registro/?$ frontend/registro.php [L]
 RewriteRule ^pedidos/?$ frontend/pedidos.php [L]
 RewriteRule ^perfil/?$ frontend/perfil.php [L]
-RewriteRule ^cart/?$ frontend/cart.php [L]
+RewriteRule ^cart/?$ frontend/carrito.php [L]
+RewriteRule ^carrito/?$ frontend/carrito.php [L]
 RewriteRule ^productos/?$ frontend/productos.php [L]
 RewriteRule ^direcciones/?$ frontend/direcciones.php [L]
 
-# *** ADMIN SECTION ***
-# Redirigir todas las solicitudes a la página principal del administrador
-RewriteRule ^admin/?$ backend/admin/index.php [L]
-RewriteRule ^admin/(.+)$ backend/admin/$1 [L]
+# Acceso directo al backend para AJAX
+RewriteRule ^backend/(.*)$ backend/$1 [L]
 
-# Excluir recursos estáticos (evitar bucles)
+# Excluir archivos existentes
 RewriteCond %{REQUEST_FILENAME} -f [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^ - [L]
 
-# Redirigir solicitudes al frontend para rutas no encontradas
-RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
-
-# *** STATIC RESOURCES ***
-# Frontend resources
+# Recursos estáticos del frontend
 RewriteRule ^css/(.*)$ frontend/css/$1 [L]
 RewriteRule ^js/(.*)$ frontend/js/$1 [L]
 RewriteRule ^images/(.*)$ frontend/images/$1 [L]
+RewriteRule ^imagenes/(.*)$ imagenes/$1 [L]
 
-# Admin resources
-RewriteRule ^admin/css/(.+)$ backend/admin/css/$1 [L]
-RewriteRule ^admin/js/(.+)$ backend/admin/js/$1 [L]
-RewriteRule ^admin/images/(.+)$ backend/admin/images/$1 [L]
+# Otras páginas van al frontend
+RewriteCond %{REQUEST_URI} !^/admin/
+RewriteCond %{REQUEST_URI} !^/backend/
+RewriteRule ^([a-zA-Z0-9_\-]+)/?$ frontend/$1.php [L]
 
-# Prevenir listado de directorios
+# Configuraciones de seguridad y performance
 Options -Indexes
 
-# Manejo de errores personalizados
 ErrorDocument 404 /frontend/404.php
 ErrorDocument 403 /frontend/404.php
 ErrorDocument 500 /frontend/error.php
 
-# Desactivar caché en archivos dinámicos
 <FilesMatch "\.(php)$">
     Header set Cache-Control "no-store, no-cache, must-revalidate, max-age=0"
     Header set Pragma "no-cache"
     Header set Expires "Thu, 01 Jan 1970 00:00:00 GMT"
 </FilesMatch>
 
-# Compresión GZIP
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json application/xml
 </IfModule>
 
-# Control de caché para recursos estáticos
 <IfModule mod_expires.c>
     ExpiresActive On
     ExpiresByType image/jpg "access plus 1 month"
@@ -80,7 +88,6 @@ ErrorDocument 500 /frontend/error.php
     ExpiresDefault "access plus 1 day"
 </IfModule>
 
-# Protección de archivos sensibles
 <FilesMatch "^(\.htaccess|\.htpasswd|\.git|\.env|config\.php|composer\.json|\.travis\.yml)$">
     Order Allow,Deny
     Deny from all
@@ -91,42 +98,18 @@ ErrorDocument 500 /frontend/error.php
     Deny from all
 </DirectoryMatch>
 
-# Seguridad de cabeceras HTTP
-# <IfModule mod_headers.c>
-#     Header always append X-Frame-Options SAMEORIGIN
-#     Header always set X-XSS-Protection "1; mode=block"
-#     Header always set X-Content-Type-Options "nosniff"
-#     Header always set Referrer-Policy "strict-origin-when-cross-origin"
-#
-#     # Content-Security-Policy flexible para desarrollo y CDN externo
-#     Header always set Content-Security-Policy "default-src 'self'; \
-#         script-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline' 'unsafe-eval'; \
-#         style-src 'self' https://cdnjs.cloudflare.com  'unsafe-inline'; \
-#         img-src 'self' data: https://*.cloudflare.com https://*.whatsapp.net; \
-#         font-src 'self' https://cdnjs.cloudflare.com  data:; \
-#         connect-src 'self'; \
-#         frame-src 'none';"
-# </IfModule>
-
-# Configuración CORS para fuentes
 <IfModule mod_headers.c>
     <FilesMatch "\.(ttf|otf|eot|woff|woff2|font\.css)$">
         Header set Access-Control-Allow-Origin "*"
     </FilesMatch>
 </IfModule>
 
-# Forzar HTTPS (descomenta si usas SSL)
-# RewriteCond %{HTTPS} !=on
-# RewriteRule ^(.*)$ https://%{HTTP_HOST}/$1 [R=301,L]
-
-# Bloquear acceso a archivos sensibles por extensión
 <FilesMatch "(^#.*#|\.(bak|config|dist|fla|inc|ini|log|psd|sh|sql|sw[op])|~)$">
     Order Allow,Deny
     Deny from all
     Satisfy All
 </FilesMatch>
 
-# Prevenir inyección PHP en parámetros
 <IfModule mod_rewrite.c>
     RewriteCond %{QUERY_STRING} (\<|%3C).*script.*(\>|%3E) [NC,OR]
     RewriteCond %{QUERY_STRING} GLOBALS(=|\[|\%[0-9A-Z]{0,2}) [OR]
@@ -134,7 +117,6 @@ ErrorDocument 500 /frontend/error.php
     RewriteRule ^(.*)$ index.php? [F,L]
 </IfModule>
 
-# Limitar métodos HTTP permitidos
 <LimitExcept GET POST HEAD>
     Order Deny,Allow
     Deny from all
