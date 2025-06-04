@@ -1,4 +1,7 @@
 <?php
+// Incluir el footer
+include 'includes/footer.php';
+?>php
 // Iniciar sesión
 session_start();
 
@@ -119,6 +122,8 @@ include 'includes/header.php';
     <!-- Resumen del pedido -->
     <div class="order-summary">
         <h2>Resumen de tu Pedido</h2>
+        
+        <!-- Versión tabla para desktop -->
         <table>
             <thead>
                 <tr>
@@ -158,6 +163,39 @@ include 'includes/header.php';
                 </tr>
             </tfoot>
         </table>
+        
+        <!-- Versión móvil con tarjetas -->
+        <div class="mobile-order-summary">
+            <?php if (isset(reset($_SESSION['carrito'])['id'])): ?>
+                <?php foreach ($_SESSION['carrito'] as $item): ?>
+                    <div class="order-item-card">
+                        <div class="item-name"><?php echo htmlspecialchars($item['nombre']); ?></div>
+                        <div class="item-details">
+                            <div class="item-price">Precio: S/<?php echo number_format($item['precio'], 2); ?></div>
+                            <div class="item-quantity">Cantidad: <?php echo $item['cantidad']; ?></div>
+                            <div class="item-total">S/<?php echo number_format($item['precio'] * $item['cantidad'], 2); ?></div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <?php foreach ($_SESSION['carrito'] as $id => $cantidad): ?>
+                    <?php if (isset($productosDetalles[$id])): ?>
+                        <div class="order-item-card">
+                            <div class="item-name"><?php echo htmlspecialchars($productosDetalles[$id]['nombre']); ?></div>
+                            <div class="item-details">
+                                <div class="item-price">Precio: S/<?php echo number_format($productosDetalles[$id]['precio'], 2); ?></div>
+                                <div class="item-quantity">Cantidad: <?php echo $cantidad; ?></div>
+                                <div class="item-total">S/<?php echo number_format($productosDetalles[$id]['precio'] * $cantidad, 2); ?></div>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+                <?php endforeach; ?>
+            <?php endif; ?>
+            
+            <div class="order-total-mobile">
+                Total: S/<?php echo number_format($totalPedido, 2); ?>
+            </div>
+        </div>
     </div>
 
     <?php if (empty($direcciones)): ?>
@@ -265,8 +303,8 @@ include 'includes/header.php';
                 
                 <!-- Botones de acción -->
                 <div class="form-actions">
-                    <a href="/carrito" class="btn-back">
-                        <i class="fas fa-arrow-left"></i> Volver al carrito
+                    <a href="/productos" class="btn-back">
+                        <i class="fas fa-arrow-left"></i> Seguir comprando
                     </a>
                     <button type="submit" id="btn-realizar-pedido" class="btn-submit">
                         <i class="fas fa-check"></i> Realizar Pedido
@@ -280,7 +318,4 @@ include 'includes/header.php';
 <!-- Script mejorado para manejar el pedido -->
 <script src="/js/checkout.js"></script>
 
-<?php
-// Incluir el footer
-include 'includes/footer.php';
-?>
+<?
