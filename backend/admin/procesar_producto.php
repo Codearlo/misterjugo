@@ -20,9 +20,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $descripcion = isset($_POST['descripcion']) ? trim($_POST['descripcion']) : '';
     $disponible = isset($_POST['disponible']) ? (int)$_POST['disponible'] : 1;
     $id = isset($_POST['id']) ? (int)$_POST['id'] : 0;
-    $mantener_imagen = isset($_POST['mantener_imagen']) ? (int)$_POST['mantener_imagen'] : 0;
 
-    // Validar datos
+    // Validar datos básicos
     $errores = [];
 
     if (empty($nombre)) {
@@ -37,21 +36,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errores[] = "El precio debe ser mayor que 0";
     }
 
-    // Verificar si la categoría existe
-    $stmt = $conn->prepare("SELECT id FROM categorias WHERE id = ?");
-    $stmt->bind_param("i", $categoria_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows === 0) {
-        $errores[] = "La categoría seleccionada no existe";
-    }
-
-    // Procesar imagen (solo JPG permitido)
-    $imagen_path = '';
+    // Obtener imagen actual si estamos editando
     $imagen_actual = '';
-
-    // Si estamos editando, obtener la imagen actual
     if ($id > 0) {
         $stmt = $conn->prepare("SELECT imagen FROM productos WHERE id = ?");
         $stmt->bind_param("i", $id);
@@ -63,70 +49,56 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     }
 
-    // Verificar si se subió una nueva imagen
-    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] == 0) {
-        $file_name = $_FILES['imagen']['name'];
+    // Procesar imagen
+    $imagen_path = $imagen_actual; // Por defecto, mantener la actual
+
+    // Si se subió una nueva imagen
+    if (isset($_FILES['imagen']) && $_FILES['imagen']['error'] === UPLOAD_ERR_OK) {
         $file_tmp = $_FILES['imagen']['tmp_name'];
+        $file_name = $_FILES['imagen']['name'];
         $file_size = $_FILES['imagen']['size'];
-        $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
-
-        // Verificar extensión permitida (solo JPG)
-        if ($file_ext != "jpg" && $file_ext != "jpeg") {
-            $errores[] = "Solo se permiten archivos JPG/JPEG";
-        }
-
-        // Verificar tamaño máximo (2MB)
+        
+        // Validar tamaño (2MB máximo)
         if ($file_size > 2097152) {
-            $errores[] = "El tamaño máximo de la imagen es 2MB";
+            $errores[] = "La imagen debe ser menor a 2MB";
         }
-
-        // Generar nuevo nombre para la imagen
+        
+        // Validar tipo de archivo
+        $file_info = getimagesize($file_tmp);
+        if ($file_info === false || !in_array($file_info['mime'], ['image/jpeg', 'image/jpg'])) {
+            $errores[] = "Solo se permiten imágenes JPG";
+        }
+        
         if (empty($errores)) {
-            $new_file_name = 'imagenes/' . uniqid() . '_' . preg_replace('/[^a-zA-Z0-9]/', '', basename($file_name, ".$file_ext")) . '.jpg';
-            $upload_path = $_SERVER['DOCUMENT_ROOT'] . '/' . $new_file_name;
-
             // Crear directorio si no existe
-            $dir = dirname($upload_path);
-            if (!is_dir($dir)) {
-                if (!mkdir($dir, 0755, true)) {
-                    $errores[] = "Error al crear el directorio de imágenes";
-                }
+            $upload_dir = $_SERVER['DOCUMENT_ROOT'] . '/imagenes';
+            if (!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
             }
-
-            // Subir la imagen si no hay errores
-            if (empty($errores)) {
-                if (move_uploaded_file($file_tmp, $upload_path)) {
-                    // Eliminar imagen anterior si existe y se está editando
-                    if ($id > 0 && !empty($imagen_actual) && file_exists($_SERVER['DOCUMENT_ROOT'] . $imagen_actual)) {
-                        unlink($_SERVER['DOCUMENT_ROOT'] . $imagen_actual);
-                    }
-                    $imagen_path = '/' . $new_file_name; // URL para guardar en la base de datos
-                } else {
-                    $errores[] = "Error al subir la imagen. Verifica los permisos de la carpeta.";
+            
+            // Generar nombre único
+            $extension = 'jpg';
+            $nuevo_nombre = uniqid('img_') . '.' . $extension;
+            $ruta_completa = $upload_dir . '/' . $nuevo_nombre;
+            
+            // Mover archivo
+            if (move_uploaded_file($file_tmp, $ruta_completa)) {
+                // Eliminar imagen anterior si existe
+                if (!empty($imagen_actual) && file_exists($_SERVER['DOCUMENT_ROOT'] . $imagen_actual)) {
+                    unlink($_SERVER['DOCUMENT_ROOT'] . $imagen_actual);
                 }
-            }
-        }
-    } else {
-        // Si no se subió una nueva imagen
-        if ($id > 0) {
-            // Estamos editando
-            if ($mantener_imagen && !empty($imagen_actual)) {
-                $imagen_path = $imagen_actual; // Mantener imagen actual
+                
+                $imagen_path = '/imagenes/' . $nuevo_nombre;
             } else {
-                // Si no quiere mantener la imagen actual, necesita subir una nueva
-                if (empty($imagen_actual)) {
-                    $errores[] = "Debes subir una imagen para el producto";
-                } else {
-                    $imagen_path = $imagen_actual; // Mantener la actual por defecto
-                }
+                $errores[] = "Error al subir la imagen";
             }
-        } else {
-            // Nuevo producto - imagen obligatoria
-            $errores[] = "La imagen es obligatoria para nuevos productos";
         }
+    } else if ($id == 0) {
+        // Nuevo producto necesita imagen
+        $errores[] = "La imagen es obligatoria para nuevos productos";
     }
 
-    // Si hay errores, redirigir con mensajes
+    // Si hay errores, redirigir
     if (!empty($errores)) {
         $_SESSION['admin_error'] = implode("<br>", $errores);
         if ($id > 0) {
@@ -137,38 +109,33 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         exit;
     }
 
-    // Verificar si estamos editando o creando un nuevo producto
+    // Guardar en base de datos
     if ($id > 0) {
-        // Editar producto existente
+        // Actualizar producto existente
         $stmt = $conn->prepare("UPDATE productos SET nombre = ?, categoria_id = ?, precio = ?, descripcion = ?, imagen = ?, disponible = ? WHERE id = ?");
-        $stmt->bind_param("sidsiii", $nombre, $categoria_id, $precio, $descripcion, $imagen_path, $disponible, $id);
-        
-        if ($stmt->execute()) {
-            $_SESSION['admin_exito'] = "Producto actualizado correctamente";
-            header("Location: productos.php");
-            exit;
-        } else {
-            $_SESSION['admin_error'] = "Error al actualizar el producto: " . $conn->error;
-            header("Location: productos.php?action=edit&id=$id");
-            exit;
-        }
+        $stmt->bind_param("sisssii", $nombre, $categoria_id, $precio, $descripcion, $imagen_path, $disponible, $id);
     } else {
         // Crear nuevo producto
         $stmt = $conn->prepare("INSERT INTO productos (nombre, categoria_id, precio, descripcion, imagen, disponible) VALUES (?, ?, ?, ?, ?, ?)");
-        $stmt->bind_param("sidsis", $nombre, $categoria_id, $precio, $descripcion, $imagen_path, $disponible);
-        
-        if ($stmt->execute()) {
-            $_SESSION['admin_exito'] = "Producto creado correctamente";
-            header("Location: productos.php");
-            exit;
+        $stmt->bind_param("sidssi", $nombre, $categoria_id, $precio, $descripcion, $imagen_path, $disponible);
+    }
+
+    if ($stmt->execute()) {
+        $mensaje = ($id > 0) ? "Producto actualizado correctamente" : "Producto creado correctamente";
+        $_SESSION['admin_exito'] = $mensaje;
+        header("Location: productos.php");
+    } else {
+        $_SESSION['admin_error'] = "Error en la base de datos: " . $conn->error;
+        if ($id > 0) {
+            header("Location: productos.php?action=edit&id=$id");
         } else {
-            $_SESSION['admin_error'] = "Error al crear el producto: " . $conn->error;
             header("Location: productos.php?action=new");
-            exit;
         }
     }
-} else {
-    // Si no es POST, redirigir
-    header("Location: productos.php");
     exit;
 }
+
+// Si no es POST, redirigir
+header("Location: productos.php");
+exit;
+?>
