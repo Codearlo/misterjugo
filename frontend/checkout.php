@@ -1,7 +1,4 @@
 <?php
-// Incluir el footer
-include 'includes/footer.php';
-?>php
 // Iniciar sesión
 session_start();
 
@@ -318,4 +315,7 @@ include 'includes/header.php';
 <!-- Script mejorado para manejar el pedido -->
 <script src="/js/checkout.js"></script>
 
-<?
+<?php
+// Incluir el footer
+include 'includes/footer.php';
+?>
