@@ -93,19 +93,11 @@ else {
     }
 }
 
+// Incluir el archivo header
+include 'includes/header.php';
 ?>
 
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Finalizar Compra - MisterJugo</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="/css/styles.css">
-    <link rel="stylesheet" href="/css/checkout.css">
-</head>
-<body>
+<link rel="stylesheet" href="/css/checkout.css">
 
 <div class="checkout-container">
     <h1>Finalizar Compra</h1>
@@ -323,5 +315,7 @@ else {
 <!-- Script mejorado para manejar el pedido -->
 <script src="/js/checkout.js"></script>
 
-</body>
-</html>
+<?php
+// Incluir el footer
+include 'includes/footer.php';
+?>
