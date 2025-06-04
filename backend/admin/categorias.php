@@ -78,27 +78,27 @@ $titulo_pagina = ($action == 'new' ? "Nueva Categoría" : ($action == 'edit' ? "
                     </div>
                     <ul class="nav flex-column">
                         <li class="nav-item">
-                            <a class="nav-link" href="index.php">
+                            <a class="nav-link" href="index">
                                 <i class="fas fa-tachometer-alt me-2"></i> Dashboard
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="productos.php">
+                            <a class="nav-link" href="productos">
                                 <i class="fas fa-shopping-basket me-2"></i> Productos
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link active" href="categorias.php">
+                            <a class="nav-link active" href="categorias">
                                 <i class="fas fa-tags me-2"></i> Categorías
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="pedidos.php">
+                            <a class="nav-link" href="pedidos">
                                 <i class="fas fa-shopping-cart me-2"></i> Pedidos
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a class="nav-link" href="usuarios.php">
+                            <a class="nav-link" href="usuarios">
                                 <i class="fas fa-users me-2"></i> Usuarios
                             </a>
                         </li>
