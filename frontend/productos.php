@@ -1,4 +1,4 @@
-<?php
+/* Responsive para móviles<?php
 // No incluir el header principal
 session_start();
 
@@ -253,10 +253,15 @@ if ($result_productos && $result_productos->num_rows > 0) {
         const productoDetailsContent = document.getElementById('producto-details-content');
         const closeModal = document.querySelector('.close-modal');
         
-        // Función para generar el modal de detalles con personalización de jugos
+        // Función para generar el modal de detalles con personalización
         function generarModalDetalles(data) {
             const esJugo = data.producto.categoria_nombre && 
                            data.producto.categoria_nombre.toLowerCase().includes('jugo');
+            
+            const esAlmuerzo = data.producto.categoria_nombre && 
+                              (data.producto.categoria_nombre.toLowerCase().includes('almuerzo') || 
+                               data.producto.categoria_nombre.toLowerCase().includes('plato') ||
+                               data.producto.categoria_nombre.toLowerCase().includes('fondo'));
             
             let html = `
                 <div class="producto-modal-content">
@@ -337,6 +342,43 @@ if ($result_productos && $result_productos->num_rows > 0) {
                         </div>
                         ` : ''}
                         
+                        <!-- Personalización para almuerzos/platos de fondo -->
+                        ${esAlmuerzo ? `
+                        <div class="personalizacion-almuerzo">
+                            <h4><i class="fas fa-utensils"></i> Personaliza tu plato</h4>
+                            
+                            <!-- Acompañante -->
+                            <div class="opcion-grupo">
+                                <label class="opcion-label">Acompañante:</label>
+                                <div class="opciones-radio">
+                                    <label class="radio-option">
+                                        <input type="radio" name="acompanante" value="arroz" checked>
+                                        <span class="radio-custom"></span>
+                                        <i class="fas fa-seedling"></i> Arroz
+                                    </label>
+                                    <label class="radio-option">
+                                        <input type="radio" name="acompanante" value="papas_fritas">
+                                        <span class="radio-custom"></span>
+                                        <i class="fas fa-french-fries"></i> Papas fritas
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <!-- Comentarios especiales -->
+                            <div class="opcion-grupo">
+                                <label class="opcion-label" for="comentarios-almuerzo">
+                                    <i class="fas fa-comment"></i> Comentarios especiales:
+                                </label>
+                                <textarea 
+                                    id="comentarios-almuerzo" 
+                                    name="comentarios" 
+                                    placeholder="Ej: Sin cebolla, picante aparte, extra salsa..."
+                                    rows="3"
+                                ></textarea>
+                            </div>
+                        </div>
+                        ` : ''}
+                        
                         <div class="producto-modal-actions">
                             <div class="quantity-selector">
                                 <button class="quantity-btn minus" data-action="decrease">-</button>
@@ -348,7 +390,8 @@ if ($result_productos && $result_productos->num_rows > 0) {
                                     data-nombre="${data.producto.nombre}" 
                                     data-precio="${data.producto.precio}" 
                                     data-imagen="${data.producto.imagen || '/images/producto-default.jpg'}"
-                                    data-es-jugo="${esJugo}">
+                                    data-es-jugo="${esJugo}"
+                                    data-es-almuerzo="${esAlmuerzo}">
                                 <i class="fas fa-cart-plus"></i> Añadir al carrito
                             </button>
                         </div>
@@ -359,8 +402,8 @@ if ($result_productos && $result_productos->num_rows > 0) {
             return html;
         }
         
-        // Función para obtener opciones de personalización
-        function obtenerOpcionesPersonalizacion() {
+        // Función para obtener opciones de personalización de jugos
+        function obtenerOpcionesPersonalizacionJugo() {
             const temperatura = document.querySelector('input[name="temperatura"]:checked');
             const azucar = document.querySelector('input[name="azucar"]:checked');
             const comentarios = document.getElementById('comentarios-jugo');
@@ -368,6 +411,17 @@ if ($result_productos && $result_productos->num_rows > 0) {
             return {
                 temperatura: temperatura ? temperatura.value : 'normal',
                 azucar: azucar ? azucar.value : 'normal',
+                comentarios: comentarios ? comentarios.value.trim() : ''
+            };
+        }
+        
+        // Función para obtener opciones de personalización de almuerzos
+        function obtenerOpcionesPersonalizacionAlmuerzo() {
+            const acompanante = document.querySelector('input[name="acompanante"]:checked');
+            const comentarios = document.getElementById('comentarios-almuerzo');
+            
+            return {
+                acompanante: acompanante ? acompanante.value : 'arroz',
                 comentarios: comentarios ? comentarios.value.trim() : ''
             };
         }
@@ -380,11 +434,12 @@ if ($result_productos && $result_productos->num_rows > 0) {
                 const precio = this.getAttribute('data-precio');
                 const imagen = this.getAttribute('data-imagen');
                 const esJugo = this.getAttribute('data-es-jugo') === 'true';
+                const esAlmuerzo = this.getAttribute('data-es-almuerzo') === 'true';
                 const cantidad = parseInt(document.getElementById('modal-quantity').value);
                 
                 if (esJugo) {
                     // Para jugos, usar la función con opciones
-                    const opciones = obtenerOpcionesPersonalizacion();
+                    const opciones = obtenerOpcionesPersonalizacionJugo();
                     
                     // Crear nombre personalizado para mostrar en el carrito
                     let nombrePersonalizado = nombre;
@@ -397,6 +452,31 @@ if ($result_productos && $result_productos->num_rows > 0) {
                         detalles.push('Sin azúcar');
                     } else if (opciones.azucar === 'con_estevia') {
                         detalles.push('Con estevia');
+                    }
+                    
+                    if (detalles.length > 0) {
+                        nombrePersonalizado += ` (${detalles.join(', ')})`;
+                    }
+                    
+                    // Usar la función global con opciones
+                    if (window.addToCartWithOptions) {
+                        window.addToCartWithOptions(id, nombrePersonalizado, precio, imagen, cantidad, opciones);
+                    } else {
+                        console.error('Función addToCartWithOptions no disponible');
+                        window.addToCart(id, nombre, precio, imagen, cantidad);
+                    }
+                } else if (esAlmuerzo) {
+                    // Para almuerzos/platos de fondo, usar la función con opciones
+                    const opciones = obtenerOpcionesPersonalizacionAlmuerzo();
+                    
+                    // Crear nombre personalizado para mostrar en el carrito
+                    let nombrePersonalizado = nombre;
+                    const detalles = [];
+                    
+                    if (opciones.acompanante === 'papas_fritas') {
+                        detalles.push('Con papas fritas');
+                    } else {
+                        detalles.push('Con arroz');
                     }
                     
                     if (detalles.length > 0) {

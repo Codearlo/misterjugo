@@ -188,6 +188,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Mostrar opciones de personalización si existen
                 if (item.opciones) {
                     html += `<div class="cart-item-options">`;
+                    
+                    // Para jugos
                     if (item.opciones.temperatura === 'helado') {
                         html += `<span class="option-tag ice"><i class="fas fa-snowflake"></i> Helado</span>`;
                     }
@@ -196,6 +198,14 @@ document.addEventListener('DOMContentLoaded', function() {
                     } else if (item.opciones.azucar === 'con_estevia') {
                         html += `<span class="option-tag stevia"><i class="fas fa-leaf"></i> Con estevia</span>`;
                     }
+                    
+                    // Para almuerzos/platos de fondo
+                    if (item.opciones.acompanante === 'papas_fritas') {
+                        html += `<span class="option-tag papas"><i class="fas fa-french-fries"></i> Con papas fritas</span>`;
+                    } else if (item.opciones.acompanante === 'arroz') {
+                        html += `<span class="option-tag arroz"><i class="fas fa-seedling"></i> Con arroz</span>`;
+                    }
+                    
                     if (item.opciones.comentarios) {
                         html += `<div class="option-comments"><i class="fas fa-comment"></i> ${item.opciones.comentarios}</div>`;
                     }
@@ -389,6 +399,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .cart-item-options .option-tag.stevia {
     background-color: #4CAF50;
+}
+
+.cart-item-options .option-tag.papas {
+    background-color: #FF9800;
+}
+
+.cart-item-options .option-tag.arroz {
+    background-color: #795548;
 }
 
 .cart-item-options .option-comments {
