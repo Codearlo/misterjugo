@@ -11,6 +11,27 @@ document.addEventListener('DOMContentLoaded', function() {
     const direccionCompleta = document.getElementById('direccion_completa');
     const instruccionesHidden = document.getElementById('instrucciones_hidden');
     
+    // Sincronizar carrito con formulario
+    function syncCartWithForm() {
+        let carrito = [];
+        try {
+            const carritoGuardado = localStorage.getItem('mjCarrito');
+            carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+        } catch (e) {
+            console.error('Error al obtener carrito:', e);
+            carrito = [];
+        }
+        
+        // Actualizar el campo oculto con los datos del carrito
+        const carritoDataField = document.querySelector('input[name="carrito_data"]');
+        if (carritoDataField) {
+            carritoDataField.value = JSON.stringify(carrito);
+        }
+    }
+    
+    // Sincronizar carrito al cargar la página
+    syncCartWithForm();
+    
     if (direccionSelect) {
         direccionSelect.addEventListener('change', function() {
             const selectedOption = this.options[this.selectedIndex];
@@ -53,6 +74,9 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
             
+            // Sincronizar carrito antes de enviar
+            syncCartWithForm();
+            
             // Validar que hay una dirección seleccionada
             const direccionId = document.getElementById('direccion_id');
             if (!direccionId || !direccionId.value) {
@@ -66,6 +90,22 @@ document.addEventListener('DOMContentLoaded', function() {
             if (!nombre || !nombre.value.trim()) {
                 e.preventDefault();
                 alert('Por favor ingresa tu nombre para el pedido');
+                return false;
+            }
+            
+            // Validar que hay productos en el carrito
+            let carrito = [];
+            try {
+                const carritoGuardado = localStorage.getItem('mjCarrito');
+                carrito = carritoGuardado ? JSON.parse(carritoGuardado) : [];
+            } catch (e) {
+                console.error('Error al obtener carrito:', e);
+                carrito = [];
+            }
+            
+            if (!carrito || carrito.length === 0) {
+                e.preventDefault();
+                alert('Tu carrito está vacío. Agrega algunos productos antes de continuar.');
                 return false;
             }
             

@@ -56,39 +56,30 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Calcular total
+// Calcular total y preparar lista de productos
 $totalPedido = 0;
 $productosDetalles = [];
 
-// Si el carrito es un array de objetos
-if (isset(reset($_SESSION['carrito'])['id'])) {
-    foreach ($_SESSION['carrito'] as $item) {
-        $totalPedido += $item['precio'] * $item['cantidad'];
-        $productosDetalles[$item['id']] = $item;
-    }
+// Obtener carrito desde localStorage (simulación con SESSION)
+$carrito = isset($_SESSION['carrito']) ? $_SESSION['carrito'] : [];
+
+// Si el carrito viene de localStorage, procesarlo
+if (isset($_POST['carrito_data'])) {
+    $carrito = json_decode($_POST['carrito_data'], true);
+    $_SESSION['carrito'] = $carrito;
 }
-// Si el carrito es un array asociativo id => cantidad
-else {
-    // Obtener IDs de los productos en el carrito
-    $productosIds = array_keys($_SESSION['carrito']);
-    
-    // Consulta SQL para obtener detalles de productos
-    if (!empty($productosIds)) {
-        $idsStr = implode(',', array_map('intval', $productosIds));
-        $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($idsStr)";
-        $result = $conn->query($query);
-        
-        if ($result) {
-            while ($row = $result->fetch_assoc()) {
-                $productosDetalles[$row['id']] = $row;
-            }
-            
-            // Calcular total
-            foreach ($_SESSION['carrito'] as $id => $cantidad) {
-                if (isset($productosDetalles[$id])) {
-                    $totalPedido += $productosDetalles[$id]['precio'] * $cantidad;
-                }
-            }
+
+// Procesar carrito con productos personalizados
+if (!empty($carrito)) {
+    foreach ($carrito as $item) {
+        if (isset($item['producto_id'])) {
+            // Producto personalizado (jugo)
+            $totalPedido += $item['precio'] * $item['cantidad'];
+            $productosDetalles[] = $item;
+        } elseif (isset($item['id'])) {
+            // Producto normal
+            $totalPedido += $item['precio'] * $item['cantidad'];
+            $productosDetalles[] = $item;
         }
     }
 }
@@ -131,27 +122,36 @@ include 'includes/header.php';
                 </tr>
             </thead>
             <tbody>
-                <?php if (isset(reset($_SESSION['carrito'])['id'])): ?>
-                    <?php foreach ($_SESSION['carrito'] as $item): ?>
-                        <tr>
-                            <td><?php echo htmlspecialchars($item['nombre']); ?></td>
-                            <td>S/<?php echo number_format($item['precio'], 2); ?></td>
-                            <td><?php echo $item['cantidad']; ?></td>
-                            <td>S/<?php echo number_format($item['precio'] * $item['cantidad'], 2); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
-                <?php else: ?>
-                    <?php foreach ($_SESSION['carrito'] as $id => $cantidad): ?>
-                        <?php if (isset($productosDetalles[$id])): ?>
-                            <tr>
-                                <td><?php echo htmlspecialchars($productosDetalles[$id]['nombre']); ?></td>
-                                <td>S/<?php echo number_format($productosDetalles[$id]['precio'], 2); ?></td>
-                                <td><?php echo $cantidad; ?></td>
-                                <td>S/<?php echo number_format($productosDetalles[$id]['precio'] * $cantidad, 2); ?></td>
-                            </tr>
-                        <?php endif; ?>
-                    <?php endforeach; ?>
-                <?php endif; ?>
+                <?php foreach ($productosDetalles as $item): ?>
+                    <tr>
+                        <td>
+                            <?php echo htmlspecialchars($item['nombre']); ?>
+                            <?php if (isset($item['opciones']) && !empty($item['opciones'])): ?>
+                                <div class="product-options">
+                                    <?php 
+                                    $opciones = $item['opciones'];
+                                    if (isset($opciones['temperatura']) && $opciones['temperatura'] === 'helado') {
+                                        echo '<span class="option-tag ice"><i class="fas fa-snowflake"></i> Helado</span>';
+                                    }
+                                    if (isset($opciones['azucar'])) {
+                                        if ($opciones['azucar'] === 'sin_azucar') {
+                                            echo '<span class="option-tag no-sugar"><i class="fas fa-times-circle"></i> Sin azúcar</span>';
+                                        } elseif ($opciones['azucar'] === 'con_estevia') {
+                                            echo '<span class="option-tag stevia"><i class="fas fa-leaf"></i> Con estevia</span>';
+                                        }
+                                    }
+                                    if (isset($opciones['comentarios']) && !empty($opciones['comentarios'])) {
+                                        echo '<div class="option-comments"><i class="fas fa-comment"></i> ' . htmlspecialchars($opciones['comentarios']) . '</div>';
+                                    }
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                        </td>
+                        <td>S/<?php echo number_format($item['precio'], 2); ?></td>
+                        <td><?php echo $item['cantidad']; ?></td>
+                        <td>S/<?php echo number_format($item['precio'] * $item['cantidad'], 2); ?></td>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
             <tfoot>
                 <tr>
@@ -163,31 +163,38 @@ include 'includes/header.php';
         
         <!-- Versión móvil con tarjetas -->
         <div class="mobile-order-summary">
-            <?php if (isset(reset($_SESSION['carrito'])['id'])): ?>
-                <?php foreach ($_SESSION['carrito'] as $item): ?>
-                    <div class="order-item-card">
-                        <div class="item-name"><?php echo htmlspecialchars($item['nombre']); ?></div>
-                        <div class="item-details">
-                            <div class="item-price">Precio: S/<?php echo number_format($item['precio'], 2); ?></div>
-                            <div class="item-quantity">Cantidad: <?php echo $item['cantidad']; ?></div>
-                            <div class="item-total">S/<?php echo number_format($item['precio'] * $item['cantidad'], 2); ?></div>
-                        </div>
-                    </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <?php foreach ($_SESSION['carrito'] as $id => $cantidad): ?>
-                    <?php if (isset($productosDetalles[$id])): ?>
-                        <div class="order-item-card">
-                            <div class="item-name"><?php echo htmlspecialchars($productosDetalles[$id]['nombre']); ?></div>
-                            <div class="item-details">
-                                <div class="item-price">Precio: S/<?php echo number_format($productosDetalles[$id]['precio'], 2); ?></div>
-                                <div class="item-quantity">Cantidad: <?php echo $cantidad; ?></div>
-                                <div class="item-total">S/<?php echo number_format($productosDetalles[$id]['precio'] * $cantidad, 2); ?></div>
+            <?php foreach ($productosDetalles as $item): ?>
+                <div class="order-item-card">
+                    <div class="item-name">
+                        <?php echo htmlspecialchars($item['nombre']); ?>
+                        <?php if (isset($item['opciones']) && !empty($item['opciones'])): ?>
+                            <div class="mobile-product-options">
+                                <?php 
+                                $opciones = $item['opciones'];
+                                if (isset($opciones['temperatura']) && $opciones['temperatura'] === 'helado') {
+                                    echo '<span class="option-tag ice"><i class="fas fa-snowflake"></i> Helado</span>';
+                                }
+                                if (isset($opciones['azucar'])) {
+                                    if ($opciones['azucar'] === 'sin_azucar') {
+                                        echo '<span class="option-tag no-sugar"><i class="fas fa-times-circle"></i> Sin azúcar</span>';
+                                    } elseif ($opciones['azucar'] === 'con_estevia') {
+                                        echo '<span class="option-tag stevia"><i class="fas fa-leaf"></i> Con estevia</span>';
+                                    }
+                                }
+                                if (isset($opciones['comentarios']) && !empty($opciones['comentarios'])) {
+                                    echo '<div class="option-comments"><i class="fas fa-comment"></i> ' . htmlspecialchars($opciones['comentarios']) . '</div>';
+                                }
+                                ?>
                             </div>
-                        </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            <?php endif; ?>
+                        <?php endif; ?>
+                    </div>
+                    <div class="item-details">
+                        <div class="item-price">Precio: S/<?php echo number_format($item['precio'], 2); ?></div>
+                        <div class="item-quantity">Cantidad: <?php echo $item['cantidad']; ?></div>
+                        <div class="item-total">S/<?php echo number_format($item['precio'] * $item['cantidad'], 2); ?></div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
             
             <div class="order-total-mobile">
                 Total: S/<?php echo number_format($totalPedido, 2); ?>
@@ -280,10 +287,18 @@ include 'includes/header.php';
                     <div class="field-note">Nombre que aparecerá en tu pedido</div>
                 </div>
                 
-                <!-- Instrucciones adicionales -->
+                <!-- Comentarios del pedido para el restaurante -->
                 <div class="form-group">
-                    <label for="instrucciones_adicionales">Instrucciones adicionales para este pedido (opcional):</label>
+                    <label for="comentarios_pedido">Comentarios para el restaurante (opcional):</label>
+                    <textarea id="comentarios_pedido" name="comentarios_pedido" placeholder="Ej: Que el jugo esté bien frío, sin cebolla en el sándwich, etc."></textarea>
+                    <div class="field-note">Estos comentarios son para el equipo que prepara tu pedido</div>
+                </div>
+                
+                <!-- Instrucciones adicionales para el repartidor -->
+                <div class="form-group">
+                    <label for="instrucciones_adicionales">Instrucciones de entrega para el repartidor (opcional):</label>
                     <textarea id="instrucciones_adicionales" name="instrucciones_adicionales" placeholder="Ej: Tocar el timbre, dejar con el portero, etc."></textarea>
+                    <div class="field-note">Estas instrucciones son para el repartidor que lleva tu pedido</div>
                 </div>
                 
                 <!-- Campos ocultos con la información de la dirección -->
@@ -297,6 +312,7 @@ include 'includes/header.php';
                 ?>">
                 <input type="hidden" name="instrucciones_hidden" id="instrucciones_hidden" value="<?php echo $direccionPredeterminada ? htmlspecialchars($direccionPredeterminada['instrucciones']) : ''; ?>">
                 <input type="hidden" name="total" value="<?php echo $totalPedido; ?>">
+                <input type="hidden" name="carrito_data" value="<?php echo htmlspecialchars(json_encode($carrito)); ?>">
                 
                 <!-- Botones de acción -->
                 <div class="form-actions">
@@ -314,6 +330,70 @@ include 'includes/header.php';
 
 <!-- Script mejorado para manejar el pedido -->
 <script src="/js/checkout.js"></script>
+
+<style>
+/* Estilos para las opciones de productos personalizados */
+.product-options, .mobile-product-options {
+    margin-top: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    align-items: center;
+}
+
+.option-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: white;
+}
+
+.option-tag.ice {
+    background-color: #2196F3;
+}
+
+.option-tag.no-sugar {
+    background-color: #F44336;
+}
+
+.option-tag.stevia {
+    background-color: #4CAF50;
+}
+
+.option-comments {
+    margin-top: 4px;
+    font-size: 0.8rem;
+    color: #666;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.field-note {
+    font-size: 0.8rem;
+    color: #666;
+    margin-top: 4px;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .mobile-product-options {
+        margin-top: 8px;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+    }
+    
+    .option-tag {
+        font-size: 0.7rem;
+    }
+}
+</style>
 
 <?php
 // Incluir el footer
