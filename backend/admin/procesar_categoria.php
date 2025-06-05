@@ -19,7 +19,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Validar datos
     if (empty($nombre)) {
         $_SESSION['admin_error'] = "El nombre de la categoría es obligatorio";
-        header("Location: categorias.php?action=new");
+        header("Location: categorias?action=new");
         exit;
     }
     
@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows === 0) {
             $_SESSION['admin_error'] = "La categoría que intentas editar no existe";
-            header("Location: categorias.php");
+            header("Location: categorias");
             exit;
         }
         
@@ -48,7 +48,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows > 0) {
             $_SESSION['admin_error'] = "Ya existe una categoría con ese nombre";
-            header("Location: categorias.php?action=edit&id=$id");
+            header("Location: categorias?action=edit&id=$id");
             exit;
         }
         
@@ -58,11 +58,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($stmt->execute()) {
             $_SESSION['admin_exito'] = "Categoría actualizada correctamente";
-            header("Location: categorias.php");
+            header("Location: categorias");
             exit;
         } else {
             $_SESSION['admin_error'] = "Error al actualizar la categoría: " . $conn->error;
-            header("Location: categorias.php?action=edit&id=$id");
+            header("Location: categorias?action=edit&id=$id");
             exit;
         }
     } else {
@@ -76,7 +76,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($result->num_rows > 0) {
             $_SESSION['admin_error'] = "Ya existe una categoría con ese nombre";
-            header("Location: categorias.php?action=new");
+            header("Location: categorias?action=new");
             exit;
         }
         
@@ -86,16 +86,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         if ($stmt->execute()) {
             $_SESSION['admin_exito'] = "Categoría creada correctamente";
-            header("Location: categorias.php");
+            header("Location: categorias");
             exit;
         } else {
             $_SESSION['admin_error'] = "Error al crear la categoría: " . $conn->error;
-            header("Location: categorias.php?action=new");
+            header("Location: categorias?action=new");
             exit;
         }
     }
 } else {
     // Si no es POST, redirigir
-    header("Location: categorias.php");
+    header("Location: categorias");
     exit;
 }

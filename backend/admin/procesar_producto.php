@@ -102,9 +102,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if (!empty($errores)) {
         $_SESSION['admin_error'] = implode("<br>", $errores);
         if ($id > 0) {
-            header("Location: productos.php?action=edit&id=$id");
+            header("Location: productos?action=edit&id=$id");
         } else {
-            header("Location: productos.php?action=new");
+            header("Location: productos?action=new");
         }
         exit;
     }
@@ -123,19 +123,19 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($stmt->execute()) {
         $mensaje = ($id > 0) ? "Producto actualizado correctamente" : "Producto creado correctamente";
         $_SESSION['admin_exito'] = $mensaje;
-        header("Location: productos.php");
+        header("Location: productos");
     } else {
         $_SESSION['admin_error'] = "Error en la base de datos: " . $conn->error;
         if ($id > 0) {
-            header("Location: productos.php?action=edit&id=$id");
+            header("Location: productos?action=edit&id=$id");
         } else {
-            header("Location: productos.php?action=new");
+            header("Location: productos?action=new");
         }
     }
     exit;
 }
 
 // Si no es POST, redirigir
-header("Location: productos.php");
+header("Location: productos");
 exit;
 ?>
