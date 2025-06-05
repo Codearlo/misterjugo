@@ -199,26 +199,21 @@ body {
     margin: 10px auto 0;
 }
 
-.promo-cards {
-    display: flex;
-    justify-content: center;
-    flex-wrap: wrap;
-    gap: 30px;
-}
-
 .promo-card {
     background-color: white;
-    border-radius: 15px;
-    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    border-radius: 16px;
+    box-shadow: var(--shadow-medium);
     overflow: hidden;
     width: 300px;
     max-width: 100%;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
+    display: flex;
+    flex-direction: column;
 }
 
 .promo-card:hover {
     transform: translateY(-8px);
-    box-shadow: 0 12px 25px rgba(0, 0, 0, 0.15);
+    box-shadow: var(--shadow-large);
 }
 
 .promo-card img {
@@ -233,21 +228,30 @@ body {
 }
 
 .promo-card .content {
-    padding: 20px;
+    padding: 1.2rem;
     text-align: left;
+    line-height: 1.6;
+    font-size: 1rem;
+    color: var(--text-dark);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
 }
 
 .promo-card h3 {
     font-size: 1.3rem;
     margin-bottom: 10px;
-    color: #f69a47;
+    color: var(--primary-color);
 }
 
 .promo-card p {
     font-size: 1rem;
     color: #444;
+    margin-top: 0.5rem;
     line-height: 1.6;
 }
+
 
 /* Botón de WhatsApp */
 .whatsapp-btn {
