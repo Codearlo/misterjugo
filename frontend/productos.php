@@ -256,7 +256,9 @@ if ($result_productos && $result_productos->num_rows > 0) {
         // Función para generar el modal de detalles con personalización
         function generarModalDetalles(data) {
             const esJugo = data.producto.categoria_nombre && 
-                           data.producto.categoria_nombre.toLowerCase().includes('jugo');
+                           (data.producto.categoria_nombre.toLowerCase().includes('jugo') ||
+                            data.producto.categoria_nombre.toLowerCase().includes('frozen') ||
+                            data.producto.categoria_nombre.toLowerCase().includes('especiales'));
             
             const esAlmuerzo = data.producto.categoria_nombre && 
                               (data.producto.categoria_nombre.toLowerCase().includes('almuerzo') || 
@@ -286,7 +288,7 @@ if ($result_productos && $result_productos->num_rows > 0) {
                         <!-- Personalización para jugos -->
                         ${esJugo ? `
                         <div class="personalizacion-jugo">
-                            <h4><i class="fas fa-cog"></i> Personaliza tu jugo</h4>
+                            <h4><i class="fas fa-cog"></i> Personaliza tu bebida</h4>
                             
                             <!-- Temperatura -->
                             <div class="opcion-grupo">
@@ -335,7 +337,7 @@ if ($result_productos && $result_productos->num_rows > 0) {
                                 <textarea 
                                     id="comentarios-jugo" 
                                     name="comentarios" 
-                                    placeholder="Ej: Extra frío, sin hielo, más concentrado..."
+                                    placeholder="Ej: Extra frío, sin hielo, más concentrado, menos dulce..."
                                     rows="3"
                                 ></textarea>
                             </div>
