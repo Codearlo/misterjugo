@@ -33,6 +33,23 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     exit;
 }
 
+// Obtener carrito del formulario o sesión
+$carrito = [];
+if (isset($_POST['carrito_data'])) {
+    $carrito = json_decode($_POST['carrito_data'], true);
+} elseif (isset($_SESSION['carrito'])) {
+    $carrito = $_SESSION['carrito'];
+}
+
+// Verificar si hay productos en el carrito
+if (empty($carrito)) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'El carrito está vacío'
+    ]);
+    exit;
+}
+
 // Validar datos del formulario
 if (!isset($_POST['nombre'], $_POST['direccion_id'])) {
     echo json_encode([
@@ -54,6 +71,7 @@ try {
     $telefono = isset($_POST['telefono_hidden']) ? htmlspecialchars(trim($_POST['telefono_hidden'])) : '';
     $instrucciones = isset($_POST['instrucciones_adicionales']) ? htmlspecialchars(trim($_POST['instrucciones_adicionales'])) : '';
     $instrucciones_dir = isset($_POST['instrucciones_hidden']) ? htmlspecialchars(trim($_POST['instrucciones_hidden'])) : '';
+    $comentarios_pedido = isset($_POST['comentarios_pedido']) ? htmlspecialchars(trim($_POST['comentarios_pedido'])) : '';
 
     // Combinar instrucciones si ambas están presentes
     if (!empty($instrucciones) && !empty($instrucciones_dir)) {
@@ -117,58 +135,24 @@ try {
     $total_calculado = 0;
     $items = [];
 
-    // Procesar el carrito según su formato
-    if (isset(reset($_SESSION['carrito'])['id'])) {
-        // Si el carrito es un array de objetos con id, nombre, precio, etc.
-        foreach ($_SESSION['carrito'] as $item) {
-            $cantidad = isset($item['cantidad']) ? $item['cantidad'] : 1;
-            $precio = floatval($item['precio']);
-            $importe = $precio * $cantidad;
-            $total_calculado += $importe;
-            
-            $items[] = [
-                'id' => $item['id'],
-                'nombre' => $item['nombre'],
-                'precio' => $precio,
-                'cantidad' => $cantidad,
-                'subtotal' => $importe
-            ];
-        }
-    } else {
-        // Si el carrito es un array asociativo id => cantidad
-        $ids = array_keys($_SESSION['carrito']);
+    // Procesar el carrito con productos personalizados
+    foreach ($carrito as $item) {
+        $cantidad = isset($item['cantidad']) ? $item['cantidad'] : 1;
+        $precio = floatval($item['precio']);
+        $importe = $precio * $cantidad;
+        $total_calculado += $importe;
         
-        if (!empty($ids)) {
-            $ids_param = implode(',', array_map('intval', $ids));
-            $query = "SELECT id, nombre, precio FROM productos WHERE id IN ($ids_param)";
-            $result = $conn->query($query);
-            
-            if ($result && $result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    $id = intval($row['id']);
-                    if (isset($_SESSION['carrito'][$id])) {
-                        $cantidad = intval($_SESSION['carrito'][$id]);
-                        $precio = floatval($row['precio']);
-                        $importe = $precio * $cantidad;
-                        $total_calculado += $importe;
-                        
-                        $items[] = [
-                            'id' => $id,
-                            'nombre' => $row['nombre'],
-                            'precio' => $precio,
-                            'cantidad' => $cantidad,
-                            'subtotal' => $importe
-                        ];
-                    }
-                }
-            } else {
-                echo json_encode([
-                    'success' => false,
-                    'message' => 'No se pudieron obtener los productos del carrito'
-                ]);
-                exit;
-            }
-        }
+        // Determinar el ID del producto (para productos personalizados, usar producto_id)
+        $producto_id = isset($item['producto_id']) ? $item['producto_id'] : $item['id'];
+        
+        $items[] = [
+            'id' => $producto_id,
+            'nombre' => $item['nombre'],
+            'precio' => $precio,
+            'cantidad' => $cantidad,
+            'subtotal' => $importe,
+            'opciones' => isset($item['opciones']) ? $item['opciones'] : null
+        ];
     }
 
     // Si llegamos aquí y no hay items, hay un problema con el carrito
@@ -190,8 +174,8 @@ try {
     $conn->begin_transaction();
 
     // 1. Insertar el pedido en la tabla 'pedidos'
-    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, total, estado, fecha_pedido) VALUES (?, ?, 'pendiente', NOW())");
-    $stmt->bind_param("id", $usuario_id, $total);
+    $stmt = $conn->prepare("INSERT INTO pedidos (usuario_id, total, estado, fecha_pedido, comentarios_pedido) VALUES (?, ?, 'pendiente', NOW(), ?)");
+    $stmt->bind_param("ids", $usuario_id, $total, $comentarios_pedido);
     
     if (!$stmt->execute()) {
         throw new Exception("Error al insertar pedido: " . $stmt->error);
@@ -204,14 +188,15 @@ try {
     }
     
     // 2. Insertar los detalles del pedido en la tabla 'detalles_pedidos' (con 's')
-    $stmt = $conn->prepare("INSERT INTO detalles_pedidos (pedido_id, producto_id, cantidad, precio) VALUES (?, ?, ?, ?)");
+    $stmt = $conn->prepare("INSERT INTO detalles_pedidos (pedido_id, producto_id, cantidad, precio, opciones_jugo) VALUES (?, ?, ?, ?, ?)");
     
     foreach ($items as $item) {
         $producto_id = $item['id'];
         $cantidad = $item['cantidad'];
         $precio = $item['precio'];
+        $opciones_json = $item['opciones'] ? json_encode($item['opciones']) : null;
         
-        $stmt->bind_param("iiid", $pedido_id, $producto_id, $cantidad, $precio);
+        $stmt->bind_param("iiihs", $pedido_id, $producto_id, $cantidad, $precio, $opciones_json);
         
         if (!$stmt->execute()) {
             throw new Exception("Error al insertar detalle: producto_id=$producto_id, " . $stmt->error);
@@ -229,13 +214,40 @@ try {
     $mensaje .= "🏠 Dirección: $direccion_completa\n";
 
     if (!empty($instrucciones)) {
-        $mensaje .= "📝 Instrucciones: $instrucciones\n";
+        $mensaje .= "📝 Instrucciones de entrega: $instrucciones\n";
+    }
+
+    if (!empty($comentarios_pedido)) {
+        $mensaje .= "💬 Comentarios del pedido: $comentarios_pedido\n";
     }
 
     $mensaje .= "\n*Productos:*\n";
 
     foreach ($items as $item) {
-        $mensaje .= "• {$item['nombre']} x {$item['cantidad']} = S/ " . number_format($item['subtotal'], 2) . "\n";
+        $mensaje .= "• {$item['nombre']} x {$item['cantidad']} = S/ " . number_format($item['subtotal'], 2);
+        
+        // Agregar opciones de personalización si existen
+        if ($item['opciones']) {
+            $opciones_texto = [];
+            if (isset($item['opciones']['temperatura']) && $item['opciones']['temperatura'] === 'helado') {
+                $opciones_texto[] = "🧊 Helado";
+            }
+            if (isset($item['opciones']['azucar'])) {
+                if ($item['opciones']['azucar'] === 'sin_azucar') {
+                    $opciones_texto[] = "🚫 Sin azúcar";
+                } elseif ($item['opciones']['azucar'] === 'con_estevia') {
+                    $opciones_texto[] = "🌿 Con estevia";
+                }
+            }
+            if (isset($item['opciones']['comentarios']) && !empty($item['opciones']['comentarios'])) {
+                $opciones_texto[] = "💭 " . $item['opciones']['comentarios'];
+            }
+            
+            if (!empty($opciones_texto)) {
+                $mensaje .= "\n  (" . implode(", ", $opciones_texto) . ")";
+            }
+        }
+        $mensaje .= "\n";
     }
 
     $mensaje .= "\n*TOTAL: S/ " . number_format($total, 2) . "*";
@@ -283,72 +295,79 @@ try {
     }
 }
 
-// Función para cambiar el estado de un pedido (para administrador)
-function cambiarEstadoPedido() {
-    global $conn;
-    
-    // Obtener ID del pedido y nuevo estado
-    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-    $estado = isset($_GET['estado']) ? trim($_GET['estado']) : '';
-    
-    if ($id <= 0) {
-        $_SESSION['admin_error'] = "ID de pedido no válido";
-        header("Location: pedidos");
-        exit;
-    }
-    
-    // Validar estados permitidos
-    $estados_permitidos = ['pendiente', 'procesando', 'completado', 'cancelado'];
-    if (!in_array($estado, $estados_permitidos)) {
-        $_SESSION['admin_error'] = "Estado no válido";
-        header("Location: pedidos");
-        exit;
-    }
-    
-    // Verificar que el pedido existe
-    $stmt = $conn->prepare("SELECT id, estado FROM pedidos WHERE id = ?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-    
-    if ($result->num_rows === 0) {
-        $_SESSION['admin_error'] = "Pedido no encontrado";
-        header("Location: pedidos");
-        exit;
-    }
-    
-    $pedido = $result->fetch_assoc();
-    
-    // Verificar si el estado ya es el mismo
-    if ($pedido['estado'] === $estado) {
-        $_SESSION['admin_error'] = "El pedido ya está en estado: " . ucfirst($estado);
-        header("Location: pedidos");
-        exit;
-    }
-    
-    // Actualizar estado del pedido
-    $stmt = $conn->prepare("UPDATE pedidos SET estado = ? WHERE id = ?");
-    $stmt->bind_param("si", $estado, $id);
-    
-    if ($stmt->execute()) {
-        $_SESSION['admin_exito'] = "Estado del pedido #$id actualizado a: " . ucfirst($estado);
-    } else {
-        $_SESSION['admin_error'] = "Error al actualizar el estado del pedido: " . $conn->error;
-    }
-    
-    header("Location: pedidos");
-    exit;
-}
-
-// Si hay parámetros de cambio de estado, ejecutar función de administrador
+// Si hay parámetros de cambio de estado para administrador
 if (isset($_GET['action']) && $_GET['action'] === 'cambiar_estado') {
     // Verificar que sea administrador
-    if (isset($_SESSION['is_admin']) && $_SESSION['is_admin'] == 1) {
-        cambiarEstadoPedido();
-    } else {
-        $_SESSION['admin_error'] = "No tienes permisos para realizar esta acción";
-        header("Location: /");
+    if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'No tienes permisos para realizar esta acción'
+        ]);
         exit;
     }
+    
+    // Función para cambiar el estado de un pedido
+    function cambiarEstadoPedido() {
+        global $conn;
+        
+        // Obtener ID del pedido y nuevo estado
+        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+        $estado = isset($_GET['estado']) ? trim($_GET['estado']) : '';
+        
+        if ($id <= 0) {
+            $_SESSION['admin_error'] = "ID de pedido no válido";
+            header("Location: pedidos");
+            exit;
+        }
+        
+        // Validar estados permitidos
+        $estados_permitidos = ['pendiente', 'procesando', 'completado', 'cancelado'];
+        if (!in_array($estado, $estados_permitidos)) {
+            $_SESSION['admin_error'] = "Estado no válido";
+            header("Location: pedidos");
+            exit;
+        }
+        
+        // Verificar que el pedido existe
+        $stmt = $conn->prepare("SELECT id, estado FROM pedidos WHERE id = ?");
+        $stmt->bind_param("i", $id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        if ($result->num_rows === 0) {
+            $_SESSION['admin_error'] = "Pedido no encontrado";
+            header("Location: pedidos");
+            exit;
+        }
+        
+        $pedido = $result->fetch_assoc();
+        
+        // Verificar si el estado ya es el mismo
+        if ($pedido['estado'] === $estado) {
+            $_SESSION['admin_error'] = "El pedido ya está en estado: " . ucfirst($estado);
+            header("Location: pedidos");
+            exit;
+        }
+        
+        // Actualizar estado del pedido
+        $stmt = $conn->prepare("UPDATE pedidos SET estado = ? WHERE id = ?");
+        $stmt->bind_param("si", $estado, $id);
+        
+        if ($stmt->execute()) {
+            $_SESSION['admin_exito'] = "Estado del pedido #$id actualizado a: " . ucfirst($estado);
+        } else {
+            $_SESSION['admin_error'] = "Error al actualizar el estado del pedido: " . $conn->error;
+        }
+        
+        header("Location: pedidos");
+        exit;
+    }
+    
+    // Incluir conexión si no está incluida
+    if (!isset($conn)) {
+        require_once '../conexion.php';
+    }
+    
+    cambiarEstadoPedido();
 }
 ?>
