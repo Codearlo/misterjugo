@@ -1018,3 +1018,260 @@
     padding-top: 80px; /* Reducido de 100px a 80px */
   }
 }
+
+/* Estilos para la personalización de jugos en el modal */
+
+.personalizacion-jugo {
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 20px;
+    margin: 20px 0;
+    border: 1px solid #e0e0e0;
+}
+
+.personalizacion-jugo h4 {
+    color: #FF7A00;
+    margin: 0 0 20px 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.personalizacion-jugo h4 i {
+    font-size: 1rem;
+}
+
+.opcion-grupo {
+    margin-bottom: 20px;
+}
+
+.opcion-grupo:last-child {
+    margin-bottom: 0;
+}
+
+.opcion-label {
+    display: block;
+    font-weight: 600;
+    color: #2D2A26;
+    margin-bottom: 10px;
+    font-size: 0.95rem;
+}
+
+.opciones-radio {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.radio-option {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    background-color: white;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.9rem;
+    position: relative;
+}
+
+.radio-option:hover {
+    border-color: #FFA649;
+    background-color: rgba(255, 122, 0, 0.05);
+}
+
+.radio-option input[type="radio"] {
+    display: none;
+}
+
+.radio-custom {
+    width: 18px;
+    height: 18px;
+    border: 2px solid #e0e0e0;
+    border-radius: 50%;
+    position: relative;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.radio-option input[type="radio"]:checked + .radio-custom {
+    border-color: #FF7A00;
+    background-color: #FF7A00;
+}
+
+.radio-option input[type="radio"]:checked + .radio-custom::after {
+    content: '';
+    position: absolute;
+    width: 8px;
+    height: 8px;
+    background-color: white;
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.radio-option input[type="radio"]:checked ~ * {
+    color: #FF7A00;
+}
+
+.radio-option i {
+    color: #5F5B57;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.radio-option input[type="radio"]:checked ~ i {
+    color: #FF7A00;
+}
+
+/* Textarea para comentarios */
+.opcion-grupo textarea {
+    width: 100%;
+    padding: 12px;
+    border: 2px solid #e0e0e0;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-family: inherit;
+    resize: vertical;
+    transition: border-color 0.3s ease;
+    background-color: white;
+}
+
+.opcion-grupo textarea:focus {
+    outline: none;
+    border-color: #FF7A00;
+    box-shadow: 0 0 0 3px rgba(255, 122, 0, 0.1);
+}
+
+.opcion-grupo textarea::placeholder {
+    color: #ADA79E;
+    font-style: italic;
+}
+
+/* Responsive para móviles */
+@media (max-width: 768px) {
+    .personalizacion-jugo {
+        padding: 15px;
+        margin: 15px 0;
+    }
+    
+    .personalizacion-jugo h4 {
+        font-size: 1rem;
+    }
+    
+    .opciones-radio {
+        gap: 6px;
+    }
+    
+    .radio-option {
+        padding: 8px 10px;
+        font-size: 0.85rem;
+    }
+    
+    .radio-custom {
+        width: 16px;
+        height: 16px;
+    }
+    
+    .radio-option input[type="radio"]:checked + .radio-custom::after {
+        width: 6px;
+        height: 6px;
+    }
+    
+    .opcion-grupo textarea {
+        padding: 10px;
+        font-size: 0.85rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .personalizacion-jugo {
+        padding: 12px;
+        margin: 12px 0;
+    }
+    
+    .radio-option {
+        padding: 8px;
+        font-size: 0.8rem;
+    }
+    
+    .radio-option i {
+        font-size: 0.9rem;
+    }
+}
+
+/* Estilos para las opciones en el carrito (ya existen pero los mejoro) */
+.cart-item-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    margin: 6px 0;
+}
+
+.cart-item-options .option-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 3px;
+    padding: 2px 6px;
+    border-radius: 10px;
+    font-size: 0.65rem;
+    font-weight: 500;
+    color: white;
+}
+
+.cart-item-options .option-tag.ice {
+    background-color: #2196F3;
+}
+
+.cart-item-options .option-tag.no-sugar {
+    background-color: #F44336;
+}
+
+.cart-item-options .option-tag.stevia {
+    background-color: #4CAF50;
+}
+
+.cart-item-options .option-comments {
+    font-size: 0.7rem;
+    color: #666;
+    font-style: italic;
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    margin-top: 3px;
+    width: 100%;
+}
+
+/* Animaciones para mejorar la experiencia */
+.personalizacion-jugo {
+    animation: slideInUp 0.3s ease-out;
+}
+
+@keyframes slideInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.radio-option {
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
