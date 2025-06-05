@@ -26,8 +26,10 @@
     <div class="hero-overlay"></div>
     <div class="container hero-content">
         <div class="hero-text">
-            <h1>¿Ya comiste? ¿Qué esperas para ordenar?</h1>
-            <p>Descubre nuestros jugos y sándwich</p>
+            <h1>¿Juguito, sánguche o los dos?</h1>
+            <p> Descubre el sabor único de Mister Jugo y déjate tentar por nuestras promos.
+                ¡Haz tu pedido ahora y disfruta!
+            </p>
         </div>
         <div class="btn-container">
             <a href="productos" class="btn-order-now">Ordena Ya!!</a>
@@ -42,15 +44,17 @@
         <div class="promo-card">
             <img src="./images/promos/promoalmuerzo.jpg" alt="Promoción 1">
             <div class="content">
-                <h3>Almuerzo Promo!!</h3>
-                <p>Toda los platos al fondo A 20 S/ de lunes a sabado: 12:00 PM a 5:00 PM</p>
+                <h3>🍽️ Almuerzo + Bebida a solo S/ 20</h3>
+                <p>Disfruta nuestros deliciosos platos como Lomo Saltado, Cordon Bleu, Fetuccini con milanesa y más…🕛 De lunes a sábado, de 12:00 PM a 5:30 PM
+                ¡Come rico sin vaciar tu bolsillo!</p>
             </div>
         </div>
         <div class="promo-card">
             <img src="./images/promos/promoduo.jpg" alt="Promoción 2">
             <div class="content">
-                <h3>Chicha Gratis!!</h3>
-                <p>Por la compra de tus alitas, gratis tu vaso de chicha morada</p>
+                <h3>🍗 Y en la noche... ALITAS + CHICHA GRATIS</h3>
+                <p>Llévate tu porción de alitas (¡elige tu sabor favorito!) y recibe un vaso de chicha morada o frozen totalmente GRATIS.
+                🕕Promo válida de 6:00 PM a 9:00 PM, lunes a sábado.</p>
             </div>
         </div>
     </div>
