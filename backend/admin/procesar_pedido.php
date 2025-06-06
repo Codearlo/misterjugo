@@ -1,10 +1,74 @@
 <?php
+session_start();
+
+// Si hay parámetros de cambio de estado para administrador
+if (isset($_GET['action']) && $_GET['action'] === 'cambiar_estado') {
+    // Verificar que sea administrador
+    if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+        $_SESSION['admin_error'] = "No tienes permisos para realizar esta acción";
+        header("Location: /login");
+        exit;
+    }
+    
+    // Incluir conexión a la base de datos
+    require_once '../conexion.php';
+    
+    // Obtener ID del pedido y nuevo estado
+    $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
+    $estado = isset($_GET['estado']) ? trim($_GET['estado']) : '';
+    
+    if ($id <= 0) {
+        $_SESSION['admin_error'] = "ID de pedido no válido";
+        header("Location: pedidos");
+        exit;
+    }
+    
+    // Validar estados permitidos
+    $estados_permitidos = ['pendiente', 'procesando', 'completado', 'cancelado'];
+    if (!in_array($estado, $estados_permitidos)) {
+        $_SESSION['admin_error'] = "Estado no válido";
+        header("Location: pedidos");
+        exit;
+    }
+    
+    // Verificar que el pedido existe
+    $stmt = $conn->prepare("SELECT id, estado FROM pedidos WHERE id = ?");
+    $stmt->bind_param("i", $id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    
+    if ($result->num_rows === 0) {
+        $_SESSION['admin_error'] = "Pedido no encontrado";
+        header("Location: pedidos");
+        exit;
+    }
+    
+    $pedido = $result->fetch_assoc();
+    
+    // Verificar si el estado ya es el mismo
+    if ($pedido['estado'] === $estado) {
+        $_SESSION['admin_error'] = "El pedido ya está en estado: " . ucfirst($estado);
+        header("Location: pedidos");
+        exit;
+    }
+    
+    // Actualizar estado del pedido
+    $stmt = $conn->prepare("UPDATE pedidos SET estado = ? WHERE id = ?");
+    $stmt->bind_param("si", $estado, $id);
+    
+    if ($stmt->execute()) {
+        $_SESSION['admin_exito'] = "Estado del pedido #$id actualizado a: " . ucfirst($estado);
+    } else {
+        $_SESSION['admin_error'] = "Error al actualizar el estado del pedido: " . $conn->error;
+    }
+    
+    header("Location: pedidos");
+    exit;
+}
+
 // Configurar headers para JSON
 header('Content-Type: application/json');
 header('Cache-Control: no-cache, no-store, must-revalidate');
-
-// Iniciar sesión
-session_start();
 
 // Verificar si hay productos en el carrito
 if (!isset($_SESSION['carrito']) || empty($_SESSION['carrito'])) {
@@ -61,7 +125,7 @@ if (!isset($_POST['nombre'], $_POST['direccion_id'])) {
 
 try {
     // Conexión a base de datos
-    require_once 'conexion.php';
+    require_once '../conexion.php';
     
     // Obtener el ID del usuario
     $usuario_id = $_SESSION['user_id'];
@@ -293,81 +357,5 @@ try {
     if (isset($conn)) {
         $conn->close();
     }
-}
-
-// Si hay parámetros de cambio de estado para administrador
-if (isset($_GET['action']) && $_GET['action'] === 'cambiar_estado') {
-    // Verificar que sea administrador
-    if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
-        echo json_encode([
-            'success' => false,
-            'message' => 'No tienes permisos para realizar esta acción'
-        ]);
-        exit;
-    }
-    
-    // Función para cambiar el estado de un pedido
-    function cambiarEstadoPedido() {
-        global $conn;
-        
-        // Obtener ID del pedido y nuevo estado
-        $id = isset($_GET['id']) ? (int)$_GET['id'] : 0;
-        $estado = isset($_GET['estado']) ? trim($_GET['estado']) : '';
-        
-        if ($id <= 0) {
-            $_SESSION['admin_error'] = "ID de pedido no válido";
-            header("Location: pedidos");
-            exit;
-        }
-        
-        // Validar estados permitidos
-        $estados_permitidos = ['pendiente', 'procesando', 'completado', 'cancelado'];
-        if (!in_array($estado, $estados_permitidos)) {
-            $_SESSION['admin_error'] = "Estado no válido";
-            header("Location: pedidos");
-            exit;
-        }
-        
-        // Verificar que el pedido existe
-        $stmt = $conn->prepare("SELECT id, estado FROM pedidos WHERE id = ?");
-        $stmt->bind_param("i", $id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        
-        if ($result->num_rows === 0) {
-            $_SESSION['admin_error'] = "Pedido no encontrado";
-            header("Location: pedidos");
-            exit;
-        }
-        
-        $pedido = $result->fetch_assoc();
-        
-        // Verificar si el estado ya es el mismo
-        if ($pedido['estado'] === $estado) {
-            $_SESSION['admin_error'] = "El pedido ya está en estado: " . ucfirst($estado);
-            header("Location: pedidos");
-            exit;
-        }
-        
-        // Actualizar estado del pedido
-        $stmt = $conn->prepare("UPDATE pedidos SET estado = ? WHERE id = ?");
-        $stmt->bind_param("si", $estado, $id);
-        
-        if ($stmt->execute()) {
-            $_SESSION['admin_exito'] = "Estado del pedido #$id actualizado a: " . ucfirst($estado);
-        } else {
-            $_SESSION['admin_error'] = "Error al actualizar el estado del pedido: " . $conn->error;
-        }
-        
-        header("Location: pedidos");
-        exit;
-    }
-    
-    // Incluir conexión si no está incluida
-    if (!isset($conn)) {
-        require_once '../conexion.php';
-    }
-    
-    cambiarEstadoPedido();
 }
 ?>
