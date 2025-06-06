@@ -419,11 +419,13 @@ if ($result_productos && $result_productos->num_rows > 0) {
         function calcularPrecioFinal(precioBase) {
             let extras = 0;
             
-            // Calcular extras de leche
+            // Calcular extras de leche solo si existen los checkboxes
             const lecheCheckboxes = document.querySelectorAll('input[name="leche"]:checked');
-            lecheCheckboxes.forEach(checkbox => {
-                extras += parseFloat(checkbox.dataset.precio);
-            });
+            if (lecheCheckboxes && lecheCheckboxes.length > 0) {
+                lecheCheckboxes.forEach(checkbox => {
+                    extras += parseFloat(checkbox.dataset.precio || 0);
+                });
+            }
             
             const precioFinal = precioBase + extras;
             
@@ -432,14 +434,16 @@ if ($result_productos && $result_productos->num_rows > 0) {
             const extrasTotalElement = document.getElementById('extras-total');
             const precioFinalElement = document.getElementById('precio-final');
             
-            if (extras > 0) {
-                extrasElement.style.display = 'block';
-                extrasTotalElement.textContent = `+S/${extras.toFixed(2)}`;
-            } else {
-                extrasElement.style.display = 'none';
+            if (extrasElement && extrasTotalElement && precioFinalElement) {
+                if (extras > 0) {
+                    extrasElement.style.display = 'block';
+                    extrasTotalElement.textContent = `+S/${extras.toFixed(2)}`;
+                } else {
+                    extrasElement.style.display = 'none';
+                }
+                
+                precioFinalElement.textContent = `S/${precioFinal.toFixed(2)}`;
             }
-            
-            precioFinalElement.textContent = `S/${precioFinal.toFixed(2)}`;
             
             return precioFinal;
         }
@@ -565,7 +569,8 @@ if ($result_productos && $result_productos->num_rows > 0) {
                         
                         // Determinar si tiene opciones de leche
                         const tieneOpcionesLeche = data.producto.categoria_nombre && 
-                            (data.producto.categoria_nombre.toLowerCase().includes('leche') || 
+                            (data.producto.categoria_nombre.toLowerCase().includes('jugo') ||
+                             data.producto.categoria_nombre.toLowerCase().includes('leche') || 
                              (data.producto.categoria_nombre.toLowerCase().includes('especial') && 
                               !data.producto.categoria_nombre.toLowerCase().includes('frozen')));
                         
@@ -591,8 +596,8 @@ if ($result_productos && $result_productos->num_rows > 0) {
                         });
                         
                         // Configurar eventos para las opciones de leche solo si existen
-                        if (tieneOpcionesLeche) {
-                            const lecheCheckboxes = document.querySelectorAll('input[name="leche"]');
+                        const lecheCheckboxes = document.querySelectorAll('input[name="leche"]');
+                        if (lecheCheckboxes && lecheCheckboxes.length > 0) {
                             const precioBase = parseFloat(data.producto.precio);
                             
                             lecheCheckboxes.forEach(checkbox => {
@@ -609,11 +614,14 @@ if ($result_productos && $result_productos->num_rows > 0) {
                                     calcularPrecioFinal(precioBase);
                                 });
                             });
+                            
+                            // Inicializar precio con opciones de leche
+                            calcularPrecioFinal(precioBase);
+                        } else {
+                            // Si no hay opciones de leche, solo inicializar precio base
+                            const precioBase = parseFloat(data.producto.precio);
+                            calcularPrecioFinal(precioBase);
                         }
-                        
-                        // Inicializar precio
-                        const precioBase = parseFloat(data.producto.precio);
-                        calcularPrecioFinal(precioBase);
                         
                         // Evento para añadir al carrito desde el modal
                         const btnAddCartModal = productoDetailsContent.querySelector('.btn-add-cart-modal');
