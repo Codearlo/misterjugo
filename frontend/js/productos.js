@@ -13,8 +13,8 @@ function generarModalDetalles(data) {
     const esEspecial = data.producto.categoria_nombre && 
                       data.producto.categoria_nombre.toLowerCase().includes('especial');
     
-    // Solo jugos con leche y especiales (NO frozen) deben tener opciones de leche
-    const tieneOpcionesLeche = esJugoConLeche || (esEspecial && !esFrozen);
+    // Solo jugos, jugos con leche y especiales (NO frozen) deben tener opciones de leche
+    const tieneOpcionesLeche = esJugo || esJugoConLeche || (esEspecial && !esFrozen);
     
     let html = `
         <div class="producto-modal-content">
