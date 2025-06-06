@@ -1,4 +1,4 @@
-/* Responsive para móviles<?php
+<?php
 // No incluir el header principal
 session_start();
 
@@ -258,12 +258,14 @@ if ($result_productos && $result_productos->num_rows > 0) {
             const esJugo = data.producto.categoria_nombre && 
                            (data.producto.categoria_nombre.toLowerCase().includes('jugo') ||
                             data.producto.categoria_nombre.toLowerCase().includes('frozen') ||
-                            data.producto.categoria_nombre.toLowerCase().includes('especiales'));
+                            data.producto.categoria_nombre.toLowerCase().includes('especial'));
             
-            const esAlmuerzo = data.producto.categoria_nombre && 
-                              (data.producto.categoria_nombre.toLowerCase().includes('almuerzo') || 
-                               data.producto.categoria_nombre.toLowerCase().includes('plato') ||
-                               data.producto.categoria_nombre.toLowerCase().includes('fondo'));
+            const esJugoConLeche = data.producto.categoria_nombre && 
+                                  data.producto.categoria_nombre.toLowerCase().includes('leche');
+            
+            const esEspecial = data.producto.categoria_nombre && 
+                              (data.producto.categoria_nombre.toLowerCase().includes('especial') ||
+                               data.producto.categoria_nombre.toLowerCase().includes('frozen'));
             
             let html = `
                 <div class="producto-modal-content">
@@ -273,8 +275,18 @@ if ($result_productos && $result_productos->num_rows > 0) {
                     </div>
                     <div class="producto-modal-info">
                         <div class="producto-modal-price">
-                            <span class="price-label">Precio:</span>
-                            <span class="price-value">S/${parseFloat(data.producto.precio).toFixed(2)}</span>
+                            <div>
+                                <span class="price-label">Precio base:</span>
+                                <span class="price-value" id="precio-base">S/${parseFloat(data.producto.precio).toFixed(2)}</span>
+                            </div>
+                            <div class="precio-extras" id="precio-extras" style="display: none;">
+                                <span class="extras-label">Extras:</span>
+                                <span class="extras-value" id="extras-total">+S/0.00</span>
+                            </div>
+                            <div class="precio-final">
+                                <span class="final-label">Total:</span>
+                                <span class="final-value" id="precio-final">S/${parseFloat(data.producto.precio).toFixed(2)}</span>
+                            </div>
                         </div>
                         <div class="producto-modal-description">
                             <h4>Descripción:</h4>
@@ -285,10 +297,42 @@ if ($result_productos && $result_productos->num_rows > 0) {
                             <p>${data.producto.categoria_nombre}</p>
                         </div>
                         
-                        <!-- Personalización para jugos -->
-                        ${esJugo ? `
+                        <!-- Personalización para jugos, jugos con leche y especiales -->
+                        ${(esJugo || esJugoConLeche || esEspecial) ? `
                         <div class="personalizacion-jugo">
                             <h4><i class="fas fa-cog"></i> Personaliza tu bebida</h4>
+                            
+                            <!-- Tipo de leche (solo para jugos con leche y especiales) -->
+                            ${(esJugoConLeche || esEspecial) ? `
+                            <div class="opcion-grupo">
+                                <label class="opcion-label">Tipo de leche (opcional - máximo 2):</label>
+                                <div class="opciones-checkbox">
+                                    <label class="checkbox-option">
+                                        <input type="checkbox" name="leche" value="almendras" data-precio="2">
+                                        <span class="checkbox-custom"></span>
+                                        <i class="fas fa-seedling"></i> Leche de almendras (+S/2.00)
+                                    </label>
+                                    <label class="checkbox-option">
+                                        <input type="checkbox" name="leche" value="coco" data-precio="2">
+                                        <span class="checkbox-custom"></span>
+                                        <i class="fas fa-coconut"></i> Leche de coco (+S/2.00)
+                                    </label>
+                                    <label class="checkbox-option">
+                                        <input type="checkbox" name="leche" value="soya" data-precio="2">
+                                        <span class="checkbox-custom"></span>
+                                        <i class="fas fa-leaf"></i> Leche de soya (+S/2.00)
+                                    </label>
+                                    <label class="checkbox-option">
+                                        <input type="checkbox" name="leche" value="sin_lactosa" data-precio="2">
+                                        <span class="checkbox-custom"></span>
+                                        <i class="fas fa-check-circle"></i> Sin lactosa (+S/2.00)
+                                    </label>
+                                </div>
+                                <div class="opcion-note">
+                                    <i class="fas fa-info-circle"></i> Puedes elegir máximo 2 tipos de leche
+                                </div>
+                            </div>
+                            ` : ''}
                             
                             <!-- Temperatura -->
                             <div class="opcion-grupo">
@@ -337,44 +381,7 @@ if ($result_productos && $result_productos->num_rows > 0) {
                                 <textarea 
                                     id="comentarios-jugo" 
                                     name="comentarios" 
-                                    placeholder="Ej: Extra frío, sin hielo, más concentrado, menos dulce..."
-                                    rows="3"
-                                ></textarea>
-                            </div>
-                        </div>
-                        ` : ''}
-                        
-                        <!-- Personalización para almuerzos/platos de fondo -->
-                        ${esAlmuerzo ? `
-                        <div class="personalizacion-almuerzo">
-                            <h4><i class="fas fa-utensils"></i> Personaliza tu plato</h4>
-                            
-                            <!-- Acompañante -->
-                            <div class="opcion-grupo">
-                                <label class="opcion-label">Acompañante:</label>
-                                <div class="opciones-radio">
-                                    <label class="radio-option">
-                                        <input type="radio" name="acompanante" value="arroz" checked>
-                                        <span class="radio-custom"></span>
-                                        <i class="fas fa-seedling"></i> Arroz
-                                    </label>
-                                    <label class="radio-option">
-                                        <input type="radio" name="acompanante" value="papas_fritas">
-                                        <span class="radio-custom"></span>
-                                        <i class="fas fa-french-fries"></i> Papas fritas
-                                    </label>
-                                </div>
-                            </div>
-                            
-                            <!-- Comentarios especiales -->
-                            <div class="opcion-grupo">
-                                <label class="opcion-label" for="comentarios-almuerzo">
-                                    <i class="fas fa-comment"></i> Comentarios especiales:
-                                </label>
-                                <textarea 
-                                    id="comentarios-almuerzo" 
-                                    name="comentarios" 
-                                    placeholder="Ej: Sin cebolla, picante aparte, extra salsa..."
+                                    placeholder="Ej: Extra frío, sin hielo, más concentrado..."
                                     rows="3"
                                 ></textarea>
                             </div>
@@ -392,8 +399,7 @@ if ($result_productos && $result_productos->num_rows > 0) {
                                     data-nombre="${data.producto.nombre}" 
                                     data-precio="${data.producto.precio}" 
                                     data-imagen="${data.producto.imagen || '/images/producto-default.jpg'}"
-                                    data-es-jugo="${esJugo}"
-                                    data-es-almuerzo="${esAlmuerzo}">
+                                    data-es-jugo="${esJugo || esJugoConLeche || esEspecial}">
                                 <i class="fas fa-cart-plus"></i> Añadir al carrito
                             </button>
                         </div>
@@ -404,27 +410,53 @@ if ($result_productos && $result_productos->num_rows > 0) {
             return html;
         }
         
+        // Función para calcular precio con extras
+        function calcularPrecioFinal(precioBase) {
+            let extras = 0;
+            
+            // Calcular extras de leche
+            const lecheCheckboxes = document.querySelectorAll('input[name="leche"]:checked');
+            lecheCheckboxes.forEach(checkbox => {
+                extras += parseFloat(checkbox.dataset.precio);
+            });
+            
+            const precioFinal = precioBase + extras;
+            
+            // Actualizar UI
+            const extrasElement = document.getElementById('precio-extras');
+            const extrasTotalElement = document.getElementById('extras-total');
+            const precioFinalElement = document.getElementById('precio-final');
+            
+            if (extras > 0) {
+                extrasElement.style.display = 'block';
+                extrasTotalElement.textContent = `+S/${extras.toFixed(2)}`;
+            } else {
+                extrasElement.style.display = 'none';
+            }
+            
+            precioFinalElement.textContent = `S/${precioFinal.toFixed(2)}`;
+            
+            return precioFinal;
+        }
+        
         // Función para obtener opciones de personalización de jugos
         function obtenerOpcionesPersonalizacionJugo() {
             const temperatura = document.querySelector('input[name="temperatura"]:checked');
             const azucar = document.querySelector('input[name="azucar"]:checked');
             const comentarios = document.getElementById('comentarios-jugo');
+            const lecheCheckboxes = document.querySelectorAll('input[name="leche"]:checked');
+            
+            const lechesSeleccionadas = [];
+            lecheCheckboxes.forEach(checkbox => {
+                lechesSeleccionadas.push(checkbox.value);
+            });
             
             return {
                 temperatura: temperatura ? temperatura.value : 'normal',
                 azucar: azucar ? azucar.value : 'normal',
-                comentarios: comentarios ? comentarios.value.trim() : ''
-            };
-        }
-        
-        // Función para obtener opciones de personalización de almuerzos
-        function obtenerOpcionesPersonalizacionAlmuerzo() {
-            const acompanante = document.querySelector('input[name="acompanante"]:checked');
-            const comentarios = document.getElementById('comentarios-almuerzo');
-            
-            return {
-                acompanante: acompanante ? acompanante.value : 'arroz',
-                comentarios: comentarios ? comentarios.value.trim() : ''
+                comentarios: comentarios ? comentarios.value.trim() : '',
+                leches: lechesSeleccionadas,
+                precioExtra: lechesSeleccionadas.length * 2 // Cada leche cuesta 2 soles extra
             };
         }
         
@@ -433,15 +465,17 @@ if ($result_productos && $result_productos->num_rows > 0) {
             btnAddCartModal.addEventListener('click', function() {
                 const id = this.getAttribute('data-id');
                 const nombre = this.getAttribute('data-nombre');
-                const precio = this.getAttribute('data-precio');
+                const precioBase = parseFloat(this.getAttribute('data-precio'));
                 const imagen = this.getAttribute('data-imagen');
                 const esJugo = this.getAttribute('data-es-jugo') === 'true';
-                const esAlmuerzo = this.getAttribute('data-es-almuerzo') === 'true';
                 const cantidad = parseInt(document.getElementById('modal-quantity').value);
                 
                 if (esJugo) {
                     // Para jugos, usar la función con opciones
                     const opciones = obtenerOpcionesPersonalizacionJugo();
+                    
+                    // Calcular precio final
+                    const precioFinal = precioBase + opciones.precioExtra;
                     
                     // Crear nombre personalizado para mostrar en el carrito
                     let nombrePersonalizado = nombre;
@@ -456,45 +490,33 @@ if ($result_productos && $result_productos->num_rows > 0) {
                         detalles.push('Con estevia');
                     }
                     
-                    if (detalles.length > 0) {
-                        nombrePersonalizado += ` (${detalles.join(', ')})`;
-                    }
-                    
-                    // Usar la función global con opciones
-                    if (window.addToCartWithOptions) {
-                        window.addToCartWithOptions(id, nombrePersonalizado, precio, imagen, cantidad, opciones);
-                    } else {
-                        console.error('Función addToCartWithOptions no disponible');
-                        window.addToCart(id, nombre, precio, imagen, cantidad);
-                    }
-                } else if (esAlmuerzo) {
-                    // Para almuerzos/platos de fondo, usar la función con opciones
-                    const opciones = obtenerOpcionesPersonalizacionAlmuerzo();
-                    
-                    // Crear nombre personalizado para mostrar en el carrito
-                    let nombrePersonalizado = nombre;
-                    const detalles = [];
-                    
-                    if (opciones.acompanante === 'papas_fritas') {
-                        detalles.push('Con papas fritas');
-                    } else {
-                        detalles.push('Con arroz');
+                    if (opciones.leches.length > 0) {
+                        const lechesTexto = opciones.leches.map(leche => {
+                            switch(leche) {
+                                case 'almendras': return 'Leche de almendras';
+                                case 'coco': return 'Leche de coco';
+                                case 'soya': return 'Leche de soya';
+                                case 'sin_lactosa': return 'Sin lactosa';
+                                default: return leche;
+                            }
+                        }).join(', ');
+                        detalles.push(lechesTexto);
                     }
                     
                     if (detalles.length > 0) {
                         nombrePersonalizado += ` (${detalles.join(', ')})`;
                     }
                     
-                    // Usar la función global con opciones
+                    // Usar la función global con opciones y precio actualizado
                     if (window.addToCartWithOptions) {
-                        window.addToCartWithOptions(id, nombrePersonalizado, precio, imagen, cantidad, opciones);
+                        window.addToCartWithOptions(id, nombrePersonalizado, precioFinal, imagen, cantidad, opciones);
                     } else {
                         console.error('Función addToCartWithOptions no disponible');
-                        window.addToCart(id, nombre, precio, imagen, cantidad);
+                        window.addToCart(id, nombre, precioBase, imagen, cantidad);
                     }
                 } else {
                     // Para productos normales, usar la función básica
-                    window.addToCart(id, nombre, precio, imagen, cantidad);
+                    window.addToCart(id, nombre, precioBase, imagen, cantidad);
                 }
                 
                 // Cerrar modal
@@ -554,6 +576,28 @@ if ($result_productos && $result_productos->num_rows > 0) {
                                 }
                             });
                         });
+                        
+                        // Configurar eventos para las opciones de leche
+                        const lecheCheckboxes = document.querySelectorAll('input[name="leche"]');
+                        const precioBase = parseFloat(data.producto.precio);
+                        
+                        lecheCheckboxes.forEach(checkbox => {
+                            checkbox.addEventListener('change', function() {
+                                // Limitar a máximo 2 selecciones
+                                const checkedBoxes = document.querySelectorAll('input[name="leche"]:checked');
+                                if (checkedBoxes.length > 2) {
+                                    this.checked = false;
+                                    alert('Puedes elegir máximo 2 tipos de leche');
+                                    return;
+                                }
+                                
+                                // Actualizar precio
+                                calcularPrecioFinal(precioBase);
+                            });
+                        });
+                        
+                        // Inicializar precio
+                        calcularPrecioFinal(precioBase);
                         
                         // Evento para añadir al carrito desde el modal
                         const btnAddCartModal = productoDetailsContent.querySelector('.btn-add-cart-modal');

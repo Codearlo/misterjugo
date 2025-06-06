@@ -189,14 +189,36 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (item.opciones) {
                     html += `<div class="cart-item-options">`;
                     
-                    // Para jugos
+                    // Para jugos - temperatura
                     if (item.opciones.temperatura === 'helado') {
                         html += `<span class="option-tag ice"><i class="fas fa-snowflake"></i> Helado</span>`;
                     }
+                    
+                    // Para jugos - azúcar
                     if (item.opciones.azucar === 'sin_azucar') {
                         html += `<span class="option-tag no-sugar"><i class="fas fa-times-circle"></i> Sin azúcar</span>`;
                     } else if (item.opciones.azucar === 'con_estevia') {
                         html += `<span class="option-tag stevia"><i class="fas fa-leaf"></i> Con estevia</span>`;
+                    }
+                    
+                    // Para jugos - tipos de leche
+                    if (item.opciones.leches && item.opciones.leches.length > 0) {
+                        item.opciones.leches.forEach(leche => {
+                            switch(leche) {
+                                case 'almendras':
+                                    html += `<span class="option-tag leche-almendras"><i class="fas fa-seedling"></i> Leche de almendras</span>`;
+                                    break;
+                                case 'coco':
+                                    html += `<span class="option-tag leche-coco"><i class="fas fa-coconut"></i> Leche de coco</span>`;
+                                    break;
+                                case 'soya':
+                                    html += `<span class="option-tag leche-soya"><i class="fas fa-leaf"></i> Leche de soya</span>`;
+                                    break;
+                                case 'sin_lactosa':
+                                    html += `<span class="option-tag sin-lactosa"><i class="fas fa-check-circle"></i> Sin lactosa</span>`;
+                                    break;
+                            }
+                        });
                     }
                     
                     // Para almuerzos/platos de fondo
@@ -206,6 +228,7 @@ document.addEventListener('DOMContentLoaded', function() {
                         html += `<span class="option-tag arroz"><i class="fas fa-seedling"></i> Con arroz</span>`;
                     }
                     
+                    // Comentarios
                     if (item.opciones.comentarios) {
                         html += `<div class="option-comments"><i class="fas fa-comment"></i> ${item.opciones.comentarios}</div>`;
                     }
@@ -399,6 +422,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
 .cart-item-options .option-tag.stevia {
     background-color: #4CAF50;
+}
+
+.cart-item-options .option-tag.leche-almendras {
+    background-color: #8BC34A;
+}
+
+.cart-item-options .option-tag.leche-coco {
+    background-color: #795548;
+}
+
+.cart-item-options .option-tag.leche-soya {
+    background-color: #607D8B;
+}
+
+.cart-item-options .option-tag.sin-lactosa {
+    background-color: #9C27B0;
 }
 
 .cart-item-options .option-tag.papas {
