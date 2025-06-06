@@ -6,9 +6,15 @@ function generarModalDetalles(data) {
     const esJugoConLeche = data.producto.categoria_nombre && 
                           data.producto.categoria_nombre.toLowerCase().includes('leche');
     
+    // Frozen NO debe tener opciones de leche
+    const esFrozen = data.producto.categoria_nombre && 
+                    data.producto.categoria_nombre.toLowerCase().includes('frozen');
+    
     const esEspecial = data.producto.categoria_nombre && 
-                      (data.producto.categoria_nombre.toLowerCase().includes('especial') ||
-                       data.producto.categoria_nombre.toLowerCase().includes('frozen'));
+                      data.producto.categoria_nombre.toLowerCase().includes('especial');
+    
+    // Solo jugos con leche y especiales (NO frozen) deben tener opciones de leche
+    const tieneOpcionesLeche = esJugoConLeche || (esEspecial && !esFrozen);
     
     let html = `
         <div class="producto-modal-content">
@@ -18,8 +24,10 @@ function generarModalDetalles(data) {
             </div>
             <div class="producto-modal-info">
                 <div class="producto-modal-price">
-                    <span class="price-label">Precio base:</span>
-                    <span class="price-value" id="precio-base">S/${parseFloat(data.producto.precio).toFixed(2)}</span>
+                    <div>
+                        <span class="price-label">Precio base:</span>
+                        <span class="price-value" id="precio-base">S/${parseFloat(data.producto.precio).toFixed(2)}</span>
+                    </div>
                     <div class="precio-extras" id="precio-extras" style="display: none;">
                         <span class="extras-label">Extras:</span>
                         <span class="extras-value" id="extras-total">+S/0.00</span>
@@ -38,13 +46,13 @@ function generarModalDetalles(data) {
                     <p>${data.producto.categoria_nombre}</p>
                 </div>
                 
-                <!-- Personalización para jugos, jugos con leche y especiales -->
-                ${(esJugo || esJugoConLeche || esEspecial) ? `
+                <!-- Personalización solo para jugos, jugos con leche y especiales (NO frozen) -->
+                ${(esJugo || esJugoConLeche || esEspecial || esFrozen) ? `
                 <div class="personalizacion-jugo">
                     <h4><i class="fas fa-cog"></i> Personaliza tu bebida</h4>
                     
-                    <!-- Tipo de leche (solo para jugos con leche y especiales) -->
-                    ${(esJugoConLeche || esEspecial) ? `
+                    <!-- Tipo de leche (solo para jugos con leche y especiales que NO sean frozen) -->
+                    ${tieneOpcionesLeche ? `
                     <div class="opcion-grupo">
                         <label class="opcion-label">Tipo de leche (opcional - máximo 2):</label>
                         <div class="opciones-checkbox">
@@ -140,7 +148,8 @@ function generarModalDetalles(data) {
                             data-nombre="${data.producto.nombre}" 
                             data-precio="${data.producto.precio}" 
                             data-imagen="${data.producto.imagen || '/images/producto-default.jpg'}"
-                            data-es-jugo="${esJugo || esJugoConLeche || esEspecial}">
+                            data-es-jugo="${esJugo || esJugoConLeche || esEspecial || esFrozen}"
+                            data-tiene-opciones-leche="${tieneOpcionesLeche}">
                         <i class="fas fa-cart-plus"></i> Añadir al carrito
                     </button>
                 </div>
@@ -180,8 +189,8 @@ function calcularPrecioFinal(precioBase) {
     return precioFinal;
 }
 
-// Función para obtener opciones de personalización
-function obtenerOpcionesPersonalizacion() {
+// Función para obtener opciones de personalización de jugos
+function obtenerOpcionesPersonalizacionJugo() {
     const temperatura = document.querySelector('input[name="temperatura"]:checked');
     const azucar = document.querySelector('input[name="azucar"]:checked');
     const comentarios = document.getElementById('comentarios-jugo');
@@ -209,14 +218,15 @@ function manejarClickCarritoModal(btnAddCartModal) {
         const precioBase = parseFloat(this.getAttribute('data-precio'));
         const imagen = this.getAttribute('data-imagen');
         const esJugo = this.getAttribute('data-es-jugo') === 'true';
+        const tieneOpcionesLeche = this.getAttribute('data-tiene-opciones-leche') === 'true';
         const cantidad = parseInt(document.getElementById('modal-quantity').value);
         
         if (esJugo) {
             // Para jugos, usar la función con opciones
-            const opciones = obtenerOpcionesPersonalizacion();
+            const opciones = obtenerOpcionesPersonalizacionJugo();
             
-            // Calcular precio final
-            const precioFinal = precioBase + opciones.precioExtra;
+            // Calcular precio final (solo si tiene opciones de leche)
+            const precioFinal = tieneOpcionesLeche ? (precioBase + opciones.precioExtra) : precioBase;
             
             // Crear nombre personalizado para mostrar en el carrito
             let nombrePersonalizado = nombre;
@@ -231,7 +241,8 @@ function manejarClickCarritoModal(btnAddCartModal) {
                 detalles.push('Con estevia');
             }
             
-            if (opciones.leches.length > 0) {
+            // Solo mostrar leches si tiene opciones de leche
+            if (tieneOpcionesLeche && opciones.leches.length > 0) {
                 const lechesTexto = opciones.leches.map(leche => {
                     switch(leche) {
                         case 'almendras': return 'Leche de almendras';
@@ -301,6 +312,12 @@ document.addEventListener('DOMContentLoaded', function() {
                     const html = generarModalDetalles(data);
                     productoDetailsContent.innerHTML = html;
                     
+                    // Determinar si tiene opciones de leche
+                    const tieneOpcionesLeche = data.producto.categoria_nombre && 
+                        (data.producto.categoria_nombre.toLowerCase().includes('leche') || 
+                         (data.producto.categoria_nombre.toLowerCase().includes('especial') && 
+                          !data.producto.categoria_nombre.toLowerCase().includes('frozen')));
+                    
                     // Agregar eventos a los botones de cantidad
                     const quantityBtns = productoDetailsContent.querySelectorAll('.quantity-btn');
                     const quantityInput = productoDetailsContent.querySelector('.quantity-input');
@@ -322,26 +339,29 @@ document.addEventListener('DOMContentLoaded', function() {
                         });
                     });
                     
-                    // Configurar eventos para las opciones de leche
-                    const lecheCheckboxes = document.querySelectorAll('input[name="leche"]');
-                    const precioBase = parseFloat(data.producto.precio);
-                    
-                    lecheCheckboxes.forEach(checkbox => {
-                        checkbox.addEventListener('change', function() {
-                            // Limitar a máximo 2 selecciones
-                            const checkedBoxes = document.querySelectorAll('input[name="leche"]:checked');
-                            if (checkedBoxes.length > 2) {
-                                this.checked = false;
-                                alert('Puedes elegir máximo 2 tipos de leche');
-                                return;
-                            }
-                            
-                            // Actualizar precio
-                            calcularPrecioFinal(precioBase);
+                    // Configurar eventos para las opciones de leche solo si existen
+                    if (tieneOpcionesLeche) {
+                        const lecheCheckboxes = document.querySelectorAll('input[name="leche"]');
+                        const precioBase = parseFloat(data.producto.precio);
+                        
+                        lecheCheckboxes.forEach(checkbox => {
+                            checkbox.addEventListener('change', function() {
+                                // Limitar a máximo 2 selecciones
+                                const checkedBoxes = document.querySelectorAll('input[name="leche"]:checked');
+                                if (checkedBoxes.length > 2) {
+                                    this.checked = false;
+                                    alert('Puedes elegir máximo 2 tipos de leche');
+                                    return;
+                                }
+                                
+                                // Actualizar precio
+                                calcularPrecioFinal(precioBase);
+                            });
                         });
-                    });
+                    }
                     
                     // Inicializar precio
+                    const precioBase = parseFloat(data.producto.precio);
                     calcularPrecioFinal(precioBase);
                     
                     // Evento para añadir al carrito desde el modal
